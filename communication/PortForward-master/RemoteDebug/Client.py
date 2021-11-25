@@ -10,6 +10,7 @@ from communication.communication import TcpServer, TcpClient, HttpServer, Commun
 
 
 
+
 # TODO:改用日志处理
 def output(msg):
     print("[", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), "]: Client ::", msg)
