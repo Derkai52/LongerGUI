@@ -1,5 +1,5 @@
 # 本文件存放 Mech 返回指令代码列表
-from Client import * # 导入 output 包
+from client import * # 导入 output 包
 
 # Mech 返回值状态号表
 """

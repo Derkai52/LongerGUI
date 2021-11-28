@@ -57,8 +57,7 @@ else:
 
 def command_descs():
     """
-    doc: 指令代码选择提升区
-    :return:
+    doc: 指令代码参数描述提示
     """
     return ("{}: Run Mech-Vision(will not include poses in this command's ack)".format(cmds.RUN_VISION),
             "{}: Get Mech-Vision poses".format(cmds.GET_VISION_DATA),
@@ -77,6 +76,9 @@ def command_descs():
 
 
 def params_descs():
+    """
+    doc: 指令代码参数描述提示
+    """
     return {cmds.RUN_VISION: """Project number-a positive integer; Count of poses-a positive integer(0 is get all poses); Pose or jps by robot(None)-0, (Jps)-1, (Pose)-2;"""
                              """ Pose-xyzABC(unit is mm and degree), Jps-j1~j6(unit is degree)
                                     For example: 1,1,1,-490.000,0,539.000,-90.000,90.000,180.000""",
@@ -238,7 +240,7 @@ def test_loop():
             print("\t" + desc)
         try:
             cmd = int(input("Input command:") if not auto_start else auto_list[auto_index])
-            if cmd == 6:
+            if cmd == 6: # 开启脚本自动模式(使用预设参数)
                 auto_start = True
                 cmd = int(auto_list[0])
                 auto_index = 0
@@ -247,11 +249,15 @@ def test_loop():
         except ValueError:
             print("Invalid command!")
             continue
+
+
+
+
         if cmd not in params_descs():
             print("Invalid command!")
             continue
         params = b""
-        if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):
+        if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES): # 需要额外输入参数的情况
             while not params:
                 print(params_descs()[cmd])
                 params = input("Input params in order(comma separated):") if not auto_start else auto_list[auto_index]
@@ -265,7 +271,7 @@ def test_loop():
                     logging.exception(e)
                     print("Exception occurred. Check and input again...")
         if not is_ascii:
-            params += bytearray([0x00] * (36 - len(params)))
+            params += bytearray([0x00] * (36 - len(params))) # 自动补齐
         send_msg(client, pack_params(cmd, fmt="i") + params)
         
         recv_test(cmd, client)
