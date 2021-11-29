@@ -281,9 +281,9 @@ def recv_test(send_cmd, client): # TODO: 设置返回值
 
 def msg_process(msg, funcFlag):
     """
-    doc: 对输入的信息进行处理，转化为可发送的信息
-    :param cmd: 指令代码
-    :param params: 指令代码参数
+    doc: 对输入的信息进行处理，转化为可用的信息
+    :param msg: 待处理的信息
+    :param funcFlag: 信息处理并发送:1 信息处理并接受:2
     :return:
     """
     cmd = msg[0]  # 获取指令代码

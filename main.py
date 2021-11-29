@@ -12,7 +12,7 @@ from util.log import logs
 
 
 # TODO:主函数收录日志处理
-# def output(msg):
+# def logs.logger.info(msg):
 #     print("[", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()), "]: Client ::", msg)
 
 # 从文件读取
@@ -34,6 +34,7 @@ class Hub:
         self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
         self.listenRobot = None    # 用于连接机器人端【用于监听和接受客户端的连接请求的套接字】(本地作为服务端)
         self.toRobot = None        # 用于连接机器人端【用于通信的套接字】(本地作为服务端)
+        self.msgflag = None        # 用于标识信息类型【发送的消息:1  接收的消息:2】
 
         if configPath == "":
             self.serverIP = serverIP
@@ -61,7 +62,7 @@ class Hub:
         return: 校验成功:True 校验失败:False
         """
         response = self.client.recv()
-        output("从Mech返回的连接校验值：{}".format(response))
+        logs.logger.info("从Mech返回的连接校验值：{}".format(response))
         # 仅返回消息为 “ACC” 时，建立连接
         if response.decode("utf-8") == '"' + "ACC" + '"':  # TODO: Warn:接受的字符串包括引号需要进行处理
             return True
@@ -73,8 +74,8 @@ class Hub:
         """
         while True:
             sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8")
-
-            msg_process(sendMsg, flag) # 信息处理并发送
+            self.msgflag = 1
+            msg_process(sendMsg, self.msgflag) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
             # self.client.send(sendMsg)
 
 
@@ -85,12 +86,12 @@ class Hub:
         thread = threading.Thread(target=self.client_process)  # 监听Mech的通信
         thread.setDaemon(True)  # 挂后台进程
         thread.start()
-        output("连接Mech成功!【监听】")
+        logs.logger.info("连接Mech成功!【监听】")
 
         thread1 = threading.Thread(target=self.send_to_mech) # 发送Mech的通信
         thread1.setDaemon(True)
         thread1.start()
-        output("连接Mech成功!【发送】")
+        logs.logger.info("连接Mech成功!【发送】")
 
 
     def thread_connect_robot(self):
@@ -106,16 +107,16 @@ class Hub:
         doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于
         return: 连接成功: True 连接失败: False
         """
-        output("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
+        logs.logger.info("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
         self.client.reconnect_server() # 尝试重新连接到Mech
         if self.client.is_connected(): # 如果连接成功
-            output("请求Mech服务器成功，正在校验连接...")
+            logs.logger.info("请求Mech服务器成功，正在校验连接...")
             # if self.check_detection(): # TODO:连接校验码检测
             if True:
                 self.thread_connect_mech()  # 开启一个线程连接到Mech
                 return True
             else:
-                output("与Mech服务器连接校验失败!")
+                logs.logger.info("与Mech服务器连接校验失败!")
         return False
 
     def run(self):
@@ -126,9 +127,9 @@ class Hub:
             if self.client.is_connected():              # 如果已经连接到Mech
                 pass
                 # time.sleep(30) # 检测到已连接后的检测周期
-                # output("已连接到服务端")
+                # logs.logger.info("已连接到服务端")
             else:                                       # 如果未连接到Mech
-                output("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
+                logs.logger.info("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
                 self.connect_mech() # 尝试连接Mech服务器
             # time.sleep(10) # 固定检测周期
 
@@ -139,18 +140,18 @@ class Hub:
         """
         self.listenRobot = TcpServer(self.robotAddr) # TODO: 不确定是否在此初始化还是伴随Mech初始化后就初始化
         self.listenRobot.accept() # TODO: Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
-        output("连接机器人成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.listenRobot._client_connect, self.listenRobot._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
+        logs.logger.info("连接机器人成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.listenRobot._client_connect, self.listenRobot._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
         while True:
             response = self.listenRobot.recv()
-            output("从机器人端收到的消息为: {}".format(response))
+            logs.logger.info("从机器人端收到的消息为: {}".format(response))
             # time.sleep(10)
             if response == b'':
-                output("关闭对机器人的连接")
+                logs.logger.info("关闭对机器人的连接")
                 self.listenRobot.close()
                 self.listenRobot = None
                 break
             self.client.send(response)
-            output("转发给Mech的信息: {}".format(response))
+            logs.logger.info("转发给Mech的信息: {}".format(response))
 
     def event_mech_process(self, response):
         """
@@ -158,7 +159,7 @@ class Hub:
         retrun: 直接放行:1 continue:2 break:3
         """
         if response == b'':  # 丢失连接
-            output("丢失与Mech服务器的连接")
+            logs.logger.info("丢失与Mech服务器的连接")
             self.client.close()
             self.client = None
             return 3
@@ -167,13 +168,13 @@ class Hub:
             return 2
 
         elif response == b"#CONNECT":  # 连接验证码通过
-            output("正在连接机器人...")
+            logs.logger.info("正在连接机器人...")
             if self.listenRobot is None:
                 self.thread_connect_robot()  # 开启一个线程连接机器人
             return 2
 
         elif response == b'#CLOSE': # 接受到关闭信号
-            output("接收到关闭信号，将关闭socket连接")
+            logs.logger.info("接收到关闭信号，将关闭socket连接")
             if self.listenRobot is not None:
                 self.listenRobot.close()
                 self.listenRobot = None
@@ -190,7 +191,7 @@ class Hub:
             if not self.client.is_connected(): # 如果连接丢失
                 break
             response = self.client.recv()
-            output("从Mech获得的消息: {}".format(response))
+            logs.logger.info("从Mech获得的消息: {}".format(response))
 
             processResult = self.event_mech_process(response) # Mech消息事件处理
             if processResult == 1: # 普通信息，直接放行
@@ -199,15 +200,15 @@ class Hub:
                 continue
             elif processResult == 3: # 丢失连接
                 break
-            else: output("检测到BUG【可能是未经收录的事件】")
+            else: logs.logger.info("检测到BUG【可能是未经收录的事件】")
 
             if self.listenRobot is None:
-                output("当前没有检测到与机器人连接!")
+                logs.logger.info("当前没有检测到与机器人连接!")
                 continue
             else:
                 try:
                     self.listenRobot.send(response)
-                    output("发送给机器人: {}".format(response))
+                    logs.logger.info("发送给机器人: {}".format(response))
                 except Exception as e:
                     print(e)
 
