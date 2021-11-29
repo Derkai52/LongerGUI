@@ -1,7 +1,8 @@
-# 暂时不启用
-
 import logging
 from logging import handlers
+import os
+from config import *
+import time
 
 class Logger(object):
     level_relations = {
@@ -13,6 +14,7 @@ class Logger(object):
     } # 日志级别关系映射
 
     def __init__(self, filename, level='info', when='D', backCount=3, fmt='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'):
+        filename = filename + "\\" + time.strftime("%Y-%m-%d") + "\\" # 以日期为单位分隔日志
         self.logger = logging.getLogger(filename)
         format_str = logging.Formatter(fmt) # 设置日志格式
         self.logger.setLevel(self.level_relations.get(level)) # 设置日志级别
@@ -33,12 +35,19 @@ class Logger(object):
 
 
 
+# 获取当前目录
+cur_path =  os.path.abspath(os.path.dirname(__file__))
+# 获取项目根目录
+root_path = cur_path[:cur_path.rindex(project_name)+len(project_name)] + "\\"
+logs = Logger(filename=root_path + log_save_path, level=log_save_level) # TODO: 从配置文件读取设置，并添加自动路径功能
 
-# if __name__ == '__main__':
-#     logr = Logger('all.logr',level='debug')
-#     logr.logger.debug('debug')
-#     logr.logger.info('info')
-#     logr.logger.warning('警告')
-#     logr.logger.error('报错')
-#     logr.logger.critical('严重')
-#     Logger('error.logr', level='error').logger.error('error')
+
+## 测试用
+# if __name__ == "__main__":
+#     logs = Logger('../logs/all.log',level='debug')
+#     logs.logger.debug('debug')
+#     logs.logger.info('info')
+#     logs.logger.warning('警告')
+#     logs.logger.error('报错')
+#     logs.logger.critical('严重')
+#     Logger('../logs/error.log', level='error').logger.error('error')

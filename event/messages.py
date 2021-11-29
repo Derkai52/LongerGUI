@@ -1,8 +1,9 @@
 # 本文件存放 Mech 返回指令代码列表
-from client import * # 导入 output 包
+from util.log import logs
 
-# Mech 返回值状态号表
+
 """
+    Mech 返回值状态号表
     1***: Mech-Vision
     2***: Mech-Viz
     3***: Mech-Center
@@ -100,7 +101,7 @@ CALIBRATION_MOVE_FINISHED     = 7100  # 已移动至校准点
 CALIBRATION_SEND_POINT_OK     = 7101  # 成功发送校准点信息
 
 
-def adapter_message_dict():
+def adapter_message_dict(): # TODO: 事件反馈统一收录日志模块处理
     return {
         VISION_NOT_REGISTERED: output("Mech-Vision project is not registered"),
         VISION_NO_POSES: output("Mech-Vision No pose results"),
@@ -188,100 +189,3 @@ def adapter_message_dict():
         CALIBRATION_SEND_POINT_OK: output("Calibration pose received from Mech-Vision successfully"),
 
     }
-
-
-
-
-
-
-
-
-
-
-# def adapter_message_dict():
-#     return {
-# VISION_NOT_REGISTERED: _translate("messages", "Mech-Vision project is not registered"),
-# VISION_NO_POSES: _translate("messages", "Mech-Vision No pose results"),
-# VISION_NO_CLOUD: _translate("messages", "Mech-Vision No point cloud in ROI"),
-# VISION_SET_PROPERTY_FAILED: _translate("messages", "Mech-Vision Set property failed"),
-# VISION_POINT_TYPE_ERROR: _translate("messages", "Mech-Vision Pose type is invalid"),
-# VISION_POINT_ERROR: _translate("messages", "Mech-Vision Pose value is invalid"),
-# VISION_IN_CALCULATING: _translate("messages", "Mech-Vision is in calculating"),
-# VISION_ALREADY_FINISHED: _translate("messages", "Mech-Vision The pose results had been sent"),
-# VISION_POSES_MOTION_PARAMS_UNEQUAL: _translate("messages", "Mech-Vision The number of poses and motion params don't correspond"),
-# VISION_POSES_LABELS_UNEQUAL: _translate("messages", "Mech-Vision The number of poses and labels don't correspond"),
-# VISION_PROJECT_NOT_FOUND: _translate("messages", "Mech-Vision Project number does not exist"),
-# VISION_RECIPE_NUM_OUT_RANGE: _translate("messages", "Mech-Vision parameter recipe number out of range.") + "(CV-E0403)",
-# VISION_RECIPE_NOT_SET: _translate("messages", "Mech-Vision parameter recipe not set.") + "(CV-E0401)",
-# VISION_SWITCH_MODEL_FAILED: _translate("messages", "Mech-Vision Switch recipe failed"),
-# VISION_LABEL_MAPPING_ERROR: _translate("messages", "Mech-Vision Label Mapping number is invalid"),
-# VISION_POSE_COUNT_ERROR: _translate("messages", "Mech-Vision Pose count error"),
-# VISION_RUN_TIMEOUT: _translate("messages", "Mech-Vision Execution time timeout"),
-# VISION_NOT_RUN_YET: _translate("messages", "Mech-Vision doesn't be executed"),
-# VISION_HAS_POSES: _translate("messages", "Mech-Vision Get pose results successfully"),
-# VISION_IS_READY: _translate("messages", "Mech-Vision is ready"),
-# VISION_TRIGGERED_OK: _translate("messages", "Mech-Vision triggered successfully"),
-# VISION_SET_MODEL_OK: _translate("messages", "Mech-Vision Recipe switched successfully"),
-# VISION_SET_OUTER_BOX_SIZE_OK: _translate("messages", "Mech-Vision set external box size successfully"),
-#
-# VIZ_NOT_REGISTERED: _translate("messages", "Mech-Viz project is not registered"),
-# VIZ_IS_RUNNING: _translate("messages", "Mech-Viz is in running"),
-# VIZ_NO_VISION_POSE: _translate("messages", "Mech-Viz No pose results received from Mech-Vision"),
-# VIZ_VISION_POSE_NOT_REACHABLE: _translate("messages", "Mech-Viz cannot reach the pose position from Mech-Vision"),
-# VIZ_SELECT_JPS_ERROR: _translate("messages", "Mech-Viz Robot joints calculation failed"),
-# VIZ_COLLISION_CHECKED: _translate("messages", "Mech-Viz Collision detected"),
-# VIZ_PLAN_FILED: _translate("messages", "Mech-Viz motion planning failed"),
-# VIZ_RUN_ERROR: _translate("messages", "Mech-Viz has running error"),
-# VIZ_NO_TCP_POSE: _translate("messages", "Mech-Viz TCP pose is not provided"),
-# VIZ_NO_DO_LIST: _translate("messages", "Mech-Viz DO list is not provided"),
-# VIZ_POINT_TYPE_ERROR: _translate("messages", "Mech-Viz Pose type is invalid"),
-# VIZ_POINT_ERROR: _translate("messages", "Mech-Viz Pose value is invalid"),
-# VIZ_PROJECT_NOT_SET: _translate("messages", "Mech-Viz No project setup"),
-# VIZ_POSE_NOT_SUPPORTED: _translate("messages", "Mech-Viz Tcp pose type is not supported"),
-# VIZ_SET_PROPERTY_ERROR: _translate("messages", "Mech-Viz Set property failed"),
-# VIZ_STOP_FAILED: _translate("messages", "Mech-Viz Stop execution failed"),
-# VIZ_BRANCH_OUTPORT_ERROR: _translate("messages", "Mech-Viz Branch exitport is invalid"),
-# VIZ_SET_BRANCH_ERROR: _translate("messages", "Mech-Viz Set branch failed, please check if it exists in project"),
-# VIZ_NOT_RUN_YET: _translate("messages", "Mech-Viz doesn't be executed"),
-# VIZ_PROJECT_IS_BROKEN: _translate("messages", "Mech-Viz project is abnormal"),
-# VIZ_BRANCH_NAME_ERROR: _translate("messages", "Mech-Viz Branch name is invalid"),
-# VIZ_RUN_TIMEOUT: _translate("messages", "Mech-Viz Execution time timeout"),
-# VIZ_INDEX_NAME_ERROR: _translate("messages", "Mech-Viz Index-Skill name is invalid"),
-# VIZ_INDEX_ORDER_ERROR: _translate("messages", "Mech-Viz Index number is invalid"),
-# VIZ_SET_INDEX_ERROR: _translate("messages", "Mech-Viz Set index failed, please check if it exists in project"),
-# VIZ_FINISHED: _translate("messages", "Mech-Viz execution completed successfully"),
-# VIZ_COMMAND_STOP: _translate("messages", "Mech-Viz stopped successfully"),
-# VIZ_SEND_DO_LIST_OK: _translate("messages", "Mech-Viz Send DO list successfully"),
-# VIZ_RUN_OK: _translate("messages", "Mech-Viz start successfully"),
-# VIZ_STOP_OK: _translate("messages", "Mech-Viz Stop successfully"),
-# VIZ_SET_BRANCH_OK: _translate("messages", "Mech-Viz Set branch successfully"),
-# VIZ_SET_INDEX_OK: _translate("messages", "Mech-Viz Set index successfully"),
-# VIZ_SET_OUTER_POSE_OK: _translate("messages", "Mech-Viz Set external pose successfully"),
-#
-# CENTER_INVALID_COMMAND: _translate("messages", "Mech-Center Invalid command"),
-# CENTER_ERROR_PACKAGE: _translate("messages", "Mech-Center interface message length or format error"),
-# CENTER_CLIENT_DISCONNECTED: _translate("messages", "Mech-Center Client is disconnected"),
-# CENTER_SERVER_DISCONNECTED: _translate("messages", "Mech-Center Server is disconnected"),
-# CENTER_TIMEOUT_ERROR: _translate("messages", "Mech-Center Calling Mech-Vision timeout"),
-# CENTER_OTHER_ERROR: _translate("messages", "Mech-Center Unknown error"),
-# CENTER_CLIENT_CONNECTED: _translate("messages", "Mech-Center Client connect OK"),
-# CENTER_CONNECT_TO_SERVER: _translate("messages", "Mech-Center Server connect OK"),
-# CENTER_WAIT_FOR_CLIENT: _translate("messages", "Mech-Center Wait for client to connect"),
-#
-# ROBOT_INVALID_ROBOT_TYPE: _translate("messages", "Robot invalid robot type"),
-# ROBOT_EULER_NOT_SUPPORTED: _translate("messages", "Robot Euler type isn't supported"),
-# ROBOT_SERVICE_NOT_REGISTERED: _translate("messages", "Robot service isn't registered"),
-# ROBOT_MISSING_PARAMS_ERROR: _translate("messages", "Robot server parameters are incomplete"),
-# ROBOT_SERVICE_REGISTERED: _translate("messages", "Robot service registered OK"),
-# CONNECT_ROBOT_SUCCESS: _translate("messages", "Robot server connect to the robot successfully"),
-# CONNECT_ROBOT_FAIL: _translate("messages", "Robot server connect to the robot failed"),
-# DISCONNECT_ROBOT_SUCCESS: _translate("messages", "Robot server get disconnected"),
-#
-# VISION_SET_OUTER_BOX_SIZE_FAIL: _translate("messages", "Mech-Vision set box size data is invalid"),
-#
-# CALIBRATION_PARAMS_ERROR: _translate("messages", "Calibration parameter error "),
-# CALIBRATION_NO_POINT: _translate("messages", "Calibration no pose provided from Mech-Vision"),
-# CALIBRATION_NOT_REACH_POINT: _translate("messages", "Calibration Robot failed to reach the calibration point"),
-# CALIBRATION_MOVE_FINISHED: _translate("messages", "Calibration Robot moves to the calibration point successfully"),
-# CALIBRATION_SEND_POINT_OK: _translate("messages", "Calibration pose received from Mech-Vision successfully"),
-# }

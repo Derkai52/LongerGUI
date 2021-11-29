@@ -7,6 +7,7 @@ import os
 from communication import commands as cmds
 from event.messages import *
 from config import *
+from util.log import logs
 
 ###################### 格式解包与打包 #######################
 def unpack_ascii_params(*args, **kwargs):

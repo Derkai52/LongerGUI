@@ -1,8 +1,7 @@
 import logging
-# from log import Logger # 暂时不启用
 import socket
-
-
+from util.log import logs
+# TODO:通信模块日志收录处理
 class Communication(object):
     """
         Base class which provides interfaces.

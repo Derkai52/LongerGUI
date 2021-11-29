@@ -3,8 +3,8 @@ from struct import pack, unpack
 import socket
 import sys
 import os
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "communication")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "communication")))
 from communication import commands as cmds
 from event.messages import *
 
