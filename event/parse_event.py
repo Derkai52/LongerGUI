@@ -262,7 +262,7 @@ def recv_test(client):  # TODO: 设置返回值
     # print(recv_cmd, send_cmd)
     # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
     print("收到的消息：",recv_cmd, status_code)
-    print("Status code={}, message: {}".format(status_code, adapter_message_dict()[status_code]))
+    # print("Status code={}, message: {}".format(status_code, adapter_message_dict()[status_code]))
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
         recv_finished, point_count, *visual_move_position = unpack_params(recv_cmds[8:], fmt="3i")
