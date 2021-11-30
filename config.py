@@ -3,7 +3,7 @@ project_name = "LongerGUI"
 project_version = "1.0"
 
 ################# 通信设置 ############################
-mech_interface_ip = "127.0.0.1" # Mech Interface Ip号
+mech_interface_ip = "127.0.0.1" # Mech Interface IP
 mech_interface_port = "50000" # Mech Interface 端口号
 robot_server_agent_ip = "192.168.2.200" # 连接机器人网口的IP
 robot_server_agent_port = "3000" # 连接机器人网口的端口号

@@ -250,12 +250,18 @@ def send_msg(client, msg):
 
 # def recv_test(send_cmd, client): # TODO: 设置返回值
 def recv_test(client):  # TODO: 设置返回值
+    """
+    doc: 处理Mech发送过来的信息
+    :param client: socket套接字对象
+    :return: Mech发送过来的信息
+    """
     print("Recving......")
     recv_cmds = client.recv()
     print(recv_cmds)
     recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
     # print(recv_cmd, send_cmd)
     # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
+    print("收到的消息：",recv_cmd, status_code)
     print("Status code={}, message: {}".format(status_code, adapter_message_dict()[status_code]))
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
@@ -281,26 +287,28 @@ def recv_test(client):  # TODO: 设置返回值
 
         print("Available do:", do_list[0:64 - do_list.count(-1)])
         print("Do list={}".format(do_list))
+    return recv_cmds
 
-def msg_process(socket_object, funcFlag, msg=None):
+def msg_process(socket_object, funcFlag, sendmsg=None):
     """
     doc: 对输入的信息进行处理，转化为可用的信息
+    :param socket_object: socket套接字对象
     :param msg: 待处理的信息
-    :param funcFlag: 信息处理并发送:1 信息处理并接受:2
-    :return:
+    :param funcFlag: 1:信息处理并发送 2:信息处理并接受
+    :return: 发送的消息 或 接收的消息
     """
     if funcFlag == 1: # 发送信息
         try:# TODO:Warning 此处分解可能因为格式更改导致解法失效，需要一种拓展性高的解法
-            msg1 = list(map(lambda x:int(float(x)), list(msg.split(","))))  # 将传入的字符串转化为元素为数字的列表
-            cmd = msg1[0]  # 获取指令代码
-            indexnum = msg.find(str(msg1[0]))+len(str(msg1[0]))+len(",") # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
-            params = msg[indexnum:]
+            msg_temp = list(map(lambda x:int(float(x)), list(sendmsg.split(","))))  # 将传入的字符串转化为元素为数字的列表
+            cmd = msg_temp[0]  # 获取指令代码
+            indexnum = sendmsg.find(str(msg_temp[0]))+len(str(msg_temp[0]))+len(",") # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
+            params = sendmsg[indexnum:]
         except Exception as e:
             print("parse Invalid command!")
-            return
+            return sendmsg
         if cmd not in params_descs():
             print("cmd Invalid command!")
-            return # TODO: 返回一个 continue
+            return msg # TODO: 返回一个 continue
             #continue
         if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):  # 需要额外输入参数的情况
             print(params_descs()[cmd]) # TODO: 可视化信息
@@ -314,11 +322,15 @@ def msg_process(socket_object, funcFlag, msg=None):
         print(params)
         if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
             print("params Invalid command!")
-            return
+            return sendmsg
 
         send_msg(socket_object, pack_params(cmd, fmt="i") + params)  # 发送信息
+        return sendmsg
 
     elif funcFlag == 2: # 接受信息
-        recv_test(socket_object)
+        recvmsg = recv_test(socket_object)
+        return recvmsg
 
-    else: print("未收录的处理标识符")
+    else:
+        print("未收录的处理标识符")
+        return # TODO: 待处理的情况

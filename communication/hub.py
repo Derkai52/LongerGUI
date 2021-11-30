@@ -65,7 +65,7 @@ class Hub:
         """
         while True:
             # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8")
-            sendMsg = input("\n请输入向Mech发送的消息:") # TODO: 预留给前端界面的输入接口
+            sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
 
             self.msgflag = 1 # TODO:可以用更好的方法解决，提高代码易读性和维护性
             msg_process(self.client, self.msgflag, sendMsg) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
@@ -185,11 +185,11 @@ class Hub:
         while True:
             if not self.client.is_connected(): # 如果连接丢失
                 break
-            response = self.client.recv()
+            # response = self.client.recv()
             self.msgflag = 2
-            msg_process(self.client, self.msgflag)
+            response = msg_process(self.client, self.msgflag)
             self.msgflag = None
-            logs.logger.info("从Mech获得的消息: {}".format(response))
+            # logs.logger.info("从Mech获得的消息: {}".format(response))
 
             processResult = self.event_mech_process(response) # Mech消息事件处理
             if processResult == 1: # 普通信息，直接放行
