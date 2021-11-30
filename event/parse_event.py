@@ -248,13 +248,14 @@ def send_msg(client, msg):
             msg += b"\x00" * (len_client_msg - len(msg))
     client.send(msg)
 
-def recv_test(send_cmd, client): # TODO: 设置返回值
+# def recv_test(send_cmd, client): # TODO: 设置返回值
+def recv_test(client):  # TODO: 设置返回值
     print("Recving......")
-    recv_cmds = client.recv(len_mech_msg)
+    recv_cmds = client.recv()
     print(recv_cmds)
     recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
-    print(recv_cmd, send_cmd)
-    assert send_cmd == recv_cmd
+    # print(recv_cmd, send_cmd)
+    # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
     print("Status code={}, message: {}".format(status_code, adapter_message_dict()[status_code]))
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
@@ -281,41 +282,43 @@ def recv_test(send_cmd, client): # TODO: 设置返回值
         print("Available do:", do_list[0:64 - do_list.count(-1)])
         print("Do list={}".format(do_list))
 
-def msg_process(msg, socket_object, funcFlag):
+def msg_process(socket_object, funcFlag, msg=None):
     """
     doc: 对输入的信息进行处理，转化为可用的信息
     :param msg: 待处理的信息
     :param funcFlag: 信息处理并发送:1 信息处理并接受:2
     :return:
     """
-    # TODO:Warning 此处分解可能因为格式更改导致解法失效，需要一种拓展性高的解法
-    msg1 = list(map(lambda x:int(float(x)), list(msg.split(","))))  # 将传入的字符串转化为元素为数字的列表
-    cmd = msg1[0]  # 获取指令代码
-    indexnum = msg.find(str(msg1[0]))+len(str(msg1[0]))+len(",") # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
-    params = msg[indexnum:]
-
-
-
-    if cmd not in params_descs():
-        print("cmd Invalid command!")
-        return # TODO: 返回一个 continue
-        #continue
-
-
-    if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):  # 需要额外输入参数的情况
-        print(params_descs()[cmd]) # TODO: 可视化信息
-        try:
-            params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
+    if funcFlag == 1: # 发送信息
+        try:# TODO:Warning 此处分解可能因为格式更改导致解法失效，需要一种拓展性高的解法
+            msg1 = list(map(lambda x:int(float(x)), list(msg.split(","))))  # 将传入的字符串转化为元素为数字的列表
+            cmd = msg1[0]  # 获取指令代码
+            indexnum = msg.find(str(msg1[0]))+len(str(msg1[0]))+len(",") # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
+            params = msg[indexnum:]
         except Exception as e:
-            logging.exception(e)
-            print("信息转化失败...")
-    if not is_ascii: # 如果是Hex格式
-        params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
-    print(params)
-    if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
-        print("params Invalid command!")
-        return
-    if funcFlag == 1:
+            print("parse Invalid command!")
+            return
+        if cmd not in params_descs():
+            print("cmd Invalid command!")
+            return # TODO: 返回一个 continue
+            #continue
+        if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):  # 需要额外输入参数的情况
+            print(params_descs()[cmd]) # TODO: 可视化信息
+            try:
+                params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
+            except Exception as e:
+                logging.exception(e)
+                print("信息转化失败...")
+        if not is_ascii: # 如果是Hex格式
+            params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
+        print(params)
+        if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
+            print("params Invalid command!")
+            return
+
         send_msg(socket_object, pack_params(cmd, fmt="i") + params)  # 发送信息
-    elif funcFlag == 2:
-        recv_test(cmd, socket_object) # 接受信息
+
+    elif funcFlag == 2: # 接受信息
+        recv_test(socket_object)
+
+    else: print("未收录的处理标识符")

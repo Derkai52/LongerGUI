@@ -67,8 +67,10 @@ class Hub:
             # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8")
             sendMsg = input("\n请输入向Mech发送的消息:") # TODO: 预留给前端界面的输入接口
 
-            self.msgflag = 1
-            msg_process(sendMsg, self.client, self.msgflag) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
+            self.msgflag = 1 # TODO:可以用更好的方法解决，提高代码易读性和维护性
+            msg_process(self.client, self.msgflag, sendMsg) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
+            self.msgflag = None
+
             # self.client.send(sendMsg)
 
 
@@ -76,14 +78,14 @@ class Hub:
         """
         doc:开启线程维持对Mech的连接
         """
-        thread = threading.Thread(target=self.client_process)  # 监听Mech的通信
-        thread.setDaemon(True)  # 挂后台进程
-        thread.start()
+        thread_1 = threading.Thread(target=self.client_process)  # 监听Mech的通信
+        thread_1.setDaemon(True)  # 挂后台进程
+        thread_1.start()
         logs.logger.info("连接Mech成功!【监听】")
 
-        thread1 = threading.Thread(target=self.send_to_mech) # 发送Mech的通信
-        thread1.setDaemon(True)
-        thread1.start()
+        thread_2 = threading.Thread(target=self.send_to_mech) # 发送Mech的通信
+        thread_2.setDaemon(True)
+        thread_2.start()
         logs.logger.info("连接Mech成功!【发送】")
 
 
@@ -91,9 +93,9 @@ class Hub:
         """
         doc:开启线程维持对Robot的连接
         """
-        thread = threading.Thread(target=self.connect_robot) # 连接机器人
-        thread.setDaemon(True)
-        thread.start()
+        thread_3 = threading.Thread(target=self.connect_robot) # 连接机器人
+        thread_3.setDaemon(True)
+        thread_3.start()
 
     def connect_mech(self):
         """
@@ -184,6 +186,9 @@ class Hub:
             if not self.client.is_connected(): # 如果连接丢失
                 break
             response = self.client.recv()
+            self.msgflag = 2
+            msg_process(self.client, self.msgflag)
+            self.msgflag = None
             logs.logger.info("从Mech获得的消息: {}".format(response))
 
             processResult = self.event_mech_process(response) # Mech消息事件处理
