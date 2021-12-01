@@ -200,6 +200,10 @@ class Hub:
                 break
             else: logs.logger.info("检测到BUG【可能是未经收录的事件】")
 
+            logs.logger.info("正在连接机器人...") # TODO: 应当找个更合适安全的地方开启这个线程，比如保证与mech的通讯无误(比如拍个照并返回结果)
+            if self.listenRobot is None:
+                self.thread_connect_robot()  # 开启一个线程连接机器人
+
             if self.listenRobot is None:
                 logs.logger.info("当前没有检测到与机器人连接!")
                 continue
