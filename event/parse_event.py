@@ -126,7 +126,7 @@ def run_vision(params):
     """
     params = params.split(",")
     if len(params) not in (3, 9):
-        print("Params missing!")
+        print("指令参数长度错误！Params missing!")
         return
     if params[2] == "0":
         params = list(params)[:3] + [0] * 6
@@ -304,11 +304,11 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
             indexnum = sendmsg.find(str(msg_temp[0]))+len(str(msg_temp[0]))+len(",") # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
             params = sendmsg[indexnum:]
         except Exception as e:
-            print("parse Invalid command!")
+            print("信息解析错误!")
             return sendmsg
         if cmd not in params_descs():
-            print("cmd Invalid command!")
-            return msg # TODO: 返回一个 continue
+            print("指令表未查找到此指令!")
+            return sendmsg # TODO: 返回一个 continue
             #continue
         if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):  # 需要额外输入参数的情况
             print(params_descs()[cmd]) # TODO: 可视化信息
@@ -321,7 +321,7 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
             params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
         print(params)
         if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
-            print("params Invalid command!")
+            print("指令参数解析失败!")
             return sendmsg
 
         send_msg(socket_object, pack_params(cmd, fmt="i") + params)  # 发送信息

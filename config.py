@@ -23,4 +23,4 @@ log_save_path = "logs" # 日志保存文件夹(路径相对于项目根目录)
 log_save_level = "info" # 日志采集最低等级
 log_backCount = 3 # 备份文件的最大个数
 # log_when = "D" # 时间记录间隔
-log_format = '%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s' # 日志记录格式
+log_format = '%(asctime)s - %(levelname)s: %(message)s'#'%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s' # 日志记录格式

@@ -39,7 +39,7 @@ class Logger(object):
 cur_path =  os.path.abspath(os.path.dirname(__file__))
 # 获取项目根目录
 root_path = cur_path[:cur_path.rindex(project_name)+len(project_name)] + "\\"
-logs = Logger(filename=root_path + log_save_path, level=log_save_level) # TODO: 从配置文件读取设置，并添加自动路径功能
+logs = Logger(filename=root_path + log_save_path, level=log_save_level, fmt=log_format) # TODO: 从配置文件读取设置，并添加自动路径功能
 
 
 ## 测试用

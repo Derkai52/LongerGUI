@@ -133,8 +133,9 @@ class Hub:
         doc: 判断连接Mech标准接口是否成功
         return: 连接成功: True 连接失败: False
         """
-        self.listenRobot = TcpServer(self.robotAddr) # TODO: 不确定是否在此初始化还是伴随Mech初始化后就初始化
-        self.listenRobot.accept() # TODO: Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
+        a = TcpServer(self.robotAddr) # TODO: 不确定是否在此初始化还是伴随Mech初始化后就初始化
+        a.accept() # TODO: Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
+        self.listenRobot = a
         logs.logger.info("连接机器人成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.listenRobot._client_connect, self.listenRobot._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
         while True:
             response = self.listenRobot.recv()
@@ -163,9 +164,9 @@ class Hub:
             return 2
 
         elif response == b"#CONNECT":  # 连接验证码通过
-            logs.logger.info("正在连接机器人...")
-            if self.listenRobot is None:
-                self.thread_connect_robot()  # 开启一个线程连接机器人
+            # logs.logger.info("正在连接机器人...")
+            # if self.listenRobot is None:
+            #     self.thread_connect_robot()  # 开启一个线程连接机器人
             return 2
 
         elif response == b'#CLOSE': # 接受到关闭信号
