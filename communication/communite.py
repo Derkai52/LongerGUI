@@ -85,7 +85,7 @@ class TcpServer(Communication):
             self._client_connect, self._remote_addr = self._socket.accept()
         except Exception as e:
             logging.exception(e)
-            return
+            return None
         self._is_connected = True
         logging.info("Client is connected!")
 
@@ -103,7 +103,11 @@ class TcpServer(Communication):
         return len_total
 
     def recv(self):
-        return self._client_connect.recv(self.recv_size)
+        try:
+            return self._client_connect.recv(self.recv_size)
+        except Exception as e:
+            logging.exception(e)
+            return None
 
     def close(self):
         try:
