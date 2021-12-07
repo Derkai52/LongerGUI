@@ -3,7 +3,6 @@ import socket
 from util.log import logs, readConfig
 
 
-# TODO:通信模块日志收录处理
 class Communication(object):
     """
         Base class which provides interfaces.
