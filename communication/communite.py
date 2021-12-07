@@ -1,7 +1,8 @@
 import logging
 import socket
-from util.log import logs
-from config import *
+from util.log import logs, readConfig
+
+
 # TODO:通信模块日志收录处理
 class Communication(object):
     """
@@ -20,7 +21,7 @@ class Communication(object):
         return self._is_connected
 
     # 设置接收数据的长度，默认长度参见配置表
-    def set_recv_size(self, size=default_len_data):
+    def set_recv_size(self, size=readConfig["default_len_data"]):
         self.recv_size = size
 
     def send(self, msg, is_logging=True):

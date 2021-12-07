@@ -100,92 +100,118 @@ CALIBRATION_NOT_REACH_POINT   = 7003  # 校准点没有到达
 CALIBRATION_MOVE_FINISHED     = 7100  # 已移动至校准点
 CALIBRATION_SEND_POINT_OK     = 7101  # 成功发送校准点信息
 
+
 # TODO: 审查是否还有遗漏或者不合适的日志记录等级
 def adapter_message_dict(): # TODO: 事件反馈统一收录日志模块处理
     return {
-        VISION_NOT_REGISTERED: logs.logger.error("Mech-Vision project is not registered"),
-        VISION_NO_POSES: logs.logger.error("Mech-Vision No pose results"),
-        VISION_NO_CLOUD: logs.logger.error("Mech-Vision No point cloud in ROI"),
-        VISION_SET_PROPERTY_FAILED: logs.logger.error("Mech-Vision Set property failed"),
-        VISION_POINT_TYPE_ERROR: logs.logger.error("Mech-Vision Pose type is invalid"),
-        VISION_POINT_ERROR: logs.logger.error("Mech-Vision Pose value is invalid"),
-        VISION_IN_CALCULATING: logs.logger.info("Mech-Vision is in calculating"),
-        VISION_ALREADY_FINISHED: logs.logger.info("Mech-Vision The pose results had been sent"),
-        VISION_POSES_MOTION_PARAMS_UNEQUAL: logs.logger.error("Mech-Vision The number of poses and motion params don't correspond"),
-        VISION_POSES_LABELS_UNEQUAL: logs.logger.error("Mech-Vision The number of poses and labels don't correspond"),
-        VISION_PROJECT_NOT_FOUND: logs.logger.error("Mech-Vision Project number does not exist"),
-        VISION_RECIPE_NUM_OUT_RANGE: logs.logger.error("Mech-Vision parameter recipe number out of range. (CV-E0403)"),
-        VISION_RECIPE_NOT_SET: logs.logger.error("Mech-Vision parameter recipe not set.(CV-E0401)"),
-        VISION_SWITCH_MODEL_FAILED: logs.logger.error("Mech-Vision Switch recipe failed"),
-        VISION_LABEL_MAPPING_ERROR: logs.logger.error("Mech-Vision Label Mapping number is invalid"),
-        VISION_POSE_COUNT_ERROR: logs.logger.error("Mech-Vision Pose count error"),
-        VISION_RUN_TIMEOUT: logs.logger.error("Mech-Vision Execution time timeout"),
-        VISION_NOT_RUN_YET: logs.logger.error("Mech-Vision doesn't be executed"),
-        VISION_HAS_POSES: logs.logger.info("Mech-Vision Get pose results successfully"),
-        VISION_IS_READY: logs.logger.info("Mech-Vision is ready"),
-        VISION_TRIGGERED_OK: logs.logger.info("Mech-Vision triggered successfully"),
-        VISION_SET_MODEL_OK: logs.logger.info("Mech-Vision Recipe switched successfully"),
-        VISION_SET_OUTER_BOX_SIZE_OK: logs.logger.info("Mech-Vision set external box size successfully"),
+        VISION_NOT_REGISTERED: ["ERROR", "Mech-Vision project is not registered"],
+        VISION_NO_POSES: ["ERROR", "Mech-Vision No pose results"],
+        VISION_NO_CLOUD: ["ERROR", "Mech-Vision No point cloud in ROI"],
+        VISION_SET_PROPERTY_FAILED: ["ERROR", "Mech-Vision Set property failed"],
+        VISION_POINT_TYPE_ERROR: ["ERROR", "Mech-Vision Pose type is invalid"],
+        VISION_POINT_ERROR: ["ERROR", "Mech-Vision Pose value is invalid"],
+        VISION_IN_CALCULATING: ["INFO", "Mech-Vision is in calculating"],
+        VISION_ALREADY_FINISHED: ["INFO", "Mech-Vision The pose results had been sent"],
+        VISION_POSES_MOTION_PARAMS_UNEQUAL: ["ERROR", "Mech-Vision The number of poses and motion params don't correspond"],
+        VISION_POSES_LABELS_UNEQUAL: ["ERROR", "Mech-Vision The number of poses and labels don't correspond"],
+        VISION_PROJECT_NOT_FOUND: ["ERROR", "Mech-Vision Project number does not exist"],
+        VISION_RECIPE_NUM_OUT_RANGE: ["ERROR", "Mech-Vision parameter recipe number out of range. (CV-E0403)"],
+        VISION_RECIPE_NOT_SET: ["ERROR", "Mech-Vision parameter recipe not set.(CV-E0401)"],
+        VISION_SWITCH_MODEL_FAILED: ["ERROR", "Mech-Vision Switch recipe failed"],
+        VISION_LABEL_MAPPING_ERROR: ["ERROR", "Mech-Vision Label Mapping number is invalid"],
+        VISION_POSE_COUNT_ERROR: ["ERROR", "Mech-Vision Pose count error"],
+        VISION_RUN_TIMEOUT: ["ERROR", "Mech-Vision Execution time timeout"],
+        VISION_NOT_RUN_YET: ["ERROR", "Mech-Vision doesn't be executed"],
+        VISION_HAS_POSES: ["INFO", "Mech-Vision Get pose results successfully"],
+        VISION_IS_READY: ["INFO", "Mech-Vision is ready"],
+        VISION_TRIGGERED_OK: ["INFO", "Mech-Vision triggered successfully"],
+        VISION_SET_MODEL_OK: ["INFO", "Mech-Vision Recipe switched successfully"],
+        VISION_SET_OUTER_BOX_SIZE_OK: ["INFO", "Mech-Vision set external box size successfully"],
 
-        VIZ_NOT_REGISTERED: logs.logger.error("Mech-Viz project is not registered"),
-        VIZ_IS_RUNNING: logs.logger.info("Mech-Viz is in running"),
-        VIZ_NO_VISION_POSE: logs.logger.error("Mech-Viz No pose results received from Mech-Vision"),
-        VIZ_VISION_POSE_NOT_REACHABLE: logs.logger.error("Mech-Viz cannot reach the pose position from Mech-Vision"),
-        VIZ_SELECT_JPS_ERROR: logs.logger.error("Mech-Viz Robot joints calculation failed"),
-        VIZ_COLLISION_CHECKED: logs.logger.error("Mech-Viz Collision detected"),
-        VIZ_PLAN_FILED: logs.logger.error("Mech-Viz motion planning failed"),
-        VIZ_RUN_ERROR: logs.logger.error("Mech-Viz has running error"),
-        VIZ_NO_TCP_POSE: logs.logger.error("Mech-Viz TCP pose is not provided"),
-        VIZ_NO_DO_LIST: logs.logger.error("Mech-Viz DO list is not provided"),
-        VIZ_POINT_TYPE_ERROR: logs.logger.error("Mech-Viz Pose type is invalid"),
-        VIZ_POINT_ERROR: logs.logger.error("Mech-Viz Pose value is invalid"),
-        VIZ_PROJECT_NOT_SET: logs.logger.error("Mech-Viz No project setup"),
-        VIZ_POSE_NOT_SUPPORTED: logs.logger.error("Mech-Viz Tcp pose type is not supported"),
-        VIZ_SET_PROPERTY_ERROR: logs.logger.error("Mech-Viz Set property failed"),
-        VIZ_STOP_FAILED: logs.logger.error("Mech-Viz Stop execution failed"),
-        VIZ_BRANCH_OUTPORT_ERROR: logs.logger.error("Mech-Viz Branch exitport is invalid"),
-        VIZ_SET_BRANCH_ERROR: logs.logger.error("Mech-Viz Set branch failed, please check if it exists in project"),
-        VIZ_NOT_RUN_YET: logs.logger.error("Mech-Viz doesn't be executed"),
-        VIZ_PROJECT_IS_BROKEN: logs.logger.error("Mech-Viz project is abnormal"),
-        VIZ_BRANCH_NAME_ERROR: logs.logger.error("Mech-Viz Branch name is invalid"),
-        VIZ_RUN_TIMEOUT: logs.logger.error("Mech-Viz Execution time timeout"),
-        VIZ_INDEX_NAME_ERROR: logs.logger.error("Mech-Viz Index-Skill name is invalid"),
-        VIZ_INDEX_ORDER_ERROR: logs.logger.error("Mech-Viz Index number is invalid"),
-        VIZ_SET_INDEX_ERROR: logs.logger.error("Mech-Viz Set index failed, please check if it exists in project"),
-        VIZ_FINISHED: logs.logger.info("Mech-Viz execution completed successfully"),
-        VIZ_COMMAND_STOP: logs.logger.info("Mech-Viz stopped successfully"),
-        VIZ_SEND_DO_LIST_OK: logs.logger.info("Mech-Viz Send DO list successfully"),
-        VIZ_RUN_OK: logs.logger.info("Mech-Viz start successfully"),
-        VIZ_STOP_OK: logs.logger.info("Mech-Viz Stop successfully"),
-        VIZ_SET_BRANCH_OK: logs.logger.info("Mech-Viz Set branch successfully"),
-        VIZ_SET_INDEX_OK: logs.logger.info("Mech-Viz Set index successfully"),
-        VIZ_SET_OUTER_POSE_OK: logs.logger.info("Mech-Viz Set external pose successfully"),
+        VIZ_NOT_REGISTERED: ["ERROR", "Mech-Viz project is not registered"],
+        VIZ_IS_RUNNING: ["INFO", "Mech-Viz is in running"],
+        VIZ_NO_VISION_POSE: ["ERROR", "Mech-Viz No pose results received from Mech-Vision"],
+        VIZ_VISION_POSE_NOT_REACHABLE: ["ERROR", "Mech-Viz cannot reach the pose position from Mech-Vision"],
+        VIZ_SELECT_JPS_ERROR: ["ERROR", "Mech-Viz Robot joints calculation failed"],
+        VIZ_COLLISION_CHECKED: ["ERROR", "Mech-Viz Collision detected"],
+        VIZ_PLAN_FILED: ["ERROR", "Mech-Viz motion planning failed"],
+        VIZ_RUN_ERROR: ["ERROR", "Mech-Viz has running error"],
+        VIZ_NO_TCP_POSE: ["ERROR", "Mech-Viz TCP pose is not provided"],
+        VIZ_NO_DO_LIST: ["ERROR", "Mech-Viz DO list is not provided"],
+        VIZ_POINT_TYPE_ERROR: ["ERROR", "Mech-Viz Pose type is invalid"],
+        VIZ_POINT_ERROR: ["ERROR", "Mech-Viz Pose value is invalid"],
+        VIZ_PROJECT_NOT_SET: ["ERROR", "Mech-Viz No project setup"],
+        VIZ_POSE_NOT_SUPPORTED: ["ERROR", "Mech-Viz Tcp pose type is not supported"],
+        VIZ_SET_PROPERTY_ERROR: ["ERROR", "Mech-Viz Set property failed"],
+        VIZ_STOP_FAILED: ["ERROR", "Mech-Viz Stop execution failed"],
+        VIZ_BRANCH_OUTPORT_ERROR: ["ERROR", "Mech-Viz Branch exitport is invalid"],
+        VIZ_SET_BRANCH_ERROR: ["ERROR", "Mech-Viz Set branch failed, please check if it exists in project"],
+        VIZ_NOT_RUN_YET: ["ERROR", "Mech-Viz doesn't be executed"],
+        VIZ_PROJECT_IS_BROKEN: ["ERROR", "Mech-Viz project is abnormal"],
+        VIZ_BRANCH_NAME_ERROR: ["ERROR", "Mech-Viz Branch name is invalid"],
+        VIZ_RUN_TIMEOUT: ["ERROR", "Mech-Viz Execution time timeout"],
+        VIZ_INDEX_NAME_ERROR: ["ERROR", "Mech-Viz Index-Skill name is invalid"],
+        VIZ_INDEX_ORDER_ERROR: ["ERROR", "Mech-Viz Index number is invalid"],
+        VIZ_SET_INDEX_ERROR: ["ERROR", "Mech-Viz Set index failed, please check if it exists in project"],
+        VIZ_FINISHED: ["INFO", "Mech-Viz execution completed successfully"],
+        VIZ_COMMAND_STOP: ["INFO", "Mech-Viz stopped successfully"],
+        VIZ_SEND_DO_LIST_OK: ["INFO", "Mech-Viz Send DO list successfully"],
+        VIZ_RUN_OK: ["INFO", "Mech-Viz start successfully"],
+        VIZ_STOP_OK: ["INFO", "Mech-Viz Stop successfully"],
+        VIZ_SET_BRANCH_OK: ["INFO", "Mech-Viz Set branch successfully"],
+        VIZ_SET_INDEX_OK: ["INFO", "Mech-Viz Set index successfully"],
+        VIZ_SET_OUTER_POSE_OK: ["INFO", "Mech-Viz Set external pose successfully"],
 
-        CENTER_INVALID_COMMAND: logs.logger.error("Mech-Center Invalid command"),
-        CENTER_ERROR_PACKAGE: logs.logger.error("Mech-Center interface message length or format error"),
-        CENTER_CLIENT_DISCONNECTED: logs.logger.error("Mech-Center Client is disconnected"),
-        CENTER_SERVER_DISCONNECTED: logs.logger.error("Mech-Center Server is disconnected"),
-        CENTER_TIMEOUT_ERROR: logs.logger.error("Mech-Center Calling Mech-Vision timeout"),
-        CENTER_OTHER_ERROR: logs.logger.error("Mech-Center Unknown error"),
-        CENTER_CLIENT_CONNECTED: logs.logger.info("Mech-Center Client connect OK"),
-        CENTER_CONNECT_TO_SERVER: logs.logger.info("Mech-Center Server connect OK"),
-        CENTER_WAIT_FOR_CLIENT: logs.logger.info("Mech-Center Wait for client to connect"),
+        CENTER_INVALID_COMMAND: ["ERROR", "Mech-Center Invalid command"],
+        CENTER_ERROR_PACKAGE: ["ERROR", "Mech-Center interface message length or format error"],
+        CENTER_CLIENT_DISCONNECTED: ["ERROR", "Mech-Center Client is disconnected"],
+        CENTER_SERVER_DISCONNECTED: ["ERROR", "Mech-Center Server is disconnected"],
+        CENTER_TIMEOUT_ERROR: ["ERROR", "Mech-Center Calling Mech-Vision timeout"],
+        CENTER_OTHER_ERROR: ["ERROR", "Mech-Center Unknown error"],
+        CENTER_CLIENT_CONNECTED: ["INFO", "Mech-Center Client connect OK"],
+        CENTER_CONNECT_TO_SERVER: ["INFO", "Mech-Center Server connect OK"],
+        CENTER_WAIT_FOR_CLIENT: ["INFO", "Mech-Center Wait for client to connect"],
 
-        ROBOT_INVALID_ROBOT_TYPE: logs.logger.error("Robot invalid robot type"),
-        ROBOT_EULER_NOT_SUPPORTED: logs.logger.error("Robot Euler type isn't supported"),
-        ROBOT_SERVICE_NOT_REGISTERED: logs.logger.error("Robot service isn't registered"),
-            ROBOT_MISSING_PARAMS_ERROR: logs.logger.error("Robot server parameters are incomplete"),
-        ROBOT_SERVICE_REGISTERED: logs.logger.info("Robot service registered OK"),
-        CONNECT_ROBOT_SUCCESS: logs.logger.info("Robot server connect to the robot successfully"),
-        CONNECT_ROBOT_FAIL: logs.logger.error("Robot server connect to the robot failed"),
-        DISCONNECT_ROBOT_SUCCESS: logs.logger.info("Robot server get disconnected"),
+        ROBOT_INVALID_ROBOT_TYPE: ["ERROR", "Robot invalid robot type"],
+        ROBOT_EULER_NOT_SUPPORTED: ["ERROR", "Robot Euler type isn't supported"],
+        ROBOT_SERVICE_NOT_REGISTERED: ["ERROR", "Robot service isn't registered"],
+            ROBOT_MISSING_PARAMS_ERROR: ["ERROR", "Robot server parameters are incomplete"],
+        ROBOT_SERVICE_REGISTERED: ["INFO", "Robot service registered OK"],
+        CONNECT_ROBOT_SUCCESS: ["INFO", "Robot server connect to the robot successfully"],
+        CONNECT_ROBOT_FAIL: ["ERROR", "Robot server connect to the robot failed"],
+        DISCONNECT_ROBOT_SUCCESS: ["INFO", "Robot server get disconnected"],
 
-        VISION_SET_OUTER_BOX_SIZE_FAIL: logs.logger.error("Mech-Vision set box size data is invalid"),
+        VISION_SET_OUTER_BOX_SIZE_FAIL: ["ERROR", "Mech-Vision set box size data is invalid"],
 
-        CALIBRATION_PARAMS_ERROR: logs.logger.error("Calibration parameter error "),
-        CALIBRATION_NO_POINT: logs.logger.error("Calibration no pose provided from Mech-Vision"),
-        CALIBRATION_NOT_REACH_POINT: logs.logger.error("Calibration Robot failed to reach the calibration point"),
-        CALIBRATION_MOVE_FINISHED: logs.logger.info("Calibration Robot moves to the calibration point successfully"),
-        CALIBRATION_SEND_POINT_OK: logs.logger.info("Calibration pose received from Mech-Vision successfully"),
+        CALIBRATION_PARAMS_ERROR: ["ERROR", "Calibration parameter error "],
+        CALIBRATION_NO_POINT: ["ERROR", "Calibration no pose provided from Mech-Vision"],
+        CALIBRATION_NOT_REACH_POINT: ["ERROR", "Calibration Robot failed to reach the calibration point"],
+        CALIBRATION_MOVE_FINISHED: ["INFO", "Calibration Robot moves to the calibration point successfully"],
+        CALIBRATION_SEND_POINT_OK: ["INFO", "Calibration pose received from Mech-Vision successfully"],
 
     }
+
+
+def event_logging(event_code):
+    """
+    doc: 日志事件记录
+    :param event: 事件码
+    :return: 事件解析内容
+    """
+    try:
+        log_content = adapter_message_dict()[event_code]
+    except Exception as e: # 解析错误或事件码未收录
+        logs.logger.error(e)
+    level, content = log_content[0], log_content[1]
+    if level == "DEBUG":
+        logs.logger.debug(content)
+    elif level == "INFO":
+        logs.logger.info(content)
+    elif level == "WARNING":
+        logs.logger.warning(content)
+    elif level == "ERROR":
+        logs.logger.error(content)
+    else:
+        logs.logger.error("未收录的日志记录等级！")
+
+    return content

@@ -1,20 +1,20 @@
 import sys
 import threading
 import configparser
-# from communication. import TcpServer, TcpClient
 from communite import TcpServer, TcpClient
 from event.parse_event import msg_process
-from util.log import logs
+from util.log import logs, readConfig
+
 
 # 从文件读取
-def read_config(config_path):
-    conf = configparser.ConfigParser()
-    conf.read(config_path)
-    server_ip = conf.get("Client", "ServerIP")
-    server_port = conf.get("Client", "ServerPort")
-    connect_ip = conf.get("Client", "ConnectIP")
-    connect_port = conf.get("Client", "ConnectPort")
-    return server_ip, server_port, connect_ip, connect_port
+# def read_config(config_path):
+#     conf = configparser.ConfigParser()
+#     conf.read(config_path)
+#     server_ip = conf.get("CommunicationConfig", "mech_interface_ip")
+#     server_port = conf.get("CommunicationConfig", "mech_interface_port")
+#     connect_ip = conf.get("CommunicationConfig", "robot_server_agent_ip")
+#     connect_port = conf.get("CommunicationConfig", "robot_server_agent_port")
+#     return server_ip, server_port, connect_ip, connect_port
 
 
 class Hub:
@@ -36,7 +36,9 @@ class Hub:
             self.robotAddr = self.connectIP + ":" + self.connectPort # 生成Robot地址+端口
             self.client = TcpClient(self.mechAddr) # 初始化client
         else:
-            self.serverIP, self.serverPort, self.connect_ip, self.connect_port = read_config(configPath)
+            self.serverIP, self.serverPort, self.connect_ip, self.connect_port = \
+                readConfig["mech_interface_ip"],readConfig["mech_interface_port"],\
+                readConfig["robot_server_agent_ip"],readConfig["robot_server_agent_port"]
             # TODO: 使用文件读取生成TcpClient
 
 # TODO: shutdown是一种更加优秀的socket生命周期管理方法

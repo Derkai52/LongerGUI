@@ -1,15 +1,16 @@
 # 本文件通过维护一个消息事件表，用于解析消息事件
-import logging
-import time
+# import logging
 from struct import pack, unpack
-import socket
-import sys
-import os
 from communication import commands as cmds
 from event.messages import *
-from config import *
-from communication import hub
-from util.log import logs
+from util.log import logs, readConfig
+
+is_ascii = readConfig["is_ascii"]
+endian = readConfig["endian"]
+robot_vendor = readConfig["robot_vendor"]
+len_mech_msg = readConfig["len_mech_msg"]
+len_client_msg = readConfig["len_client_msg"]
+
 
 ###################### 格式解包与打包 #######################
 def unpack_ascii_params(*args, **kwargs):
@@ -258,11 +259,14 @@ def recv_test(client):  # TODO: 设置返回值
     print("Recving......")
     recv_cmds = client.recv()
     print(recv_cmds)
-    recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
+    try:
+        recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
+    except Exception as e:
+        logs.logger.error("接收消息解析错误")
     # print(recv_cmd, send_cmd)
     # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
     print("收到的消息：",recv_cmd, status_code)
-    # print("Status code={}, message: {}".format(status_code, adapter_message_dict()[status_code]))
+    print("Status code={}, message: {}".format(status_code, event_logging(status_code)))
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
         recv_finished, point_count, *visual_move_position = unpack_params(recv_cmds[8:], fmt="3i")
@@ -315,7 +319,7 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
             try:
                 params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
             except Exception as e:
-                logging.exception(e)
+                logs.logger.error(e)
                 print("信息转化失败...")
         if not is_ascii: # 如果是Hex格式
             params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
