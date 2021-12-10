@@ -1,6 +1,6 @@
 import sys
 from communication.hub import Hub
-from util.log import readConfig
+from util.log.log import readConfig
 
 if __name__ == "__main__":
     mech_interface_ip = readConfig["mech_interface_ip"]
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
 
 
-#
+# 预留接口，直接使用参数启动程序(已停止维护)
 # print(sys.argv[1])
 #     if len(sys.argv) == 2: # 从文件读取
 #         config_path = sys.argv[1]

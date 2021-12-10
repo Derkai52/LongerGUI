@@ -3,7 +3,7 @@
 from struct import pack, unpack
 from communication import commands as cmds
 from event.messages import *
-from util.log import logs, readConfig
+from util.log.log import logs, readConfig
 
 is_ascii = readConfig["is_ascii"]
 endian = readConfig["endian"]

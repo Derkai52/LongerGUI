@@ -3,7 +3,7 @@ import threading
 import configparser
 from communite import TcpServer, TcpClient
 from event.parse_event import msg_process
-from util.log import logs, readConfig
+from util.log.log import logs, readConfig
 
 
 class Hub:

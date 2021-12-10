@@ -66,7 +66,13 @@ class Config():
         """
         pass
 
-config_dir = os.path.join(os.path.dirname(__file__), "..", "config.cfg") # 读取配置文件路径(以本文件所在目录为起始点)
-print(config_dir, type(config_dir))
+
+    def reset_config_dict(self):
+        """
+        doc: 按配置备份模板重置设置(详见 config_template.py)
+        :return:
+        """
+
+config_dir = os.path.join(os.path.dirname(__file__), "../..", "config.cfg") # 读取配置文件路径(以本文件所在目录为起始点)
 configs = Config(config_dir) # 配置类实例化用于其他py文件快速读取
 

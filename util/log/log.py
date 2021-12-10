@@ -3,7 +3,7 @@ from logging import handlers
 import os
 import time
 
-from config import configs
+from config.config import configs
 readConfig = configs.read_config_dict() # 读取配置文件
 
 class Logger(object):
