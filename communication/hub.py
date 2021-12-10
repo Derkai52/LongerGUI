@@ -6,17 +6,6 @@ from event.parse_event import msg_process
 from util.log import logs, readConfig
 
 
-# 从文件读取
-# def read_config(config_path):
-#     conf = configparser.ConfigParser()
-#     conf.read(config_path)
-#     server_ip = conf.get("CommunicationConfig", "mech_interface_ip")
-#     server_port = conf.get("CommunicationConfig", "mech_interface_port")
-#     connect_ip = conf.get("CommunicationConfig", "robot_server_agent_ip")
-#     connect_port = conf.get("CommunicationConfig", "robot_server_agent_port")
-#     return server_ip, server_port, connect_ip, connect_port
-
-
 class Hub:
     """
     doc:作为信息中转分发的类

@@ -1,4 +1,5 @@
 import configparser
+import os
 
 """
     Config 配置文件表
@@ -25,8 +26,9 @@ LOG_BACKCOUNT            = "log_backCount"
 LOG_FORMAT               = "log_format"
 
 
+
 class Config():
-    def __init__(self, config_path="../config.cfg", encodings="utf-8"): # TODO： 注意这里给了一个路径默认值，需要优化为从根目录读取
+    def __init__(self, config_path, encodings="utf-8"): # TODO： 注意这里给了一个路径默认值，需要优化为从根目录读取
         self.conf = None # 配置文件句柄
         self.conf = configparser.ConfigParser()
         self.conf.read(config_path, encoding=encodings) # TODO: 不确定这种只初始化一次的写法对于配置文件更新是否有作用
@@ -64,5 +66,7 @@ class Config():
         """
         pass
 
-configs = Config("../config.cfg") # 配置类实例化用于其他py文件快速读取 # TODO：Warning 每个py模块读取文件时，会以py文件目录为起点，所以会导致访问不到配置文件(同上改动)
+config_dir = os.path.join(os.path.dirname(__file__), "..", "config.cfg") # 读取配置文件路径(以本文件所在目录为起始点)
+print(config_dir, type(config_dir))
+configs = Config(config_dir) # 配置类实例化用于其他py文件快速读取
 
