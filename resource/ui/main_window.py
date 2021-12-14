@@ -1,5 +1,8 @@
 import sys, os, threading, subprocess
-from util.log_tool.log import logs
+from util.log_tool.log import logs, readConfig
+from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
+from communication.hub import Hub
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QAbstractItemView, QDialog, QAction, QMenu, QFileDialog, QTabWidget, QMessageBox
@@ -10,10 +13,6 @@ from resource.ui.pyqt_generated.UI_MainWindow import Ui_MainWindow
 from resource.ui.setting import Setting
 from resource.ui.login_permission import LoginPermission
 
-
-
-from communication.hub import Hub
-from util.log_tool.log import readConfig
 
 _translate = QCoreApplication.translate
 
@@ -85,16 +84,15 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 菜单栏/帮助/关于
     @pyqtSlot()
     def on_action_about_triggered(self):
-        QMessageBox.about(self, self.tr("关于软件"),
-                          "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".format(
-                              "V0.1.1-alpha")) # TODO: 软件版本号通过配置文件获取
+        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".\
+                        format(readConfig["software_version"]))
 
     # 菜单栏/帮助/文档
     @pyqtSlot()
     def on_action_docs_triggered(self):
         # is_english = self.setting_dialog.current_language_name() == QLocale(QLocale.English).name() # 若不考虑做国际化语言，可忽略
         # change_log_file = "change_log.html" if is_english else "change_log_zh.html"
-        change_log_file = "update_log.html" # TODO:版本更新路径应通过配置文件获取(管理员权限)
+        change_log_file = readConfig["update_doc_name"]
         QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),"..","update_logs", change_log_file)))
         print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
 
@@ -106,7 +104,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.label_status.setStyleSheet("color: rgb(255, 0, 0);\n"
                                         "font: 48pt \"Constantia\";\n"
                                         "border-width: 0px;")
-        self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过配置文件获取
+        self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过标志变量获取
         # TODO: 连接至子窗口(设置页)
 
     # 设置/登录权限

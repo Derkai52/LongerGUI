@@ -9,7 +9,7 @@ softWareConfig_Template = """
 # 【软件设置】
 [SoftWareConfig]
 software_name = LongerGUI
-software_version = 0.1
+software_version = V0.1.1-alpha
 project_name = default_template
 project_version = 1
 project_config_path = .

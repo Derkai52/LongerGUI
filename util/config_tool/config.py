@@ -8,11 +8,13 @@ from config_tool.config_template import * # 获取配置文件模板
 """
     Config 配置文件表
 """
+############### 软件设置 #############################
 SOFTWARE_NAME            = "software_name"
 SOFTWARE_VERSION         = "software_version"
 PROJECT_NAME             = "project_name"
 PROHECT_VERSION          = "project_version"
 
+############### 通讯设置 ##############################
 MECH_INTERFACE_IP        = "mech_interface_ip"
 MECH_INTERFACE_PORT      = "mech_interface_port"
 ROBOT_SERVER_AGENT_IP    = "robot_server_agent_ip"
@@ -24,11 +26,17 @@ LEN_CLIENT_MSG           = "len_client_msg"
 LEN_MACH_MSG             = "len_mech_msg"
 DEFAULT_LEN_DATA         = "default_len_data"
 
+################ 日志设置 ############################
 LOG_SAVE_PATH            = "log_save_path"
 LOG_SAVE_LEVEL           = "log_save_level"
 LOG_BACKCOUNT            = "log_backCount"
 LOG_FORMAT               = "log_format"
 
+################ 展示性设置 ##########################
+
+
+################ 其他设置 ############################
+UPDATE_DOC_NAME          = "update_doc_name"
 
 
 class Config():
@@ -62,7 +70,8 @@ class Config():
             LOG_SAVE_PATH: self.conf.get("LogConfig","log_save_path"),
             LOG_SAVE_LEVEL: self.conf.get("LogConfig","log_save_level"),
             LOG_BACKCOUNT: self.conf.get("LogConfig","log_backCount"),
-            LOG_FORMAT: self.conf.get("LogConfig","log_format", raw=True), # TODO: 添加至开发手册： 若需要格式化的，需要加上第二个参数
+            LOG_FORMAT: self.conf.get("LogConfig","log_format", raw=True), # 若需要格式化的，需要加上raw参数为True
+            UPDATE_DOC_NAME: self.conf.get("otherConfig","update_doc_name"),
         }
 
 
