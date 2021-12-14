@@ -3,7 +3,7 @@ import threading
 import configparser
 from communite import TcpServer, TcpClient
 from event.parse_event import msg_process
-from util.log.log import logs, readConfig
+from util.log_tool.log import logs, readConfig
 
 
 class Hub:
@@ -180,6 +180,7 @@ class Hub:
             # response = self.client.recv()
             self.msgflag = 2
             response = msg_process(self.client, self.msgflag) # 接收来自 Mech 的消息
+            print(response, type(response))
             self.msgflag = None
             # logs.logger.info("从Mech获得的消息: {}".format(response))
 

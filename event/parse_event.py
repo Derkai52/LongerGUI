@@ -3,8 +3,9 @@
 from struct import pack, unpack
 from communication import commands as cmds
 from event.messages import *
-from util.log.log import logs, readConfig
-
+from util.log_tool.log import logs, readConfig
+# logs.logger.debug("2")
+print(readConfig["is_ascii"])
 is_ascii = readConfig["is_ascii"]
 endian = readConfig["endian"]
 robot_vendor = readConfig["robot_vendor"]
@@ -257,6 +258,7 @@ def recv_test(client):  # TODO: 设置返回值
     :return: Mech发送过来的信息
     """
     print("Recving......")
+    print(client)
     recv_cmds = client.recv()
     print(recv_cmds)
     try:

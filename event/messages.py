@@ -1,5 +1,5 @@
 # 本文件存放 Mech 返回指令代码列表
-from util.log.log import logs
+from util.log_tool.log import logs
 
 
 """

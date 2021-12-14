@@ -3,7 +3,7 @@ from logging import handlers
 import os
 import time
 
-from config.config import configs
+from util.config_tool.config import configs
 readConfig = configs.read_config_dict() # 读取配置文件
 
 class Logger(object):
@@ -41,16 +41,15 @@ class Logger(object):
 cur_path =  os.path.abspath(os.path.dirname(__file__))
 # 获取项目根目录
 root_path = cur_path[:cur_path.rindex(readConfig["software_name"])+len(readConfig["software_name"])] + "\\"
-
 logs = Logger(filename=root_path + readConfig["log_save_path"], level=readConfig["log_save_level"], fmt=readConfig["log_format"]) # TODO: 从配置文件读取设置，并添加自动路径功能
 
 
 ## 测试用
 # if __name__ == "__main__":
-#     logs = Logger('../logs/all.log',level='debug')
+#     logs = Logger('../logs/all.log_tool',level='debug')
 #     logs.logger.debug('debug')
 #     logs.logger.info('info')
 #     logs.logger.warning('警告')
 #     logs.logger.error('报错')
 #     logs.logger.critical('严重')
-#     Logger('../logs/error.log', level='error').logger.error('error')
+#     Logger('../logs/error.log_tool', level='error').logger.error('error')

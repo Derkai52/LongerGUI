@@ -1,20 +1,32 @@
-import sys
-from communication.hub import Hub
-from util.log.log import readConfig
+import sys, cv2, time, os
+
+from resource.ui.pyqt_generated.UI_MainWindow import Ui_MainWindow
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+from PyQt5.QtWidgets import QFileDialog,QTabWidget, QMessageBox
+
+from PyQt5.QtCore import pyqtSlot, QTimer, QThread, pyqtSignal, Qt, QUrl
+
+from PyQt5.QtGui import QPixmap, QImage, QDesktopServices
+
+from resource.ui.main_window import MainWindow
+
+
+
 
 if __name__ == "__main__":
-    mech_interface_ip = readConfig["mech_interface_ip"]
-    mech_interface_port = readConfig["mech_interface_port"]
-    robot_server_agent_ip = readConfig["robot_server_agent_ip"]
-    robot_server_agent_port = readConfig["robot_server_agent_port"]
-    if True:
-        client =Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port,\
-                    connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
-        client.run()
-    else:
-        print("Please input config.cfg path or connect information")
-        print("Client configPath")
-        print("Client serverIP serverPort connectIP connectPort")
+
+    # 数据初始化完成，载入界面
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+
+    sys.exit(app.exec_())
+
+
+
+
 
 
 
@@ -28,6 +40,6 @@ if __name__ == "__main__":
 #         client = Hub(serverIP=sys.argv[1], serverPort=sys.argv[2], connectIP=sys.argv[3], connectPort=sys.argv[4])
 #         client.run()
 #     else:
-#         print("Please input config.cfg path or connect information")
+#         print("Please input config_tool.cfg path or connect information")
 #         print("Client configPath")
 #         print("Client serverIP serverPort connectIP connectPort")
