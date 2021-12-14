@@ -59,3 +59,13 @@ log_backCount = 3
 log_format = '%(asctime)s - %(levelname)s: %(message)s'
 #'%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
 """
+
+# 展示性设置
+DisplayConfig_Template = """
+"""
+
+# 其他设置
+OtherConfig_Template = """
+# 更新日志文件名
+update_doc_name = update_log.html
+"""
