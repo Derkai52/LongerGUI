@@ -4,7 +4,7 @@ from struct import pack, unpack
 from communication import commands as cmds
 from event.messages import *
 from util.log_tool.log import logs, readConfig
-# logs.logger.debug("2")
+# logs.debug("2")
 print(readConfig["is_ascii"])
 is_ascii = readConfig["is_ascii"]
 endian = readConfig["endian"]
@@ -264,7 +264,7 @@ def recv_test(client):  # TODO: 设置返回值
     try:
         recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
     except Exception as e:
-        logs.logger.error("接收消息解析错误")
+        logs.error("接收消息解析错误")
     # print(recv_cmd, send_cmd)
     # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
     print("收到的消息：",recv_cmd, status_code)
@@ -321,7 +321,7 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
             try:
                 params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
             except Exception as e:
-                logs.logger.error(e)
+                logs.error(e)
                 print("信息转化失败...")
         if not is_ascii: # 如果是Hex格式
             params += bytearray([0x00] * (36 - len(params)))  # 自动补齐

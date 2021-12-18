@@ -201,17 +201,17 @@ def event_logging(event_code):
     try:
         log_content = adapter_message_dict()[event_code]
     except Exception as e: # 解析错误或事件码未收录
-        logs.logger.error(e)
+        logs.error(e)
     level, content = log_content[0], log_content[1]
     if level == "DEBUG":
-        logs.logger.debug(content)
+        logs.debug(content)
     elif level == "INFO":
-        logs.logger.info(content)
+        logs.info(content)
     elif level == "WARNING":
-        logs.logger.warning(content)
+        logs.warning(content)
     elif level == "ERROR":
-        logs.logger.error(content)
+        logs.error(content)
     else:
-        logs.logger.error("未收录的日志记录等级！")
+        logs.error("未收录的日志记录等级！")
 
     return content

@@ -13,6 +13,7 @@ SOFTWARE_NAME            = "software_name"
 SOFTWARE_VERSION         = "software_version"
 PROJECT_NAME             = "project_name"
 PROHECT_VERSION          = "project_version"
+THIRD_PARTY_EQUIPMENT    = "third_party_equipment"
 
 ############### 通讯设置 ##############################
 MECH_INTERFACE_IP        = "mech_interface_ip"
@@ -20,6 +21,7 @@ MECH_INTERFACE_PORT      = "mech_interface_port"
 ROBOT_SERVER_AGENT_IP    = "robot_server_agent_ip"
 ROBOT_SERVER_AGENT_PORT  = "robot_server_agent_port"
 ROBOT_VENDOR             = "robot_vendor"
+COMMUNITE_FORMAT         = "communite_format"
 IS_ASCII                 = "is_ascii"
 ENDIAN                   = "endian"
 LEN_CLIENT_MSG           = "len_client_msg"
@@ -57,12 +59,14 @@ class Config():
             SOFTWARE_VERSION: self.conf.get("SoftWareConfig", "software_version"),
             PROJECT_NAME: self.conf.get("SoftWareConfig", "project_name"),
             PROHECT_VERSION: self.conf.get("SoftWareConfig", "project_version"),
+            THIRD_PARTY_EQUIPMENT: self.conf.getboolean("SoftWareConfig", "third_party_equipment"),
             MECH_INTERFACE_IP: self.conf.get("CommunicationConfig", "mech_interface_ip"),
             MECH_INTERFACE_PORT: self.conf.get("CommunicationConfig", "mech_interface_port"),
             ROBOT_SERVER_AGENT_IP: self.conf.get("CommunicationConfig", "robot_server_agent_ip"),
             ROBOT_SERVER_AGENT_PORT: self.conf.get("CommunicationConfig", "robot_server_agent_port"),
             ROBOT_VENDOR: self.conf.get("CommunicationConfig","robot_vendor"),
-            IS_ASCII: self.conf.get("CommunicationConfig","is_ascii"),
+            COMMUNITE_FORMAT: self.conf.get("CommunicationConfig", "communite_format"),
+            IS_ASCII: self.conf.getboolean("CommunicationConfig","is_ascii"),
             ENDIAN: self.conf.get("CommunicationConfig","endian"),
             LEN_CLIENT_MSG: self.conf.get("CommunicationConfig","len_client_msg"),
             LEN_MACH_MSG: self.conf.get("CommunicationConfig","len_mech_msg"),
@@ -72,6 +76,7 @@ class Config():
             LOG_BACKCOUNT: self.conf.get("LogConfig","log_backCount"),
             LOG_FORMAT: self.conf.get("LogConfig","log_format", raw=True), # 若需要格式化的，需要加上raw参数为True
             UPDATE_DOC_NAME: self.conf.get("otherConfig","update_doc_name"),
+
         }
 
 

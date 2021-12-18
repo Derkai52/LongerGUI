@@ -1,12 +1,13 @@
-import sys, os, threading, subprocess
-from util.log_tool.log import logs, readConfig
+import sys, os, threading, subprocess, logging
+from util.log_tool.log import LoggingHandler, logs, readConfig
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
-from communication.hub import Hub
+from communication.hub import Hub # 通讯中心
+from util.format_adapter import * # 可视化
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
+from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QAbstractItemView, QDialog, QAction, QMenu, QFileDialog, QTabWidget, QMessageBox
-from PyQt5.QtGui import QIcon, QFont, QPixmap, QCursor, QColor, QImage, QDesktopServices
+from PyQt5.QtGui import QIcon, QFont, QPixmap, QCursor, QColor, QImage, QDesktopServices, QTextCursor, QBrush
 
 # 新子页面可在此处添加
 from resource.ui.pyqt_generated.UI_MainWindow import Ui_MainWindow
@@ -26,6 +27,12 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.setupUi(self)
         self.Setting_dialog = Setting() # 设置页面
         self.LoginPermission = LoginPermission() # 权限切换页面
+
+        # 加载主页面日志信息
+        self.logging_handler = LoggingHandler()
+        self.logging_handler.newLogging.connect(self.output_center_logger)
+        logs.addHandler(self.logging_handler)
+
 
     def init_sys(self):
         """
@@ -72,13 +79,37 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         threading.Thread(target=self.read_app_output,
                          args=[self.sub_process_list[app_name], app_name, args[0]]).start()
 
+    def output_center_logger(self, log_level, msg):
+        """
+        doc: 输出日志信息并显示到文本框
+        :param log_level: 日志等级数值(int)
+        :param msg: 日志信息(str)
+        :return: None
+        """
+        tf = self.PlainTextEdit_logText.currentCharFormat()
+        tf.setForeground(
+            QBrush(
+                ansiColor(
+                    logging_to_log_code.get(
+                        log_level,
+                        LOG_CODE_DEBUG) - # 若找不到该等级，默认值为 LOG_CODE_DEBUG 等级，详见 dict.get() 中 default参数用法
+                    TextColorStart)))
+        cursor = self.PlainTextEdit_logText.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        cursor.insertText(msg, tf)
+        cursor.insertText('\n')
+        scrollbar = self.PlainTextEdit_logText.verticalScrollBar()
+        if scrollbar:
+            scrollbar.setSliderPosition(scrollbar.maximum())
+
     # 启动程序
     @pyqtSlot()
     def on_pushButton_start_clicked(self): # TODO：应当变更为服务注册机制
+        # self.output_center_logger("wefwfes24r2t2\nwfrw4rg")
         thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
         thread_main.setDaemon(True)  # 挂后台进程
         thread_main.start()
-        logs.logger.info("主程序启动成功")
+        logs.info("主程序启动成功")
 
 
     # 菜单栏/帮助/关于

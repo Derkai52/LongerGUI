@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1920, 1080)
+        MainWindow.resize(1000, 800)
         MainWindow.setMouseTracking(False)
         MainWindow.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(58, 58, 58);")
@@ -285,37 +285,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.label_12 = QtWidgets.QLabel(self.widget_displayData)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_12.sizePolicy().hasHeightForWidth())
-        self.label_12.setSizePolicy(sizePolicy)
-        self.label_12.setStyleSheet("border-width: 0px;\n"
-"color: rgb(0, 255, 0);\n"
-"\n"
-"\n"
-"\n"
-"")
-        self.label_12.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.label_12.setObjectName("label_12")
-        self.verticalLayout_4.addWidget(self.label_12)
-        self.label_13 = QtWidgets.QLabel(self.widget_displayData)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_13.sizePolicy().hasHeightForWidth())
-        self.label_13.setSizePolicy(sizePolicy)
-        self.label_13.setMinimumSize(QtCore.QSize(0, 0))
-        self.label_13.setStyleSheet("border-width: 0px;\n"
-"color: rgb(0, 85, 255);\n"
-"\n"
-"\n"
-"\n"
-"")
-        self.label_13.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
-        self.label_13.setObjectName("label_13")
-        self.verticalLayout_4.addWidget(self.label_13)
+        self.PlainTextEdit_logText = QtWidgets.QPlainTextEdit(self.widget_displayData)
+        self.PlainTextEdit_logText.setObjectName("PlainTextEdit_logText")
+        self.verticalLayout_4.addWidget(self.PlainTextEdit_logText)
         self.horizontalLayout_11.addLayout(self.verticalLayout_4)
         self.verticalLayout_3.addWidget(self.widget_displayData)
         self.horizontalLayout_10.addLayout(self.verticalLayout_3)
@@ -324,7 +296,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.addLayout(self.horizontalLayout_10)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1920, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 23))
         self.menubar.setObjectName("menubar")
         self.menu_file = QtWidgets.QMenu(self.menubar)
         self.menu_file.setObjectName("menu_file")
@@ -401,8 +373,6 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", " 日志"))
         self.label_4.setText(_translate("MainWindow", " 2021：12：07："))
         self.label_text_displayData.setText(_translate("MainWindow", "数据显示"))
-        self.label_12.setText(_translate("MainWindow", "receve:M,1,1,1"))
-        self.label_13.setText(_translate("MainWindow", "Send:1101,1,2,1343.1,2211.1,3333.1,2222.5"))
         self.menu_file.setTitle(_translate("MainWindow", "文件"))
         self.menu_setting.setTitle(_translate("MainWindow", "设置"))
         self.menu_function.setTitle(_translate("MainWindow", "功能"))

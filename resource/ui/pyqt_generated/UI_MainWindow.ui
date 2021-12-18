@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1080</height>
+    <width>1000</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -581,58 +581,7 @@ border-style: solid;
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <widget class="QLabel" name="label_12">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">border-width: 0px;
-color: rgb(0, 255, 0);
-
-
-
-</string>
-               </property>
-               <property name="text">
-                <string>receve:M,1,1,1</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_13">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">border-width: 0px;
-color: rgb(0, 85, 255);
-
-
-
-</string>
-               </property>
-               <property name="text">
-                <string>Send:1101,1,2,1343.1,2211.1,3333.1,2222.5</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-               </property>
-              </widget>
+              <widget class="QPlainTextEdit" name="PlainTextEdit_logText"/>
              </item>
             </layout>
            </item>
@@ -650,7 +599,7 @@ color: rgb(0, 85, 255);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1920</width>
+     <width>1000</width>
      <height>23</height>
     </rect>
    </property>
