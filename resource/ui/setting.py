@@ -4,10 +4,10 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap, QCursor, QColor
 from resource.ui.pyqt_generated.UI_Settings import Ui_Setting
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
 from util.log_tool.log import logs, readConfig
+import re
 
 
-
-class Setting(QDialog, Ui_Setting): #这个窗口继承了用QtDesignner 绘制的窗口
+class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制的窗口
     def __init__(self):
         super(Setting,self).__init__()
         self.setupUi(self)
@@ -15,7 +15,7 @@ class Setting(QDialog, Ui_Setting): #这个窗口继承了用QtDesignner 绘制�
 
     def fill_from_configfile(self):
         """
-        doc: 从配置文件读取配置值并填充
+        doc: 从配置文件读取配置值并填充,作为默认值
         :return:
         """
         self._fill_SoftWareConfig()
@@ -25,35 +25,52 @@ class Setting(QDialog, Ui_Setting): #这个窗口继承了用QtDesignner 绘制�
 
 ################ 检查配置页是否出错 ##################
     def check_SoftwareConfig(self):
+        """
+        doc: 检查软件配置页配置
+        :return: 若正常则返回None, 若存在错误情况则返回错误信息(str)
+        """
         error_msg = None
+        # error_msg = "工程名称"
+        # 新增检查项在此添加
 
-        pass
-
+        # error_msg += ":"
         return error_msg
 
     def check_ConnectMechConfig(self):
+        """
+        doc: 检查与Mech通讯配置页配置
+        :return: 若正常则返回None, 若存在错误情况则返回错误信息(str)
+        """
         error_msg = None
+        # error_msg = "Mech网络连接"
+        # 新增检查项在此添加
 
-        pass
-
+        # error_msg += ":"
         return error_msg
 
     def check_ConnectRobotConfig(self):
+        """
+        doc: 检查与Robot通讯配置页配置
+        :return: 若正常则返回None, 若存在错误情况则返回错误信息(str)
+        """
         error_msg = None
+        # error_msg = "Robot网络连接"
+        # 新增检查项在此添加
 
-        pass
-
+        # error_msg += ":"
         return error_msg
 
     def check_config(self):
         """
-        doc: 保存配置时用于再次检查全局配置
+        doc: 检查全局配置(用于保存配置时)
         :return: 错误信息
         """
-        error_msg = self.check_SoftwareConfig()
-        error_msg = self.check_ConnectMechConfig()
-        error_msg = self.check_ConnectRobotConfig()
-        return error_msg
+        error_msg = "" # 默认错误信息为空
+        error_msg += self.check_SoftwareConfig()
+        error_msg += self.check_ConnectMechConfig()
+        error_msg += self.check_ConnectRobotConfig()
+        print(error_msg)
+        return error_msg # 返回包含错误信息的字符串(若正常则返回None， 若有错误情况则返回对应错误提示字符串)
 
 ################### 初始化/填充 设置 ##############################
     def _fill_SoftWareConfig(self):
@@ -151,16 +168,30 @@ class Setting(QDialog, Ui_Setting): #这个窗口继承了用QtDesignner 绘制�
 ##################### 点击 标题栏按钮 #############
     @pyqtSlot()
     def on_pushButton_helpDoc_clicked(self):
-        information_box(self, "设置说明手册", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.". \
+        information_box(self, "设置说明手册", "LongerGUI {}\n\n有空记得把手册更新". \
                         format(readConfig["software_version"])) # TODO: 【文档类】更新设置项说明手册
 
     @pyqtSlot()
     def on_pushButton_ResetConfig_clicked(self):
         pass # TODO:[新增功能]重置配置
 
+    def parse_error_msg(self, error_msg):
+        """
+        doc: 格式化生成报错信息用于显示
+        :param error_msg: 报错信息(str)
+        :return: 用于显示的报错信息(str)
+        """
+        msg_frame = ":配置错误\n" # 报错信息模板
+        error_msg_list = re.split(":|,", error_msg) # 不同配置页用":"作为间隔符，配置页内不同配置项用","作为间隔符
+        new_error_msg_list = [i for i in error_msg_list if i != ''] # 去除列表空值
+        error_msgs = msg_frame.join(new_error_msg_list) # 插入报错模板完善报错信息
+        error_msgs += msg_frame # 用于补齐最后一项(因为join是插空的)
+        print(error_msgs)
+        return error_msgs
 
     @pyqtSlot()
     def on_pushButton_SaveConfig_clicked(self):
-        error_msg = self.check_config()
-        if error_msg:
-            critical_box(self, text=error_msg)
+        error_msg = self.check_config() # 检查全局配置，并返回检查结果
+        if len(error_msg) != 0:
+            error_msgs = self.parse_error_msg(error_msg)
+            critical_box(self, text=error_msgs)
