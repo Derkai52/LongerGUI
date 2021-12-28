@@ -93,7 +93,7 @@ class Hub:
         doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于
         return: 连接成功: True 连接失败: False
         """
-        logs.info("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
+        logs.debug("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
         self.client.reconnect_server() # 尝试重新连接到Mech
         if self.client.is_connected(): # 如果连接成功
             logs.info("请求Mech服务器成功，正在校验连接...")
@@ -115,7 +115,7 @@ class Hub:
                 # time.sleep(30) # 检测到已连接后的检测周期
                 # logs.info("已连接到服务端")
             else:                                       # 如果未连接到Mech
-                logs.info("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
+                logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
                 self.connect_mech() # 尝试连接Mech服务器
             # time.sleep(10) # 固定检测周期
 

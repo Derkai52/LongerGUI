@@ -47,7 +47,7 @@ class Config():
         self.conf = configparser.ConfigParser()
         self.conf_dir = config_path # 配置文件路径
         self.conf.read(self.conf_dir, encoding=encodings) # TODO: 不确定这种只初始化一次的写法对于配置文件更新是否有作用
-
+        print("self.conf:",self.conf)
 
     def read_config_dict(self):
         """
@@ -58,7 +58,7 @@ class Config():
             SOFTWARE_NAME: self.conf.get("SoftWareConfig", "software_name"),
             SOFTWARE_VERSION: self.conf.get("SoftWareConfig", "software_version"),
             PROJECT_NAME: self.conf.get("SoftWareConfig", "project_name"),
-            PROHECT_VERSION: self.conf.get("SoftWareConfig", "project_version"),
+            PROHECT_VERSION: self.conf.getint("SoftWareConfig", "project_version"),
             THIRD_PARTY_EQUIPMENT: self.conf.getboolean("SoftWareConfig", "third_party_equipment"),
             MECH_INTERFACE_IP: self.conf.get("CommunicationConfig", "mech_interface_ip"),
             MECH_INTERFACE_PORT: self.conf.get("CommunicationConfig", "mech_interface_port"),
@@ -73,7 +73,7 @@ class Config():
             DEFAULT_LEN_DATA: self.conf.get("CommunicationConfig","default_len_data"),
             LOG_SAVE_PATH: self.conf.get("LogConfig","log_save_path"),
             LOG_SAVE_LEVEL: self.conf.get("LogConfig","log_save_level"),
-            LOG_BACKCOUNT: self.conf.get("LogConfig","log_backCount"),
+            LOG_BACKCOUNT: self.conf.getint("LogConfig","log_backCount"),
             LOG_FORMAT: self.conf.get("LogConfig","log_format", raw=True), # 若需要格式化的，需要加上raw参数为True
             UPDATE_DOC_NAME: self.conf.get("otherConfig","update_doc_name"),
 

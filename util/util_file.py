@@ -75,7 +75,7 @@ def write_json_file(file, js, encoding='utf-8'):
     :param encoding: 默认 utf-8
     :return: None
     """
-    return write_file(file, json.dumps(js, sort_keys=True, indent=4, separators=(",", ": ")), encoding)
+    return write_file(file, json.dumps(js, sort_keys=False, indent=4, separators=(",", ": ")), encoding)
 
 
 def write_binary_file(file, contents, mode='wb+'):

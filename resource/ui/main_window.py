@@ -25,7 +25,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        self.Setting_dialog = Setting() # 设置页面
+        self.Setting_dialog = Setting() # 设置页面,读取配置信息
         self.LoginPermission = LoginPermission() # 权限切换页面
 
         # 加载主页面日志信息
@@ -110,6 +110,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         thread_main.setDaemon(True)  # 挂后台进程
         thread_main.start()
         logs.info("主程序启动成功")
+        self.pushButton_start.setEnabled(False) # 检测到按下后就不可使用
 
 
     # 菜单栏/帮助/关于
@@ -131,7 +132,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     @pyqtSlot()
     def on_action_systemSetting_triggered(self):
         self.Setting_dialog.show()
-        print("系统设置")
         self.label_status.setStyleSheet("color: rgb(255, 0, 0);\n"
                                         "font: 48pt \"Constantia\";\n"
                                         "border-width: 0px;")
