@@ -1,6 +1,6 @@
 import logging
 import socket
-from util.log_tool.log import logs, readConfig
+
 
 class Communication(object):
     """

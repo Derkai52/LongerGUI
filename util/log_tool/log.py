@@ -4,11 +4,7 @@ import os
 import time
 
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
-
-
-from util.config_tool.config import configs
-readConfig = configs.read_config_dict() # 读取配置文件
-
+from util.generator import configObject
 
 # 颜色用于区分日志等级
 COLORS = {
@@ -93,9 +89,10 @@ logs.setLevel(logging.INFO)
 
 # 获取当前目录
 cur_path =  os.path.abspath(os.path.dirname(__file__))
+
 # 获取项目根目录
-root_path = cur_path[:cur_path.rindex(readConfig["software_name"])+len(readConfig["software_name"])] + "\\"
-# logs = Logger(filename=root_path + readConfig["log_save_path"], level=readConfig["log_save_level"], fmt=readConfig["log_format"]) # TODO: 从配置文件读取设置，并添加自动路径功能
+root_path = cur_path[:cur_path.rindex(configObject.software_config.software_name)+len(configObject.software_config.software_name)] + "\\"
+# logs = Logger(filename=root_path + configObject.log_config.log_save_path, level=configObject.log_config.log_save_level, fmt=configObject.log_config.log_format)
 
 
 ## 测试用

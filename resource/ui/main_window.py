@@ -1,5 +1,6 @@
 import sys, os, threading, subprocess, logging
-from util.log_tool.log import LoggingHandler, logs, readConfig
+from util.log_tool.log import LoggingHandler, logs
+from util.generator import configObject
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
 from communication.hub import Hub # 通讯中心
 from util.format_adapter import * # 可视化
@@ -39,10 +40,10 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         doc: 初始化主程序
         :return:
         """
-        mech_interface_ip = readConfig["mech_interface_ip"]
-        mech_interface_port = readConfig["mech_interface_port"]
-        robot_server_agent_ip = readConfig["robot_server_agent_ip"]
-        robot_server_agent_port = readConfig["robot_server_agent_port"]
+        mech_interface_ip = configObject.mech_communication_config.mech_interface_ip
+        mech_interface_port = configObject.mech_communication_config.mech_interface_port
+        robot_server_agent_ip = configObject.robot_communication_config.robot_server_agent_ip
+        robot_server_agent_port = configObject.robot_communication_config.robot_server_agent_port
         if True:
             client = Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port, \
                          connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
@@ -117,14 +118,14 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     @pyqtSlot()
     def on_action_about_triggered(self):
         information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".\
-                        format(readConfig["software_version"]))
+                        format(configObject.software_config.software_version))
 
     # 菜单栏/帮助/文档
     @pyqtSlot()
     def on_action_docs_triggered(self):
         # is_english = self.setting_dialog.current_language_name() == QLocale(QLocale.English).name() # 若不考虑做国际化语言，可忽略
         # change_log_file = "change_log.html" if is_english else "change_log_zh.html"
-        change_log_file = readConfig["update_doc_name"]
+        change_log_file = configObject.other_config.update_doc_name
         QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),"..","update_logs", change_log_file)))
         print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
 

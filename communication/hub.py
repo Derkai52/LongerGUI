@@ -3,7 +3,8 @@ import threading
 import configparser
 from communite import TcpServer, TcpClient
 from event.parse_event import msg_process
-from util.log_tool.log import logs, readConfig
+from util.log_tool.log import logs
+from util.generator import configObject
 
 
 class Hub:
@@ -26,8 +27,8 @@ class Hub:
             self.client = TcpClient(self.mechAddr) # 初始化client
         else:
             self.serverIP, self.serverPort, self.connect_ip, self.connect_port = \
-                readConfig["mech_interface_ip"],readConfig["mech_interface_port"],\
-                readConfig["robot_server_agent_ip"],readConfig["robot_server_agent_port"]
+                configObject.mech_communication_config.mech_interface_ip, configObject.mech_communication_config.mech_interface_port,\
+                configObject.robot_communication_config.robot_server_agent_ip, configObject.robot_communication_config.robot_server_agent_port
             # TODO: 使用文件读取生成TcpClient
 
 # TODO: shutdown是一种更加优秀的socket生命周期管理方法

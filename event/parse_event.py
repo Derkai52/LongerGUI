@@ -1,16 +1,18 @@
 # 本文件通过维护一个消息事件表，用于解析消息事件
-# import logging
+
 from struct import pack, unpack
 from communication import commands as cmds
 from event.messages import *
-from util.log_tool.log import logs, readConfig
-# logs.debug("2")
-print(readConfig["is_ascii"])
-is_ascii = readConfig["is_ascii"]
-endian = readConfig["endian"]
-robot_vendor = readConfig["robot_vendor"]
-len_mech_msg = readConfig["len_mech_msg"]
-len_client_msg = readConfig["len_client_msg"]
+from util.log_tool.log import logs
+from util.generator import configObject
+
+# 读取配置表信息
+is_ascii = configObject.mech_communication_config.is_ascii
+endian = configObject.mech_communication_config.endian
+len_mech_msg = configObject.mech_communication_config.len_mech_msg
+len_client_msg = configObject.mech_communication_config.len_client_msg
+robot_vendor = configObject.robot_communication_config.robot_vendor
+
 
 
 ###################### 格式解包与打包 #######################

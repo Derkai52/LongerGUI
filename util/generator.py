@@ -225,6 +225,18 @@ class OtherConfig():
 
 
 # adapter代码生成器类
+
+def singleton(cls, *args, **kwargs):
+    instances = {}
+
+    def _singleton():
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return _singleton
+
+@singleton
 class Generator(object):
     def __init__(self):
         self.deserialize_config()  # 当转化器初始化时，进行反序列化操作(解包json配置文件)
@@ -266,3 +278,7 @@ class Generator(object):
             self._create_init_file()
         except Exception as e:
             logging.exception(e)
+
+
+# 使用单例模式实例化配置生成器
+configObject = Generator()

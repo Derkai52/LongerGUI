@@ -47,7 +47,7 @@ class Config():
         self.conf = configparser.ConfigParser()
         self.conf_dir = config_path # 配置文件路径
         self.conf.read(self.conf_dir, encoding=encodings) # TODO: 不确定这种只初始化一次的写法对于配置文件更新是否有作用
-        print("self.conf:",self.conf)
+
 
     def read_config_dict(self):
         """

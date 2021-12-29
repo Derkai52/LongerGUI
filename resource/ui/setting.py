@@ -3,11 +3,11 @@ from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QAbstrac
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QCursor, QColor
 from resource.ui.pyqt_generated.UI_Settings import Ui_Setting
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
-from util.log_tool.log import logs, readConfig
+from util.log_tool.log import logs
 import re, sys, os, logging
 from util.util_file import write_file
 from util.setting_file import setting_file_path
-from util.generator import Generator
+from util.generator import configObject
 from util import json_keys as jk
 
 
@@ -18,12 +18,12 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         super(Setting,self).__init__()
         self.setupUi(self)
         self.init_widget()
-        self.generator = Generator()
+        self.generator = configObject # 配置项生成器对象
         self.fill_from_configfile()
 
 
     def init_widget(self):
-        self.title_header = self.tr("Adapter Generator - ")
+        self.title_header = self.tr("SettingConfig Generator - ")
 
     def fill_from_configfile(self):
         """
@@ -262,7 +262,7 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
     @pyqtSlot()
     def on_pushButton_helpDoc_clicked(self):
         information_box(self, "设置说明手册", "LongerGUI {}\n\n有空记得把手册更新". \
-                        format(readConfig["software_version"])) # TODO: 【文档类】更新设置项说明手册
+                        format(configObject.software_config.software_version)) # TODO: 【文档类】更新设置项说明手册
 
     @pyqtSlot()
     def on_pushButton_ResetConfig_clicked(self):
