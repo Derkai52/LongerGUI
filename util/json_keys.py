@@ -39,7 +39,8 @@ display = "display"
 # 其他设置配置
 other = "other"
 update_doc_name = "update_doc_name"
-
+pwd = "pwd"
+user_type = "user_type"
 
 ######################################### 尚未启用 #################
 # background_program = "background_program"

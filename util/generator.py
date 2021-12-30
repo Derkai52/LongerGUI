@@ -19,11 +19,11 @@ class SoftWareConfig():
         self.from_json(js)
 
     def from_json(self, js):
-        self.software_name = js.get(jk.software_name, "LongerGUI") # TODO:[配置读取] 建议读取配置表
+        self.software_name = js.get(jk.software_name, "LongerGUI")
         self.software_version = js.get(jk.software_version, "0.1.1-alpha")
         self.project_name = js.get(jk.project_name, "")
         self.project_version = js.get(jk.project_version, 1)
-        self.config_path = js.get(jk.config_path, setting_file_path) # 默认保存路径为设定好的（详见setting_file.py）
+        self.config_path = js.get(jk.config_path, setting_file_path)
         self.third_party_equipment = js.get(jk.third_party_equipment, False)
 
 
@@ -128,6 +128,66 @@ class OtherConfig():
         return {jk.update_doc_name: self.update_doc_name}
 
 
+def singleton(cls, *args, **kwargs):
+    instances = {}
+
+    def _singleton():
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return _singleton
+
+@singleton
+class Generator(object):
+    def __init__(self):
+        self.deserialize_config()  # 当转化器初始化时，进行反序列化操作(解包json配置文件)
+
+    # 反序列化操作(解包json配置文件设置并将其读取)
+    def deserialize_config(self):
+        configs = read_json_file(setting_file_path)
+        self.software_config = SoftWareConfig(configs.get(jk.software, {}))
+        self.mech_communication_config = MechCommunicationConfig(configs.get(jk.mech_communication, {}))
+        self.robot_communication_config = RobotCommunicationConfig(configs.get(jk.robot_communication, {}))
+        self.log_config = LogConfig(configs.get(jk.log, {}))
+        self.display_config = DisplayConfig(configs.get(jk.display, {}))
+        self.other_config = OtherConfig(configs.get(jk.other, {}))
+
+
+    # 序列化操作：将各部分(网络、机器人、vision、viz、数据格式等)配置文件写入为json形式并保存到指定路径
+    def serialize_config(self):
+        configs = {}
+        configs[jk.software] = self.software_config.to_json()
+        configs[jk.mech_communication] = self.mech_communication_config.to_json()
+        configs[jk.robot_communication] = self.robot_communication_config.to_json()
+        configs[jk.log] = self.log_config.to_json()
+        configs[jk.display] = self.display_config.to_json()
+        configs[jk.other] = self.other_config.to_json()
+        logging.info("保存配置信息:{}".format(configs))
+        write_json_file(setting_file_path, configs)
+
+
+    # 配置生成器(暂未启用)
+    def generate_adapter(self):
+        # 1、序列化配置，打包配置内容为json文件
+        self.serialize_config()
+        try:
+            if not path.exists(self.network_config.project_dir):
+                mkdir(self.network_config.project_dir)
+            self.adapter_class_name = self.network_config.adapter_name[0].upper() + self.network_config.adapter_name[1:]
+            self._create_adapter_file()  # 创建adapter文件
+            self._create_widget_file()
+            self._create_init_file()
+        except Exception as e:
+            logging.exception(e)
+
+
+# 使用单例模式实例化配置生成器
+configObject = Generator()
+
+
+
+
 # class DataFormatConfig():
 #     def __init__(self, js):
 #         self.from_json(js)
@@ -225,60 +285,3 @@ class OtherConfig():
 
 
 # adapter代码生成器类
-
-def singleton(cls, *args, **kwargs):
-    instances = {}
-
-    def _singleton():
-        if cls not in instances:
-            instances[cls] = cls(*args, **kwargs)
-        return instances[cls]
-
-    return _singleton
-
-@singleton
-class Generator(object):
-    def __init__(self):
-        self.deserialize_config()  # 当转化器初始化时，进行反序列化操作(解包json配置文件)
-
-    # 反序列化操作(解包json配置文件设置并将其读取)
-    def deserialize_config(self):
-        configs = read_json_file(setting_file_path)
-        self.software_config = SoftWareConfig(configs.get(jk.software, {}))
-        self.mech_communication_config = MechCommunicationConfig(configs.get(jk.mech_communication, {}))
-        self.robot_communication_config = RobotCommunicationConfig(configs.get(jk.robot_communication, {}))
-        self.log_config = LogConfig(configs.get(jk.log, {}))
-        self.display_config = DisplayConfig(configs.get(jk.display, {}))
-        self.other_config = OtherConfig(configs.get(jk.other, {}))
-
-
-    # 将各部件(网络、机器人、vision、viz、数据格式等)配置文件写入为json形式并保存到指定路径
-    def serialize_config(self):
-        configs = {}
-        configs[jk.software] = self.software_config.to_json()
-        configs[jk.mech_communication] = self.mech_communication_config.to_json()
-        configs[jk.robot_communication] = self.robot_communication_config.to_json()
-        configs[jk.log] = self.log_config.to_json()
-        configs[jk.display] = self.display_config.to_json()
-        configs[jk.other] = self.other_config.to_json()
-        logging.info("保存配置信息:{}".format(configs))
-        write_json_file(setting_file_path, configs)
-
-
-    # 配置生成器(暂未启用)
-    def generate_adapter(self):
-        # 1、序列化配置，打包配置内容为json文件
-        self.serialize_config()
-        try:
-            if not path.exists(self.network_config.project_dir):
-                mkdir(self.network_config.project_dir)
-            self.adapter_class_name = self.network_config.adapter_name[0].upper() + self.network_config.adapter_name[1:]
-            self._create_adapter_file()  # 创建adapter文件
-            self._create_widget_file()
-            self._create_init_file()
-        except Exception as e:
-            logging.exception(e)
-
-
-# 使用单例模式实例化配置生成器
-configObject = Generator()

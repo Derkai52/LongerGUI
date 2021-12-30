@@ -13,7 +13,7 @@ from PyQt5.QtGui import QIcon, QFont, QPixmap, QCursor, QColor, QImage, QDesktop
 # 新子页面可在此处添加
 from resource.ui.pyqt_generated.UI_MainWindow import Ui_MainWindow
 from resource.ui.setting import Setting
-from resource.ui.login_permission import LoginPermission
+from resource.ui.login_dialog import LoginDialog
 
 
 _translate = QCoreApplication.translate
@@ -27,7 +27,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.Setting_dialog = Setting() # 设置页面,读取配置信息
-        self.LoginPermission = LoginPermission() # 权限切换页面
 
         # 加载主页面日志信息
         self.logging_handler = LoggingHandler()
@@ -106,7 +105,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 启动程序
     @pyqtSlot()
     def on_pushButton_start_clicked(self): # TODO：应当变更为服务注册机制
-        # self.output_center_logger("wefwfes24r2t2\nwfrw4rg")
+        # self.output_center_logger("wefwfes24r2t2\nwfrw4rg") # TODO: 此处必须改掉！！！！
         thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
         thread_main.setDaemon(True)  # 挂后台进程
         thread_main.start()
@@ -142,7 +141,8 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 设置/登录权限
     @pyqtSlot()
     def on_action_loginAuthority_triggered(self):
-        self.LoginPermission.show()
+        Login_Dialog = LoginDialog(True) # 权限切换页面
+        Login_Dialog.exec()
         print("登录权限")
 
     def setImage(self, image): # 指定在 label 中显示

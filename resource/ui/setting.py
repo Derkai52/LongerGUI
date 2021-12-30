@@ -18,7 +18,6 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         super(Setting,self).__init__()
         self.setupUi(self)
         self.init_widget()
-        self.generator = configObject # 配置项生成器对象
         self.fill_from_configfile()
 
 
@@ -94,10 +93,10 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
 
 ################### 初始化/填充 设置 ##############################
     def _fill_SoftWareConfig(self):
-        self.lineEdit_projectName.setText(self.generator.software_config.project_name) # 填充默认工程名称
-        self.spinBox_projectVersion.setValue(self.generator.software_config.project_version) # 填充默认工程版本号
+        self.lineEdit_projectName.setText(configObject.software_config.project_name) # 填充默认工程名称
+        self.spinBox_projectVersion.setValue(configObject.software_config.project_version) # 填充默认工程版本号
 
-        if self.generator.software_config.third_party_equipment: # 是否使用第三方设备
+        if configObject.software_config.third_party_equipment: # 是否使用第三方设备
             check_flag = True
         else:
             check_flag = False
@@ -118,7 +117,7 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
 
     def _fill_ConnectMechConfig(self):
         index_flag = None
-        if self.generator.mech_communication_config.communite_format == "InterFace":
+        if configObject.mech_communication_config.communite_format == "InterFace":
             index_flag = 0
         # 若有新数据模式请在此处添加
         else:
@@ -126,21 +125,21 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         self.comboBox_CommuniteFormat.setCurrentIndex(index_flag) # 填充通讯模式(InterFace...)
 
         index_flag2 = None
-        if self.generator.mech_communication_config.is_ascii: # 是否为ASCII码
+        if configObject.mech_communication_config.is_ascii: # 是否为ASCII码
             index_flag2 = 0
         else:
             index_flag2 = 1
         # 若有新数据模式请在此处添加
         self.comboBox_CommuniteFormat_2.setCurrentIndex(index_flag2) # 填充通讯格式(ASCII、HEX...)
 
-        self.lineEdit_MechCenter_IP.setText(self.generator.mech_communication_config.mech_interface_ip) # 填充Mech-Center IP地址
-        self.lineEdit_MechCenter_Port.setText(self.generator.mech_communication_config.mech_interface_port) # 填充Mech-Center InterFace端口号
+        self.lineEdit_MechCenter_IP.setText(configObject.mech_communication_config.mech_interface_ip) # 填充Mech-Center IP地址
+        self.lineEdit_MechCenter_Port.setText(configObject.mech_communication_config.mech_interface_port) # 填充Mech-Center InterFace端口号
 
     def _gather_ConnectMechConfig(self):
         connect_mech_config = {}
 
         communite_format_list = ["InterFace"] # 新增通讯模式在此处添加
-        # index_flag = communite_format_list.find(self.generator.mech_communication_config.communite_format)
+        # index_flag = communite_format_list.find(configObject.mech_communication_config.communite_format)
         connect_mech_config[jk.communite_format] = communite_format_list[self.comboBox_CommuniteFormat.currentIndex()]
         if self.comboBox_CommuniteFormat_2.currentIndex() == 0:
             connect_mech_config[jk.is_ascii] = True
@@ -154,21 +153,21 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
     def _fill_ConnectRobotConfig(self):
         robot_vendor_list = ["ABB","FANUC","UR"] # 新增机器人品牌在此处添加 # TODO: [新增类]建议使用一个机器人类来便于管理多种机器人
         try:
-            index_flag = robot_vendor_list.index(self.generator.robot_communication_config.robot_vendor)
+            index_flag = robot_vendor_list.index(configObject.robot_communication_config.robot_vendor)
             self.comboBox_RobotVendor.setCurrentIndex(index_flag)  # 填充机器人品牌信息
         except Exception as e:
             print("[机器人型号]配置文件出现错误") # TODO：[日志类]收录日志
 
         robot_type_list = ["UR_5"]  # 新增机器人型号在此处添加 # TODO: [新增类]建议使用一个机器人类来便于管理多种机器人
         try:
-            index_flag = robot_type_list.index(self.generator.robot_communication_config.robot_type)
+            index_flag = robot_type_list.index(configObject.robot_communication_config.robot_type)
             self.comboBox_RobotType.setCurrentIndex(index_flag) # 填充机器人型号名
         except Exception as e:
             print("[机器人具体型号]配置文件出现错误") # TODO：[日志类]收录日志
 
 
-        self.lineEdit_RobotIP.setText(self.generator.robot_communication_config.robot_server_agent_ip) # 填充机器人接口 IP地址
-        self.lineEdit_RobotPort.setText(self.generator.robot_communication_config.robot_server_agent_port) # 填充机器人接口 端口号
+        self.lineEdit_RobotIP.setText(configObject.robot_communication_config.robot_server_agent_ip) # 填充机器人接口 IP地址
+        self.lineEdit_RobotPort.setText(configObject.robot_communication_config.robot_server_agent_port) # 填充机器人接口 端口号
 
     def _gather_ConnectRobotConfig(self):
         connect_robot_config = {}
@@ -180,15 +179,15 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         return connect_robot_config
 
     def _fill_LogConfig(self):
-        self.spinBox_log_days.setValue(self.generator.log_config.log_back_count) # 填充默认日志记录有效期(不在有效期的历史日志将被清除)
+        self.spinBox_log_days.setValue(configObject.log_config.log_back_count) # 填充默认日志记录有效期(不在有效期的历史日志将被清除)
         try:
             log_levels_list = ["debug", "info", "warning", "error"]
-            index_flag = log_levels_list.index(self.generator.log_config.log_save_level.lower())  # 将读取到的日志等级字符转为小写字符表示
+            index_flag = log_levels_list.index(configObject.log_config.log_save_level.lower())  # 将读取到的日志等级字符转为小写字符表示
             self.comboBox_log_levels.setCurrentIndex(index_flag)  # 填充默认日志等级
         except Exception as e:
             print("[日志等级设置]配置文件出现错误")  # TODO：[日志类]收录日志
-        self.lineEdit_log_format.setText(self.generator.log_config.log_format) # 填充默认日志格式
-        self.lineEdit_log_save_path.setText(self.generator.log_config.log_save_path) # 填充默认日志存储路径
+        self.lineEdit_log_format.setText(configObject.log_config.log_format) # 填充默认日志格式
+        self.lineEdit_log_save_path.setText(configObject.log_config.log_save_path) # 填充默认日志存储路径
 
     def _gather_LogConfig(self):
         log_config = {}
@@ -206,7 +205,7 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         return display_config
 
     def _fill_OtherConfig(self):
-        self.lineEdit_update_doc_name.setText(self.generator.other_config.update_doc_name)
+        self.lineEdit_update_doc_name.setText(configObject.other_config.update_doc_name)
 
     def _gather_OtherConfig(self):
         other_config = {}
@@ -292,7 +291,7 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         if not project_dir:
             warning_box(self, text=self.tr("保存配置文件错误!"))
             return
-        self.setWindowTitle(self.title_header + project_dir + "/" + self.generator.software_config.project_name)
+        self.setWindowTitle(self.title_header + project_dir + "/" + configObject.software_config.project_name)
         return project_dir
 
     def save_config(self):
@@ -300,13 +299,13 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         doc: 保存配置表到文件
         :return:
         """
-        self.generator.software_config.from_json(self._gather_SoftWareConfig())
-        self.generator.mech_communication_config.from_json(self._gather_ConnectMechConfig())
-        self.generator.robot_communication_config.from_json(self._gather_ConnectRobotConfig())
-        self.generator.log_config.from_json(self._gather_LogConfig())
-        self.generator.display_config.from_json(self._gather_DisplayConfig())
-        self.generator.other_config.from_json(self._gather_OtherConfig())
-        self.generator.serialize_config()
+        configObject.software_config.from_json(self._gather_SoftWareConfig())
+        configObject.mech_communication_config.from_json(self._gather_ConnectMechConfig())
+        configObject.robot_communication_config.from_json(self._gather_ConnectRobotConfig())
+        configObject.log_config.from_json(self._gather_LogConfig())
+        configObject.display_config.from_json(self._gather_DisplayConfig())
+        configObject.other_config.from_json(self._gather_OtherConfig())
+        configObject.serialize_config()
 
     def config_generator(self):
         """
@@ -315,12 +314,12 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         """
         # if not self.on_check_configs_clicked():
         #     return
-        project_dir = self.generator.software_config.config_path
+        project_dir = configObject.software_config.config_path
         print("生成目录为：",project_dir)
         if os.path.exists(project_dir):
             if warning_box_yes_no(self, text=project_dir + self.tr("该路径下文件已存在，是否覆盖它?")) == QMessageBox.No:
                 return
-        # self.generator.generate_adapter() # 代码生成器(暂未启用)
+        # configObject.generate_adapter() # 代码生成器(暂未启用)
         self.save_config()
 
         self.adapter_project_dir_changed.emit(project_dir)
@@ -352,7 +351,7 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         if len(error_msg) != 0:
             error_msgs = self.parse_error_msg(error_msg)
             critical_box(self, text=error_msgs)
-        # if not self.generator.software_config.config_path or self.generator.software_config.config_path.split("/")[-1]\
+        # if not configObject.software_config.config_path or configObject.software_config.config_path.split("/")[-1]\
         #         != self.lineEdit_config_path.text(): # 如果配置文件或目录不存在就选择路径新建配置文件
         #     if not self.choose_project_dir(self.tr("选择保存目录")):
         #         return
