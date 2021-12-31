@@ -252,24 +252,22 @@ def send_msg(client, msg):
             msg += b"\x00" * (len_client_msg - len(msg))
     client.send(msg)
 
-# def recv_test(send_cmd, client): # TODO: 设置返回值
+
 def recv_test(client):  # TODO: 设置返回值
     """
     doc: 处理Mech发送过来的信息
     :param client: socket套接字对象
     :return: Mech发送过来的信息
     """
-    print("Recving......")
-    print(client)
-    recv_cmds = client.recv()
-    print(recv_cmds)
+
     try:
+        recv_cmds = client.recv()
         recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
     except Exception as e:
-        logs.error("接收消息解析错误")
-    # print(recv_cmd, send_cmd)
+        logs.error("接收消息解析错误:{}".format(e))
+
     # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
-    print("收到的消息：",recv_cmd, status_code)
+    print("从Mech接收的消息：",recv_cmd, status_code)
     print("Status code={}, message: {}".format(status_code, event_logging(status_code)))
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
@@ -344,24 +342,25 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
             try:
                 params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
             except Exception as e:
-                logs.error("信息转化失败:{}".format(e))
+                logs.error("待发送信息打包失败:{}".format(e))
                 return
 
         if not is_ascii: # 如果是Hex格式
             params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
 
         if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
-            logs.error("指令参数解析失败!")
-            return sendmsg
+            logs.error("待发送信息解析失败:{}".format(sendmsg))
+            return
 
         # 4、信息发送
         send_msg(socket_object, pack_params(cmd, fmt="i") + params)  # 发送信息
-        return sendmsg
+        return
+
 
     elif funcFlag == 2: # 接受信息
         recvmsg = recv_test(socket_object)
         return recvmsg
 
     else:
-        logs.error("未收录的处理标识符")
-        return # TODO: 待处理的情况
+        logs.error("未收录的处理标识符{}".format(funcFlag))
+        return
