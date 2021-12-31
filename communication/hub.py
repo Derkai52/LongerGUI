@@ -15,7 +15,7 @@ class Hub:
         self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
         self.listenRobot = None    # 用于连接机器人端【用于监听和接受客户端的连接请求的套接字】(本地作为服务端)
         self.toRobot = None        # 用于连接机器人端【用于通信的套接字】(本地作为服务端)
-        self.msgflag = None        # 用于标识信息类型【发送的消息:1  接收的消息:2】
+        # self.msgflag = None        # 用于标识信息类型【发送的消息:1  接收的消息:2】
 
         if configPath == "":
             self.serverIP = serverIP
@@ -56,14 +56,11 @@ class Hub:
         发送信息给Mech
         """
         while True:
-            # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8")
-            sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
-
-            self.msgflag = 1 # TODO:可以用更好的方法解决，提高代码易读性和维护性
-            msg_process(self.client, self.msgflag, sendMsg) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
-            self.msgflag = None
-
+            # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8") # 仅供调试用
             # self.client.send(sendMsg)
+            sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
+            msg_process(self.client, funcFlag = 1, sendmsg = sendMsg) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
+
 
 
     def thread_connect_mech(self):
@@ -184,12 +181,9 @@ class Hub:
         while True:
             if not self.client.is_connected(): # 如果连接丢失
                 break
-            # response = self.client.recv()
-            self.msgflag = 2
-            response = msg_process(self.client, self.msgflag) # 阻塞接收来自 Mech 的消息# TODO:使用多线程技术完成全双工通信机制
-            print(response, type(response))
-            self.msgflag = None
-            # logs.info("从Mech获得的消息: {}".format(response))
+            response = msg_process(self.client, 2) # 阻塞接收来自 Mech 的消息，例如b'101,1001,'# TODO:使用多线程技术完成全双工通信机制
+
+            logs.info("从Mech获得的消息: {}".format(response))
 
             processResult = self.event_mech_process(response) # Mech消息事件处理
             if processResult == 1: # 普通信息，直接放行

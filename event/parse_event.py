@@ -297,41 +297,64 @@ def recv_test(client):  # TODO: 设置返回值
         print("Do list={}".format(do_list))
     return recv_cmds
 
+
+def parsing_msg(sendmsg):
+    """
+    doc: # 拆解消息获得 指令代码和参数
+    # eg:拆解消息: '101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000'
+    # 指令代码: '101'         参数: '1,1,1,-490.000,0,539.000,-90.000,90.000,180.000'
+    :param sendmsg:
+    :return: cmd: 指令代码  params:参数
+    """
+    # TODO:Warning 此处分解可能因为格式更改导致解法失效，可以考虑改为正则解析
+    msg_temp = list(map(lambda x: int(float(x)), list(sendmsg.split(","))))  # 将传入的字符串转化为元素为数字的列表  eg. "101,1,1.23" -> [101,1,1.23]
+    cmd = msg_temp[0]  # 获取指令代码
+    indexnum = sendmsg.find(str(cmd)) + len(str(cmd)) + len(",")  # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
+    params = sendmsg[indexnum:]  # 获取参数
+    return cmd, params
+
+
+
+
 def msg_process(socket_object, funcFlag, sendmsg=None):
     """
-    doc: 对输入的信息进行处理，转化为可用的信息
+    doc: 对输入的信息进行处理，转化为可用的信息(注意，此函数已被多线程调用，请勿在未加锁下使用全局变量，)
     :param socket_object: socket套接字对象
     :param msg: 待处理的信息
     :param funcFlag: 1:信息处理并发送 2:信息处理并接受
     :return: 发送的消息 或 接收的消息
     """
+
     if funcFlag == 1: # 发送信息
-        try:# TODO:Warning 此处分解可能因为格式更改导致解法失效，需要一种拓展性高的解法
-            msg_temp = list(map(lambda x:int(float(x)), list(sendmsg.split(","))))  # 将传入的字符串转化为元素为数字的列表
-            cmd = msg_temp[0]  # 获取指令代码
-            indexnum = sendmsg.find(str(msg_temp[0]))+len(str(msg_temp[0]))+len(",") # 字符串匹配获取第一个匹配项的第一个下标，加上匹配项长度，再加上分隔符"," 的长度，此时才可以获得后面的下标
-            params = sendmsg[indexnum:]
+        # 1、消息解析 -> 指令码 + 参数
+        try:
+            cmd, params = parsing_msg(sendmsg)
         except Exception as e:
-            print("信息解析错误!")
-            return sendmsg
+            logs.error("信息解析错误:{}".format(sendmsg))
+            return
+
+        # 2、查找指令表
         if cmd not in params_descs():
-            print("指令表未查找到此指令!")
-            return sendmsg # TODO: 返回一个 continue
-            #continue
+            logs.error("指令表未查找到此指令:{}".format(cmd))
+            return
+
+        # 3、信息打包
         if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):  # 需要额外输入参数的情况
-            print(params_descs()[cmd]) # TODO: 可视化信息
+            # print("指令帮助信息:",params_descs()[cmd])
             try:
                 params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
             except Exception as e:
-                logs.error(e)
-                print("信息转化失败...")
+                logs.error("信息转化失败:{}".format(e))
+                return
+
         if not is_ascii: # 如果是Hex格式
             params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
-        print(params)
+
         if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
-            print("指令参数解析失败!")
+            logs.error("指令参数解析失败!")
             return sendmsg
 
+        # 4、信息发送
         send_msg(socket_object, pack_params(cmd, fmt="i") + params)  # 发送信息
         return sendmsg
 
@@ -340,5 +363,5 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
         return recvmsg
 
     else:
-        print("未收录的处理标识符")
+        logs.error("未收录的处理标识符")
         return # TODO: 待处理的情况
