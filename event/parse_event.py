@@ -121,7 +121,7 @@ def params_descs():
                                     For example: 1,-490.000,0,539.000,-90.000,90.000,180.000,-85.000,-90.000,-66.000,-90.000,0,0""",
             cmds.GET_STATUSES: """None params""",}
 
-########################## 指令处理 #######################
+########################## 指令参数生成 #######################
 def run_vision(params):
     """
     doc: 运行Vision
@@ -165,7 +165,6 @@ def switch_model_set_branch_index(params):
         print("Params missing!")
         return
     return pack_params(int(params[0]), int(params[1]), fmt="2i")
-
 
 
 def run_viz(params):
@@ -226,7 +225,7 @@ def pack_calibrate_params(params):
     return pack_params(int(params[0]), *([float(i) for i in params[1:]]), fmt="i12f")
 
 
-########################## 指令处理表 #####################
+########################## 指令生成处理表 #####################
 command_func_dict = {cmds.RUN_VISION: run_vision,
                      cmds.GET_VISION_DATA: get_viz_vision_data,
                      cmds.SWITCH_MODEL: switch_model_set_branch_index,
@@ -253,22 +252,20 @@ def send_msg(client, msg):
     client.send(msg)
 
 
-def recv_test(client):  # TODO: 设置返回值
+def recv_test(client):
     """
-    doc: 处理Mech发送过来的信息
+    doc: 对Mech发送过来的信息进行事件处理
     :param client: socket套接字对象
     :return: Mech发送过来的信息
     """
-
+    # 接收消息并解析
+    recv_cmds = client.recv()
     try:
-        recv_cmds = client.recv()
         recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
     except Exception as e:
-        logs.error("接收消息解析错误:{}".format(e))
+        logs.error("\n接收消息解析错误:{}".format(e))
+    print("\n从Mech接收的状态码={}, 事件: {}".format(status_code, event_logging(status_code)))
 
-    # assert send_cmd == recv_cmd # TODO: 不清楚是否需要严格要求命令指令一问一答，即传入参数是否需要send_cmd
-    print("从Mech接收的消息：",recv_cmd, status_code)
-    print("Status code={}, message: {}".format(status_code, event_logging(status_code)))
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
         recv_finished, point_count, *visual_move_position = unpack_params(recv_cmds[8:], fmt="3i")
@@ -281,26 +278,28 @@ def recv_test(client):  # TODO: 设置返回值
         print(poses_labels_speeds)
         for i in range(point_count):
             print("Pose", i+1, ":", poses_labels_speeds[i*8:i*8+6], "Label:", poses_labels_speeds[i*8+6], "Speed:", poses_labels_speeds[i*8+7])
+
     # 获取相机标定点
     elif recv_cmd == cmds.GET_CALIBRATION_DATA and status_code == VISION_SEND_CALIBRATION_POINT_OK:
         points = unpack_params(recv_cmds[8:], fmt="i12f")
         print("Calibrate point: Pose=[{}], Jps=[{}]".format(points[1:7], points[7:]))
         if points[0] == 1:
             print("Calibration finished!")
+
     # 获取DO列表(吸盘分区多抓)
     elif recv_cmd == cmds.GET_DO_LIST:
         do_list = unpack_params(recv_cmds[8:], fmt="64i")
-
         print("Available do:", do_list[0:64 - do_list.count(-1)])
         print("Do list={}".format(do_list))
+
     return recv_cmds
 
 
-def parsing_msg(sendmsg):
+def parsing_send_msg(sendmsg):
     """
-    doc: # 拆解消息获得 指令代码和参数
-    # eg:拆解消息: '101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000'
-    # 指令代码: '101'         参数: '1,1,1,-490.000,0,539.000,-90.000,90.000,180.000'
+    doc: 拆解待发送消息获得 指令代码和参数
+    eg:拆解消息: '101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000'
+    指令代码: '101'         参数: '1,1,1,-490.000,0,539.000,-90.000,90.000,180.000'
     :param sendmsg:
     :return: cmd: 指令代码  params:参数
     """
@@ -318,20 +317,20 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
     """
     doc: 对输入的信息进行处理，转化为可用的信息(注意，此函数已被多线程调用，请勿在未加锁下使用全局变量，)
     :param socket_object: socket套接字对象
-    :param msg: 待处理的信息
     :param funcFlag: 1:信息处理并发送 2:信息处理并接受
-    :return: 发送的消息 或 接收的消息
+    :param sendmsg: 待处理的信息
+    :return: funcFlag=1:None  funcFlag=2:接收的消息
     """
 
     if funcFlag == 1: # 发送信息
         # 1、消息解析 -> 指令码 + 参数
         try:
-            cmd, params = parsing_msg(sendmsg)
+            cmd, params = parsing_send_msg(sendmsg)
         except Exception as e:
             logs.error("信息解析错误:{}".format(sendmsg))
             return
 
-        # 2、查找指令表
+        # 2、指令表验证
         if cmd not in params_descs():
             logs.error("指令表未查找到此指令:{}".format(cmd))
             return

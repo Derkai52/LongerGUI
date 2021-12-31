@@ -15,6 +15,7 @@ from util.log_tool.log import logs
     001~099: error code
     100~999: normal code
 """
+
 VISION_NOT_REGISTERED         = 1001  # 视觉服务未注册
 VISION_NO_POSES               = 1002  # 没有视觉点位
 VISION_NO_CLOUD               = 1003  # 没有视觉3D点云
