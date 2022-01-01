@@ -34,6 +34,7 @@ class Hub:
     #         self.listenRobot.shutdown(socket.SHUT_WR)
     #         self.listenRobot.close()
 
+
     def check_detection(self):
         """
         doc:校验检测
@@ -46,6 +47,7 @@ class Hub:
             return True
         return False
 
+
     def send_to_mech(self):
         """
         发送信息给Mech
@@ -55,7 +57,6 @@ class Hub:
             # self.client.send(sendMsg)
             sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
             msg_process(self.client, funcFlag = 1, sendmsg = sendMsg) # 信息处理并发送
-
 
 
     def thread_connect_mech(self):
@@ -80,6 +81,7 @@ class Hub:
         thread_3 = threading.Thread(target=self.connect_robot) # 连接机器人
         thread_3.setDaemon(True)
         thread_3.start()
+
 
     def connect_mech(self):
         """
@@ -148,6 +150,7 @@ class Hub:
             self.client.send(response)
             logs.info("转发给Mech的信息: {}".format(response))
 
+
     def mech_status_process(self, response):
         """
         doc: 与Mech的通讯状态处理
@@ -201,7 +204,7 @@ class Hub:
 
             # 3、将消息转发给机器人
             if self.listenRobot is None:
-                logs.info("当前没有检测到与机器人连接!正在尝试重连...")# TODO: 应当找个更合适安全的地方开启这个线程，比如保证与mech的通讯无误(比如拍个照并返回结果)
+                logs.warning("当前没有检测到与机器人连接!正在尝试重连...")# TODO: 应当找个更合适安全的地方开启这个线程，比如保证与mech的通讯无误(比如拍个照并返回结果)
                 self.thread_connect_robot()  # 开启一个线程连接机器人
                 continue
             else:

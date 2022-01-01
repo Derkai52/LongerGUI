@@ -55,7 +55,16 @@ logs = logging.getLogger("center_ui")
 logs.setLevel(logging.INFO)
 
 
+# 获取当前目录
+cur_path =  os.path.abspath(os.path.dirname(__file__))
 
+# 获取项目根目录
+root_path = cur_path[:cur_path.rindex(configObject.software_config.software_name)+len(configObject.software_config.software_name)] + "\\"
+# logs = Logger(filename=root_path + configObject.log_config.log_save_path, level=configObject.log_config.log_save_level, fmt=configObject.log_config.log_format)
+
+
+
+## 已弃用的日志类
 # class Logger(object):
 #     level_relations = {
 #         'debug':logging.DEBUG,
@@ -85,17 +94,7 @@ logs.setLevel(logging.INFO)
 #         self.logger.addHandler(sh)  # 把对象加到logger里
 #         self.logger.addHandler(th)
 
-
-
-# 获取当前目录
-cur_path =  os.path.abspath(os.path.dirname(__file__))
-
-# 获取项目根目录
-root_path = cur_path[:cur_path.rindex(configObject.software_config.software_name)+len(configObject.software_config.software_name)] + "\\"
-# logs = Logger(filename=root_path + configObject.log_config.log_save_path, level=configObject.log_config.log_save_level, fmt=configObject.log_config.log_format)
-
-
-## 测试用
+## 已弃用的测试用例
 # if __name__ == "__main__":
 #     logs = Logger('../logs/all.log_tool',level='debug')
 #     logs.logger.debug('debug')

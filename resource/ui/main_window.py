@@ -30,36 +30,30 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
         # 加载主页面日志信息
         self.logging_handler = LoggingHandler()
-        self.logging_handler.newLogging.connect(self.output_center_logger)
+        self.logging_handler.newLogging.connect(self.output_gui_logger)
         logs.addHandler(self.logging_handler)
 
 
     def init_sys(self):
         """
-        doc: 初始化主程序
-        :return:
+        doc: 初始化Hub程序
         """
         mech_interface_ip = configObject.mech_communication_config.mech_interface_ip
         mech_interface_port = configObject.mech_communication_config.mech_interface_port
         robot_server_agent_ip = configObject.robot_communication_config.robot_server_agent_ip
         robot_server_agent_port = configObject.robot_communication_config.robot_server_agent_port
-        if True:
-            client = Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port, \
-                         connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
-            client.run()  # 主程序开始运行
 
-        else:
-            print("Please input config_tool.cfg path or connect information")
-            print("Client configPath")
-            print("Client serverIP serverPort connectIP connectPort")
+        hubProcess = Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port, \
+                     connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
+        hubProcess.run()  # 主程序开始运行
+
 
 
     def start_app(self, app_name, args):
         """
-        doc: 多线程应用程序启动器
+        doc: 多线程应用程序启动器(暂未启用)
         :param app_name: 应用程序名
         :param args: 应用程序参数
-        :return: None
         """
         if self.setting_dialog.background_setting.start_programs_to_sys_tray:
             args += ["--show-mode", "1"]
@@ -79,12 +73,11 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         threading.Thread(target=self.read_app_output,
                          args=[self.sub_process_list[app_name], app_name, args[0]]).start()
 
-    def output_center_logger(self, log_level, msg):
+    def output_gui_logger(self, log_level, msg):
         """
         doc: 输出日志信息并显示到文本框
         :param log_level: 日志等级数值(int)
         :param msg: 日志信息(str)
-        :return: None
         """
         tf = self.PlainTextEdit_logText.currentCharFormat()
         tf.setForeground(
@@ -105,7 +98,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 启动程序
     @pyqtSlot()
     def on_pushButton_start_clicked(self): # TODO：应当变更为服务注册机制
-        # self.output_center_logger("wefwfes24r2t2\nwfrw4rg") # TODO: 此处必须改掉！！！！
         thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
         thread_main.setDaemon(True)  # 挂后台进程
         thread_main.start()
