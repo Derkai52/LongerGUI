@@ -11,25 +11,20 @@ class Hub:
     """
     doc:作为信息中转分发的类
     """
-    def __init__(self, configPath="", serverIP="", serverPort="", connectIP="", connectPort=""):
+    def __init__(self, serverIP="", serverPort="", connectIP="", connectPort=""):
         self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
+        self.robotServer = None    # 用于连接机器人端【用于通信的套接字】(本地作为服务端)
         self.listenRobot = None    # 用于连接机器人端【用于监听和接受客户端的连接请求的套接字】(本地作为服务端)
-        self.toRobot = None        # 用于连接机器人端【用于通信的套接字】(本地作为服务端)
-        # self.msgflag = None        # 用于标识信息类型【发送的消息:1  接收的消息:2】
 
-        if configPath == "":
-            self.serverIP = serverIP
-            self.serverPort = serverPort
-            self.connectIP = connectIP
-            self.connectPort = connectPort
-            self.mechAddr = self.serverIP + ":" + self.serverPort  # 生成Mech地址+端口
-            self.robotAddr = self.connectIP + ":" + self.connectPort # 生成Robot地址+端口
-            self.client = TcpClient(self.mechAddr) # 初始化client
-        else:
-            self.serverIP, self.serverPort, self.connect_ip, self.connect_port = \
-                configObject.mech_communication_config.mech_interface_ip, configObject.mech_communication_config.mech_interface_port,\
-                configObject.robot_communication_config.robot_server_agent_ip, configObject.robot_communication_config.robot_server_agent_port
-            # TODO: 使用文件读取生成TcpClient
+        self.serverIP = serverIP
+        self.serverPort = serverPort
+        self.connectIP = connectIP
+        self.connectPort = connectPort
+        self.mechAddr = self.serverIP + ":" + self.serverPort  # 生成Mech地址+端口
+        self.robotAddr = self.connectIP + ":" + self.connectPort # 生成Robot地址+端口
+        self.client = TcpClient(self.mechAddr) # 初始化client
+
+
 
 # TODO: shutdown是一种更加优秀的socket生命周期管理方法
     # def __del__(self):
@@ -47,7 +42,7 @@ class Hub:
         response = self.client.recv()
         logs.info("从Mech返回的连接校验值：{}".format(response))
         # 仅返回消息为 “ACC” 时，建立连接
-        if response.decode("utf-8") == '"' + "ACC" + '"':  # TODO: Warn:接受的字符串包括引号需要进行处理
+        if response.decode("utf-8") == '"' + "ACC" + '"':  # Warning:接受的字符串包括引号需要进行处理,所以此处才这么写
             return True
         return False
 
@@ -59,7 +54,7 @@ class Hub:
             # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8") # 仅供调试用
             # self.client.send(sendMsg)
             sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
-            msg_process(self.client, funcFlag = 1, sendmsg = sendMsg) # 信息处理并发送 # TODO: flag标识是处理发送信息还是接受信息
+            msg_process(self.client, funcFlag = 1, sendmsg = sendMsg) # 信息处理并发送
 
 
 
@@ -95,13 +90,15 @@ class Hub:
         self.client.reconnect_server() # 尝试重新连接到Mech
         if self.client.is_connected(): # 如果连接成功
             logs.info("请求Mech服务器成功，正在校验连接...")
-            # if self.check_detection(): # TODO:连接校验码检测
-            if True:
+            # if self.check_detection(): # TODO:进行与Mech通讯的校验检测，当前暂未启用
+            if True: # 未启用校验检测，校验返回值一定为True
                 self.thread_connect_mech()  # 开启一个线程连接到Mech
                 return True
             else:
-                logs.info("与Mech服务器连接校验失败!")
+                logs.error("与Mech服务器连接校验失败!")
+                self.client.close()
         return False
+
 
     def run(self):
         """
@@ -110,26 +107,33 @@ class Hub:
         while True:
             if self.client.is_connected():              # 如果已经连接到Mech
                 pass
-                # time.sleep(30) # 检测到已连接后的检测周期
-                # logs.info("已连接到服务端")
+
             else:                                       # 如果未连接到Mech
+                self.listenRobot = None                 # 强制关闭Robot接口监听套接字
+                self.robotServer = None                 # 强制关闭Robot接口通讯套接字
                 logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
-                self.connect_mech() # 尝试连接Mech服务器
+                if not self.connect_mech():             # 尝试连接Mech服务器
+                    continue
             # time.sleep(10) # 固定检测周期
+
 
     def connect_robot(self):
         """
         doc: 判断连接Mech标准接口是否成功
         return: 连接成功: True 连接失败: False
         """
+        # 1、开启Robot接口服务器
         try:
-            self.a = TcpServer(self.robotAddr) # TODO: 不确定是否在此初始化还是伴随Mech初始化后就初始化
+            print("机器人端口号:",self.robotAddr)
+
+            self.robotServer = TcpServer(self.robotAddr) # 不确定是否在此初始化还是伴随Mech初始化后就初始化
         except Exception as e:
             logs.error("网口未能正常启动，")
-        self.a.accept() # TODO: Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
+            return
+        self.robotServer.accept() # Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
 
 
-        self.listenRobot = self.a
+        self.listenRobot = self.robotServer
         logs.info("连接机器人成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.listenRobot._client_connect, self.listenRobot._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
         while True:
             response = self.listenRobot.recv()
@@ -137,16 +141,16 @@ class Hub:
             # time.sleep(10)
             if response == b'':
                 logs.info("关闭对机器人的连接")
-                self.a.close()
-                self.listenRobot.close() # TODO:考虑一下这里是否有用
+                self.robotServer.close()
+                self.listenRobot.close()
                 self.listenRobot = None
                 break
             self.client.send(response)
             logs.info("转发给Mech的信息: {}".format(response))
 
-    def event_mech_process(self, response):
+    def mech_status_process(self, response):
         """
-        doc: 处理来自mech的消息事件
+        doc: 与Mech的通讯状态处理
         retrun: 直接放行:1 continue:2 break:3
         """
         if response == b'':  # 丢失连接
@@ -179,26 +183,26 @@ class Hub:
         doc: Mech与机器人消息的中转站
         """
         while True:
+            # 1、从Mech获取消息
             if not self.client.is_connected(): # 如果连接丢失
                 break
             response = msg_process(self.client, 2) # 阻塞接收来自 Mech 的消息，例如b'101,1001,'# TODO:使用多线程技术完成全双工通信机制
-
             logs.info("从Mech获得的消息: {}".format(response))
 
-            processResult = self.event_mech_process(response) # Mech消息事件处理
+            # 2、Mech消息状态处理
+            processResult = self.mech_status_process(response)
             if processResult == 1: # 普通信息，直接放行
                 pass
             elif processResult == 2: # 心跳检测、正常关闭、连接验证通过
                 continue
             elif processResult == 3: # 丢失连接
                 break
-            else: logs.info("检测到BUG【可能是未经收录的事件】")
+            else: logs.info("检测到BUG【可能是未经收录的连接状态】")
 
+            # 3、将消息转发给机器人
             if self.listenRobot is None:
-                logs.info("正在连接机器人...")  # TODO: 应当找个更合适安全的地方开启这个线程，比如保证与mech的通讯无误(比如拍个照并返回结果)
-                if self.listenRobot is None:
-                    self.thread_connect_robot()  # 开启一个线程连接机器人
-                logs.info("当前没有检测到与机器人连接!")
+                logs.info("当前没有检测到与机器人连接!正在尝试重连...")# TODO: 应当找个更合适安全的地方开启这个线程，比如保证与mech的通讯无误(比如拍个照并返回结果)
+                self.thread_connect_robot()  # 开启一个线程连接机器人
                 continue
             else:
                 try:
