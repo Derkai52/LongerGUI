@@ -51,27 +51,23 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
     def start_app(self, app_name, args):
         """
-        doc: 多线程应用程序启动器(暂未启用)
+        doc: 多线程应用程序启动器
         :param app_name: 应用程序名
         :param args: 应用程序参数
         """
-        if self.setting_dialog.background_setting.start_programs_to_sys_tray:
-            args += ["--show-mode", "1"]
-
+        # if self.setting_dialog.background_setting.start_programs_to_sys_tray:
+        #     args += ["--show-mode", "1"]
+        print(args[0])
         if not os.path.exists(args[0]):
-            # critical_box(self, text=self.tr("Please set {} path.").format(app_name))
-            print("请先设置应用程序路径！")
+            critical_box(self, text=self.tr("请先设置应用程序 {} 路径.").format(app_name))
             return None
-        if self.is_app_started(app_name):
-            # critical_box(self, text=self.tr("The {} is already running.").format(app_name))
-            print("该应用程序已运行！")
-            return None
-        self.sub_process_list[app_name] = subprocess.Popen(args, creationflags=subprocess.CREATE_NEW_CONSOLE,
-                                                           stdout=subprocess.PIPE,
-                                                           stderr=subprocess.STDOUT, shell=True)
+        os.popen(args[0])
+        # self.sub_process_list[app_name] = subprocess.Popen(args, creationflags=subprocess.CREATE_NEW_CONSOLE,
+        #                                                    stdout=subprocess.PIPE,
+        #                                                    stderr=subprocess.STDOUT, shell=True)
 
-        threading.Thread(target=self.read_app_output,
-                         args=[self.sub_process_list[app_name], app_name, args[0]]).start()
+        # threading.Thread(target=self.read_app_output,
+        #                  args=[self.sub_process_list[app_name], app_name, args[0]]).start()
 
     def output_gui_logger(self, log_level, msg):
         """
@@ -105,37 +101,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.pushButton_start.setEnabled(False) # 检测到按下后就不可使用
 
 
-    # 菜单栏/帮助/关于
-    @pyqtSlot()
-    def on_action_about_triggered(self):
-        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".\
-                        format(configObject.software_config.software_version))
-
-    # 菜单栏/帮助/文档
-    @pyqtSlot()
-    def on_action_docs_triggered(self):
-        # is_english = self.setting_dialog.current_language_name() == QLocale(QLocale.English).name() # 若不考虑做国际化语言，可忽略
-        # change_log_file = "change_log.html" if is_english else "change_log_zh.html"
-        change_log_file = configObject.other_config.update_doc_name
-        QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),"..","update_logs", change_log_file)))
-        print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
-
-    # 设置/系统设置
-    @pyqtSlot()
-    def on_action_systemSetting_triggered(self):
-        self.Setting_dialog.show()
-        self.label_status.setStyleSheet("color: rgb(255, 0, 0);\n"
-                                        "font: 48pt \"Constantia\";\n"
-                                        "border-width: 0px;")
-        self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过标志变量获取
-        # TODO: 连接至子窗口(设置页)
-
-    # 设置/登录权限
-    @pyqtSlot()
-    def on_action_loginAuthority_triggered(self):
-        Login_Dialog = LoginDialog(True) # 权限切换页面
-        Login_Dialog.exec()
-        print("登录权限")
 
     def setImage(self, image): # 指定在 label 中显示
         self.label_leftImage.setPixmap(QPixmap.fromImage(image))
@@ -159,7 +124,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         if flag == 2:
             self.label_rightImage.setPixmap(png)
 
-
     # 文件/打开
     @pyqtSlot()
     def on_action_openFile_triggered(self):
@@ -173,3 +137,42 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         print("保存了文件")
         self.imageprocessing(2)
         # TODO: 可能保存的是配置或日志文件，目前暂不能明确
+
+    # 设置/系统设置
+    @pyqtSlot()
+    def on_action_systemSetting_triggered(self):
+        self.Setting_dialog.show()
+        self.label_status.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                        "font: 48pt \"Constantia\";\n"
+                                        "border-width: 0px;")
+        self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过标志变量获取
+        # TODO: 连接至子窗口(设置页)
+
+    # 设置/登录权限
+    @pyqtSlot()
+    def on_action_loginAuthority_triggered(self):
+        Login_Dialog = LoginDialog(True) # 权限切换页面
+        Login_Dialog.exec()
+        print("登录权限")
+
+    # 工具/通信测试助手
+    @pyqtSlot()
+    def on_action_communicationTest_triggered(self):
+        # bg_setting = self.setting_dialog.background_setting
+        # if bg_setting.is_viz_needed:
+        self.start_app("communication_assistant", [os.path.join(os.path.dirname(__file__), "..","..", "util","test", "NetAssist.exe")])
+
+    # 菜单栏/帮助/关于
+    @pyqtSlot()
+    def on_action_about_triggered(self):
+        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".\
+                        format(configObject.software_config.software_version))
+
+    # 菜单栏/帮助/文档
+    @pyqtSlot()
+    def on_action_docs_triggered(self):
+        # is_english = self.setting_dialog.current_language_name() == QLocale(QLocale.English).name() # 若不考虑做国际化语言，可忽略
+        # change_log_file = "change_log.html" if is_english else "change_log_zh.html"
+        change_log_file = configObject.other_config.update_doc_name
+        QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),"..","update_logs", change_log_file)))
+        print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
