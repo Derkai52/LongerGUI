@@ -1,10 +1,14 @@
 import logging
-from logging import handlers
+from logging.handlers import TimedRotatingFileHandler
 import os
 import time
 
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
 from util.generator import configObject
+
+# 默认日志存储位置
+default_log_dir = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
+
 
 # 颜色用于区分日志等级
 COLORS = {
@@ -17,7 +21,7 @@ COLORS = {
 
 class ColoredFormatter(logging.Formatter):
     """
-    日志格式生成器(可带颜色)
+    日志格式生成(可带颜色)
     颜色详情参阅COLORS字典
     """
     def __init__(self, msg, use_color=True):
@@ -34,7 +38,7 @@ class ColoredFormatter(logging.Formatter):
 
 class LoggingHandler(QObject, logging.Handler):
     """
-    日志处理器生成器
+    日志处理器生成
     """
     newLogging = pyqtSignal(int, str)
 
@@ -42,7 +46,7 @@ class LoggingHandler(QObject, logging.Handler):
         QObject.__init__(self)
         logging.Handler.__init__(self, level=level)
         try:
-            formatter = ColoredFormatter('%(asctime)s.%(msecs)03d %(levelname)s %(message)s') # TODO:格式应从配置文件读取
+            formatter = ColoredFormatter('%(asctime)s.%(msecs)03d %(levelname)s %(message)s') # 日志格式
             self.setFormatter(formatter)
         except IndexError:
             pass
@@ -51,18 +55,42 @@ class LoggingHandler(QObject, logging.Handler):
         msg = self.format(record)
         self.newLogging.emit(record.levelno, msg)
 
-logs = logging.getLogger("center_ui")
-logs.setLevel(logging.INFO)
+
+def create_file_logger(log_dir=default_log_dir, log_level = logging.DEBUG, file_name_prefix="longer_", name=None):
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+    logger = logging.getLogger(name)
+    logger.setLevel(log_level)
+    filename = os.path.join(log_dir, file_name_prefix) + time.strftime("%Y-%m-%d") + ".html" # 以日期为单位分隔日志
+
+    file_handler = TimedRotatingFileHandler(filename, when='D', interval=1,
+                                   encoding="utf-8", backupCount=7)
+    file_handler.file_name_prefix = file_name_prefix
+    color_format = '<p style="margin-top:0px; margin-bottom:0px;font-family:serif;font-weight:bold;">' \
+                   ' %(asctime)s.%(msecs)03d <span style=" color:#%(color)s%(levelname)s %(threadName)s %(filename)s' \
+                   ' %(lineno)d: %(message)s</span></p>'
+    color_formatter = ColoredFormatter(color_format)
+
+    file_handler.setFormatter(color_formatter)
+
+    logger.addHandler(file_handler)
+    return logger
 
 
-# 获取当前目录
-cur_path =  os.path.abspath(os.path.dirname(__file__))
 
-# 获取项目根目录
-root_path = cur_path[:cur_path.rindex(configObject.software_config.software_name)+len(configObject.software_config.software_name)] + "\\"
+log_record = create_file_logger() # 用于写入文本
+logs = logging.getLogger("longer_ui")
+
+logs.setLevel(logging.INFO) # 生产模式默认使用这行
+# logs.setLevel(logging.DEBUG) # 管理员调试模式可使用这一行
+
+
+
+
+# 获取项目根目录(已弃用)
+# cur_path =  os.path.abspath(os.path.dirname(__file__)) # 获取当前目录
+# root_path = cur_path[:cur_path.rindex(configObject.software_config.software_name)+len(configObject.software_config.software_name)] + "\\"
 # logs = Logger(filename=root_path + configObject.log_config.log_save_path, level=configObject.log_config.log_save_level, fmt=configObject.log_config.log_format)
-
-
 
 ## 已弃用的日志类
 # class Logger(object):

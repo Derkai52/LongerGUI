@@ -130,7 +130,7 @@ class Hub:
 
             self.robotServer = TcpServer(self.robotAddr) # 不确定是否在此初始化还是伴随Mech初始化后就初始化
         except Exception as e:
-            logs.error("网口未能正常启动，")
+            logs.error("网口未能正常启动")
             return
         self.robotServer.accept() # Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
 
