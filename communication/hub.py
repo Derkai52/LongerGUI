@@ -1,4 +1,4 @@
-import sys
+import sys, time
 import threading
 import configparser
 from communite import TcpServer, TcpClient
@@ -42,12 +42,19 @@ class Hub:
         doc:校验检测
         return: 校验成功:True 校验失败:False
         """
-        response = self.client.recv()
-        logs.debug("从Mech返回的连接校验值：{}".format(response))
-        # 仅返回消息为 “ACC” 时，建立连接
-        if response.decode("utf-8") == '"' + "ACC" + '"':  # Warning:接受的字符串包括引号需要进行处理,所以此处才这么写
-            return True
-        return False
+        # sendMsg =   # 用于检查Mech准备状态
+        try:
+            self.client.send(bytes("901", encoding="UTF8"))
+            response = self.client.recv()
+            logs.debug("从Mech返回的连接校验值：{}".format(response))
+
+            # 仅返回消息也符合Inter-face协议报文 “901” 时，建立连接
+            if response.decode("utf-8").split(",")[0] == "901":  # Warning: 目前的校验值可能会随着Mech版本变更而失效
+                return True
+            return False
+        except Exception:
+            logs.error("校验检测错误，请检查通讯或校验码是否有效！")
+            return False
 
 
     def send_to_mech(self):
@@ -59,9 +66,7 @@ class Hub:
             # self.client.send(sendMsg)
             if self.client.is_connected():
                 sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
-            else:
-                sendMsg = "901" # 用于检查Mech准备状态
-            msg_process(self.client, sendMsg, funcFlag = 1) # 信息处理并发送
+                msg_process(self.client, sendMsg, funcFlag = 1) # 信息处理并发送
 
 
     def thread_connect_mech(self):
@@ -98,8 +103,7 @@ class Hub:
         self.client.reconnect_server() # 尝试重新连接到Mech
         if self.client.is_connected(): # 如果连接成功
             logs.info("请求Mech服务器成功，正在校验连接...")
-            # if self.check_detection(): # TODO:进行与Mech通讯的校验检测，当前暂未启用
-            if True: # 未启用校验检测，校验返回值一定为True
+            if self.check_detection(): # 连接校验
                 self.thread_connect_mech()  # 开启一个线程连接到Mech
                 return True
             else:
@@ -113,6 +117,8 @@ class Hub:
         doc:持续循环检测与Mech的连接状态，可断线重连。
         """
         while True:
+            time.sleep(2) # 固定检测周期(可能会导致进程间状态不同步)
+
             if self.client.is_connected():              # 如果已经连接到Mech
                 pass
 
@@ -122,7 +128,6 @@ class Hub:
                 logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
                 if not self.connect_mech():             # 尝试连接Mech服务器
                     continue
-            # time.sleep(10) # 固定检测周期
 
 
     def connect_robot(self):
