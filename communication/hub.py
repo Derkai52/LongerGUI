@@ -16,7 +16,6 @@ class Hub:
         self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
         self.robotServer = None    # 用于连接机器人端【用于通信的套接字】(本地作为服务端)
         self.listenRobot = None    # 用于连接机器人端【用于监听和接受客户端的连接请求的套接字】(本地作为服务端)
-        self.is_connect_mech = False # 判断是否连接到Mech端
         self.is_connect_robot = False # 判断是否连接到机器人端
 
         self.serverIP = serverIP
