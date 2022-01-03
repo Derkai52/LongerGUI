@@ -23,8 +23,7 @@ class Hub:
         self.connectPort = connectPort
         self.mechAddr = self.serverIP + ":" + self.serverPort  # 生成Mech地址+端口
         self.robotAddr = self.connectIP + ":" + self.connectPort # 生成Robot地址+端口
-        self.client = TcpClient(self.mechAddr) # 初始化client
-
+        self.client = TcpClient(self.mechAddr) # 初始化Mech标准通讯接口
 
 
 # TODO: shutdown是一种更加优秀的socket生命周期管理方法
@@ -34,6 +33,7 @@ class Hub:
     #     if self.robotServer is not None:
     #         self.robotServer.shutdown(socket.SHUT_WR)
     #         self.robotServer.close()
+
     def run(self):
         """
         doc:持续循环检测与Mech的连接状态，可断线重连。
@@ -57,15 +57,14 @@ class Hub:
         doc:校验检测,用于检查Mech准备状态
         return: 校验成功:True 校验失败:False
         """
-
         try:
-            self.client.send(bytes("901", encoding="UTF8"))
+            self.client.send(bytes("901", encoding="utf-8"))
             response = self.client.recv()
             logs.debug("从Mech返回的连接校验值：{}".format(response))
 
             # 仅返回消息也符合Standrad-InterFace协议报文 “901” 时，建立连接
-            if response.decode("utf-8").split(",")[0] == "901":  # Warning: 目前的校验值可能会随着Mech版本变更而失效
-                self.thread_connect_robot()  # 开启一个线程提供机器人接口
+            if response.decode("utf-8").split(",")[0] == "901":  # Warning: 目前的校验值可能会随着Mech版本变更而失效，请以实际Mech软件版本为准
+                self.thread_connect_robot()  # 开启新线程提供机器人接口
                 return True
             return False
         except Exception:
@@ -179,7 +178,7 @@ class Hub:
 
 
         elif response == jk.CloseMsg: # 接受到关闭信号
-            logs.warning("接收到关闭信号，将关闭socket连接")
+            logs.warning("接收到关闭信号，将关闭Socket连接")
             if self.robotServer is not None:
                 self.robotServer.close()
                 self.robotServer = None
@@ -216,14 +215,15 @@ class Hub:
         """
         # 1、开启Robot接口服务器
         try:
-            logs.debug("机器人接口信息:{}".format(self.robotAddr))
             self.robotServer = TcpServer(self.robotAddr) # 不确定是否在此初始化还是伴随Mech初始化后就初始化
+            logs.info("已开启机器人接口:{},等待机器人连接...".format(self.robotAddr))
+
         except Exception as e:
             logs.error("网口未能正常启动{}".format(e))
             return
         self.robotServer.accept() # Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
-
-        logs.info("机器人连接成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.robotServer._client_connect, self.robotServer._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
+        logs.info("机器人连接成功! ")
+        logs.debug("机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.robotServer._client_connect, self.robotServer._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
         while True:
             response = self.robotServer.recv()
             logs.debug("从机器人端收到的消息为: {}".format(response))
