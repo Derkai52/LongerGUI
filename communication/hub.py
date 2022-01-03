@@ -34,6 +34,22 @@ class Hub:
     #     if self.robotServer is not None:
     #         self.robotServer.shutdown(socket.SHUT_WR)
     #         self.robotServer.close()
+    def run(self):
+        """
+        doc:持续循环检测与Mech的连接状态，可断线重连。
+        """
+        while True:
+            time.sleep(2) # 固定检测周期(可能会导致进程间状态不同步)
+
+            if self.client.is_connected():              # 如果已经连接到Mech
+                pass
+
+            else:                                       # 如果未连接到Mech
+                self.robotServer = None                 # 强制关闭Robot接口监听套接字
+                self.robotServer = None                 # 强制关闭Robot接口通讯套接字
+                logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
+                if not self.connect_mech():             # 尝试连接Mech服务器
+                    continue
 
 
     def check_detection(self):
@@ -57,16 +73,23 @@ class Hub:
             return False
 
 
-    def send_to_mech(self):
+    def connect_mech(self):
         """
-        发送信息给Mech
+        doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于
+        return: 连接成功: True 连接失败: False
         """
-        while True:
-            # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8") # 仅供调试用
-            # self.client.send(sendMsg)
-            if self.client.is_connected():
-                sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
-                msg_process(self.client, sendMsg, funcFlag = 1) # 信息处理并发送
+        logs.debug("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
+
+        self.client.reconnect_server() # 尝试重新连接到Mech
+        if self.client.is_connected():
+            logs.info("请求Mech服务器成功，正在校验连接...")
+            if self.check_detection(): # 连接校验
+                self.thread_connect_mech()  # 开启一个线程连接到Mech
+                return True
+            else:
+                logs.error("与Mech服务器连接校验失败!")
+                self.client.close()
+        return False
 
 
     def thread_connect_mech(self):
@@ -82,111 +105,6 @@ class Hub:
         thread_2.setDaemon(True)
         thread_2.start()
         logs.debug("连接Mech成功!【发送】")
-
-
-    def thread_connect_robot(self):
-        """
-        doc:开启线程维持对Robot的连接
-        """
-        thread_3 = threading.Thread(target=self.connect_robot) # 开启机器人接口
-        thread_3.setDaemon(True)
-        thread_3.start()
-
-
-    def connect_mech(self):
-        """
-        doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于
-        return: 连接成功: True 连接失败: False
-        """
-        logs.debug("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
-
-        self.client.reconnect_server() # 尝试重新连接到Mech
-        if self.client.is_connected(): # 如果连接成功
-            logs.info("请求Mech服务器成功，正在校验连接...")
-            if self.check_detection(): # 连接校验
-                self.thread_connect_mech()  # 开启一个线程连接到Mech
-                return True
-            else:
-                logs.error("与Mech服务器连接校验失败!")
-                self.client.close()
-        return False
-
-
-    def run(self):
-        """
-        doc:持续循环检测与Mech的连接状态，可断线重连。
-        """
-        while True:
-            time.sleep(2) # 固定检测周期(可能会导致进程间状态不同步)
-
-            if self.client.is_connected():              # 如果已经连接到Mech
-                pass
-
-            else:                                       # 如果未连接到Mech
-                self.robotServer = None                 # 强制关闭Robot接口监听套接字
-                self.robotServer = None                 # 强制关闭Robot接口通讯套接字
-                logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
-                if not self.connect_mech():             # 尝试连接Mech服务器
-                    continue
-
-
-    def connect_robot(self):
-        """
-        doc: 判断连接Mech标准接口是否成功
-        return: 连接成功: True 连接失败: False
-        """
-        # 1、开启Robot接口服务器
-        try:
-            logs.debug("机器人接口信息:{}".format(self.robotAddr))
-            self.robotServer = TcpServer(self.robotAddr) # 不确定是否在此初始化还是伴随Mech初始化后就初始化
-        except Exception as e:
-            logs.error("网口未能正常启动{}".format(e))
-            return
-        self.robotServer.accept() # Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
-
-        logs.info("机器人连接成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.robotServer._client_connect, self.robotServer._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
-        while True:
-            response = self.robotServer.recv()
-            logs.debug("从机器人端收到的消息为: {}".format(response))
-
-            if response == jk.LostConnectMsg:
-                logs.info("关闭对机器人接口")
-                self.robotServer.close()
-                self.robotServer = None
-                break
-            self.client.send(response)
-            logs.debug("转发给Mech的信息: {}".format(response))
-
-
-    def mech_status_process(self, response):
-        """
-        doc: 与Mech的通讯状态检测
-        retrun: 直接放行:1 continue:2 break:3
-        """
-
-        if response == jk.LostConnectMsg:  # 丢失连接或通讯异常
-            logs.warning("丢失与Mech服务器的连接")
-            self.client.close()
-            self.client = None
-            return 3
-
-        elif response == jk.FormatErrorMsg:  # 消息格式错误
-            logs.warning("请检查与Mech通讯信息格式是否符合要求")
-            return 2
-
-        elif response == jk.HeartbeatMsg:  # 心跳检测
-            logs.debug("心跳检测")
-            return 2
-
-
-        elif response == jk.CloseMsg: # 接受到关闭信号
-            logs.warning("接收到关闭信号，将关闭socket连接")
-            if self.robotServer is not None:
-                self.robotServer.close()
-                self.robotServer = None
-            return 2
-
-        return 1
 
 
     def client_process(self):
@@ -237,3 +155,83 @@ class Hub:
                     logs.debug("发送给机器人: {}".format(response))
                 except Exception as e:
                     print(e)
+
+
+    def mech_status_process(self, response):
+        """
+        doc: 与Mech的通讯状态检测
+        retrun: 直接放行:1 continue:2 break:3
+        """
+
+        if response == jk.LostConnectMsg:  # 丢失连接或通讯异常
+            logs.warning("丢失与Mech服务器的连接")
+            self.client.close()
+            self.client = None
+            return 3
+
+        elif response == jk.FormatErrorMsg:  # 消息格式错误
+            logs.warning("请检查与Mech通讯信息格式是否符合要求")
+            return 2
+
+        elif response == jk.HeartbeatMsg:  # 心跳检测
+            logs.debug("心跳检测")
+            return 2
+
+
+        elif response == jk.CloseMsg: # 接受到关闭信号
+            logs.warning("接收到关闭信号，将关闭socket连接")
+            if self.robotServer is not None:
+                self.robotServer.close()
+                self.robotServer = None
+            return 2
+
+        return 1
+
+
+    def send_to_mech(self):
+        """
+        发送信息给Mech
+        """
+        while True:
+            # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8") # 仅供调试用
+            # self.client.send(sendMsg)
+            if self.client.is_connected():
+                sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
+                msg_process(self.client, sendMsg, funcFlag = 1) # 信息处理并发送
+
+
+    def thread_connect_robot(self):
+        """
+        doc:开启线程维持对Robot的连接
+        """
+        thread_3 = threading.Thread(target=self.connect_robot) # 开启机器人接口
+        thread_3.setDaemon(True)
+        thread_3.start()
+
+
+    def connect_robot(self):
+        """
+        doc: 判断连接Mech标准接口是否成功
+        return: 连接成功: True 连接失败: False
+        """
+        # 1、开启Robot接口服务器
+        try:
+            logs.debug("机器人接口信息:{}".format(self.robotAddr))
+            self.robotServer = TcpServer(self.robotAddr) # 不确定是否在此初始化还是伴随Mech初始化后就初始化
+        except Exception as e:
+            logs.error("网口未能正常启动{}".format(e))
+            return
+        self.robotServer.accept() # Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
+
+        logs.info("机器人连接成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.robotServer._client_connect, self.robotServer._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
+        while True:
+            response = self.robotServer.recv()
+            logs.debug("从机器人端收到的消息为: {}".format(response))
+
+            if response == jk.LostConnectMsg:
+                logs.info("关闭对机器人接口")
+                self.robotServer.close()
+                self.robotServer = None
+                break
+            self.client.send(response)
+            logs.debug("转发给Mech的信息: {}".format(response))
