@@ -57,7 +57,7 @@ class Hub:
         while True:
             # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8") # 仅供调试用
             # self.client.send(sendMsg)
-            if self.is_connect_mech:
+            if self.client.is_connected():
                 sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
             else:
                 sendMsg = "901" # 用于检查Mech准备状态
@@ -198,17 +198,23 @@ class Hub:
         doc: 将Mech信息转发给机器人
         """
         while True:
-            if not self.client.is_connected(): # 如果连接丢失
-                break
 
             # 1、从Mech获取消息
-            recv_mech_msg = self.client.recv()
+            try:
+                if not self.client.is_connected():  # 如果连接丢失
+                    break
+                recv_mech_msg = self.client.recv()
 
-            # 3、通讯事件处理
+            except Exception as e:
+                self.client.close()
+                logs.warning("与Mech的连接中断")
+                return
+
+            # 2、通讯事件处理
             response = msg_process(self.client,recv_mech_msg, funcFlag=2) # 阻塞接收来自 Mech 的消息，例如b'101,1001,'# TODO:使用多线程技术完成全双工通信机制
 
 
-            # 2、Mech通讯状态检测
+            # 3、Mech通讯状态检测
             processResult = self.mech_status_process(response)
             if processResult == 1: # 普通信息，直接放行
                 pass
