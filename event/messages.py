@@ -202,7 +202,7 @@ def event_logging(event_code):
     try:
         log_content = adapter_message_dict()[event_code]
     except Exception as e: # 解析错误或事件码未收录
-        logs.error(e)
+        logs.error("未收录的事件类型:{}".format(event_code))
     level, content = log_content[0], log_content[1]
     if level == "DEBUG":
         logs.debug(content)

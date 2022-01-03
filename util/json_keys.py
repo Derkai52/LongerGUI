@@ -42,6 +42,13 @@ update_doc_name = "update_doc_name"
 pwd = "pwd"
 user_type = "user_type"
 
+
+HeartbeatMsg = b"Heartbeat"
+CheckCodeMsg = b"#CONNECT"
+CloseMsg = b'#CLOSE'
+FormatErrorMsg = None
+LostConnectMsg = b''
+
 ######################################### 尚未启用 #################
 # background_program = "background_program"
 # adapter = "adapter"

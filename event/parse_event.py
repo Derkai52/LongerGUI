@@ -252,19 +252,20 @@ def send_msg(client, msg):
     client.send(msg)
 
 
-def recv_test(client):
+def parse_mech_msg(recv_cmds):
     """
     doc: 对Mech发送过来的信息进行事件处理
-    :param client: socket套接字对象
+    :param recv_cmds: 待处理的Mech信息
     :return: Mech发送过来的信息
     """
-    # 接收消息并解析
-    recv_cmds = client.recv()
+
+    # 解析通讯消息
     try:
         recv_cmd, status_code = unpack_params(recv_cmds[:8], fmt="2i")
-    except Exception as e:
-        logs.error("\n接收消息解析错误:{}".format(e))
-    print("\n从Mech接收的状态码={}, 事件: {}".format(status_code, event_logging(status_code)))
+        print("\n从Mech接收的状态码={}, 事件: {}".format(status_code, event_logging(status_code)))
+    except Exception:
+        logs.error("接收消息解析错误:{}".format(recv_cmds))
+        return
 
     # 获取Vision/Viz结果
     if recv_cmd in (cmds.GET_VISION_DATA, cmds.GET_VIZ_DATA) and status_code in (VISION_HAS_POSES, VIZ_FINISHED):
@@ -313,21 +314,21 @@ def parsing_send_msg(sendmsg):
 
 
 
-def msg_process(socket_object, funcFlag, sendmsg=None):
+def msg_process(socket_object, msg, funcFlag):
     """
     doc: 对输入的信息进行处理，转化为可用的信息(注意，此函数已被多线程调用，请勿在未加锁下使用全局变量，)
     :param socket_object: socket套接字对象
+    :param msg: 待处理的信息
     :param funcFlag: 1:信息处理并发送 2:信息处理并接受
-    :param sendmsg: 待处理的信息
     :return: funcFlag=1:None  funcFlag=2:接收的消息
     """
 
     if funcFlag == 1: # 发送信息
         # 1、消息解析 -> 指令码 + 参数
         try:
-            cmd, params = parsing_send_msg(sendmsg)
+            cmd, params = parsing_send_msg(msg)
         except Exception as e:
-            logs.error("信息解析错误:{}".format(sendmsg))
+            logs.error("信息解析错误:{}".format(msg))
             return
 
         # 2、指令表验证
@@ -335,20 +336,23 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
             logs.error("指令表未查找到此指令:{}".format(cmd))
             return
 
-        # 3、信息打包
+        # 3、信息打包与参数格式检查
         if cmd not in (cmds.STOP_VIZ, cmds.GET_DO_LIST, cmds.GET_STATUSES):  # 需要额外输入参数的情况
-            # print("指令帮助信息:",params_descs()[cmd])
             try:
                 params = command_func_dict[cmd](params) # 打包传入命令转化为可发送信息
+
             except Exception as e:
                 logs.error("待发送信息打包失败:{}".format(e))
                 return
+        else:  # 不需要额外输入参数的情况
+            params = bytes(params, encoding='utf-8')
+
 
         if not is_ascii: # 如果是Hex格式
             params += bytearray([0x00] * (36 - len(params)))  # 自动补齐
 
         if params == None: # TODO:建议做好所有消息的暴力测试，防止有错误处理遗漏的
-            logs.error("待发送信息解析失败:{}".format(sendmsg))
+            logs.error("待发送信息解析失败:{}".format(msg))
             return
 
         # 4、信息发送
@@ -357,7 +361,7 @@ def msg_process(socket_object, funcFlag, sendmsg=None):
 
 
     elif funcFlag == 2: # 接受信息
-        recvmsg = recv_test(socket_object)
+        recvmsg = parse_mech_msg(msg)
         return recvmsg
 
     else:
