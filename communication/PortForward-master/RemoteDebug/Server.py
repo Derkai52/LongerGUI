@@ -58,15 +58,15 @@ class Server:
             elif response == b"Heartbeat":
                 continue
             else:
-                output("Accept outside listenRobot connect: %s %s" % (client, addr))
+                output("Accept outside robotServer connect: %s %s" % (client, addr))
                 if self.client is None:
                     output("Client don't connect, please wait")
                     continue
                 self.ssh = client
 
-                output("Send connect listenRobot sign to client")
+                output("Send connect robotServer sign to client")
                 self.client.send("#CONNECT".encode("utf-8"))
-                output("Send outside listenRobot version information to intranet client: %s" % response)
+                output("Send outside robotServer version information to intranet client: %s" % response)
                 self.client.send(response)
 
                 thread = threading.Thread(target=self.outside_ssh_process)
@@ -79,7 +79,7 @@ class Server:
             response = self.client.recv(1024)
             output("Receive data for intranet client: %d " % len(response))
             if response == b'':
-                output("Shutdown outside listenRobot")
+                output("Shutdown outside robotServer")
                 self.client.close()
                 self.client = None
                 break
@@ -88,18 +88,18 @@ class Server:
             if self.intranet_version is None:
                 self.intranet_version = response
             if self.ssh is None:
-                output("Outside listenRobot don't connect, error")
+                output("Outside robotServer don't connect, error")
             else:
                 self.ssh.send(response)
-                output("Send to outside listenRobot: %d" % len(response))
+                output("Send to outside robotServer: %d" % len(response))
 
     def outside_ssh_process(self):
-        output("Start outside listenRobot listen")
+        output("Start outside robotServer listen")
         while True:
             response = self.ssh.recv(1024)
-            output("Receive data from outside listenRobot: %d" % len(response))
+            output("Receive data from outside robotServer: %d" % len(response))
             if response == b'':
-                output("Shutdown outside listenRobot")
+                output("Shutdown outside robotServer")
                 self.ssh.shutdown(socket.SHUT_WR)
                 self.ssh.close()
                 self.ssh = None

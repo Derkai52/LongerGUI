@@ -14,8 +14,7 @@ class Hub:
     """
     def __init__(self, serverIP="", serverPort="", connectIP="", connectPort=""):
         self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
-        self.robotServer = None    # 用于连接机器人端【用于通信的套接字】(本地作为服务端)
-        self.listenRobot = None    # 用于连接机器人端【用于监听和接受客户端的连接请求的套接字】(本地作为服务端)
+        self.robotServer = None    # 用于连接机器人端(本地作为服务端)
         self.is_connect_robot = False # 判断是否连接到机器人端
 
         self.serverIP = serverIP
@@ -32,24 +31,25 @@ class Hub:
     # def __del__(self):
     #     self.client.shutdown(socket.SHUT_WR)
     #     self.client.close()
-    #     if self.listenRobot is not None:
-    #         self.listenRobot.shutdown(socket.SHUT_WR)
-    #         self.listenRobot.close()
+    #     if self.robotServer is not None:
+    #         self.robotServer.shutdown(socket.SHUT_WR)
+    #         self.robotServer.close()
 
 
     def check_detection(self):
         """
-        doc:校验检测
+        doc:校验检测,用于检查Mech准备状态
         return: 校验成功:True 校验失败:False
         """
-        # sendMsg =   # 用于检查Mech准备状态
+
         try:
             self.client.send(bytes("901", encoding="UTF8"))
             response = self.client.recv()
             logs.debug("从Mech返回的连接校验值：{}".format(response))
 
-            # 仅返回消息也符合Inter-face协议报文 “901” 时，建立连接
+            # 仅返回消息也符合Standrad-InterFace协议报文 “901” 时，建立连接
             if response.decode("utf-8").split(",")[0] == "901":  # Warning: 目前的校验值可能会随着Mech版本变更而失效
+                self.thread_connect_robot()  # 开启一个线程提供机器人接口
                 return True
             return False
         except Exception:
@@ -88,7 +88,7 @@ class Hub:
         """
         doc:开启线程维持对Robot的连接
         """
-        thread_3 = threading.Thread(target=self.connect_robot) # 连接机器人
+        thread_3 = threading.Thread(target=self.connect_robot) # 开启机器人接口
         thread_3.setDaemon(True)
         thread_3.start()
 
@@ -123,7 +123,7 @@ class Hub:
                 pass
 
             else:                                       # 如果未连接到Mech
-                self.listenRobot = None                 # 强制关闭Robot接口监听套接字
+                self.robotServer = None                 # 强制关闭Robot接口监听套接字
                 self.robotServer = None                 # 强制关闭Robot接口通讯套接字
                 logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
                 if not self.connect_mech():             # 尝试连接Mech服务器
@@ -144,18 +144,15 @@ class Hub:
             return
         self.robotServer.accept() # Warning:默认设置的是最大仅允许1个套接字接入(.listen(1))
 
-
-        self.listenRobot = self.robotServer
-        logs.info("连接机器人成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.listenRobot._client_connect, self.listenRobot._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
+        logs.info("机器人连接成功! 机器人套接字信息已获取，为:{}, 机器人IP信息为:{}".format(self.robotServer._client_connect, self.robotServer._remote_addr)) # TODO:得想个更好的办法拿到机器人的套接字信息
         while True:
-            response = self.listenRobot.recv()
+            response = self.robotServer.recv()
             logs.debug("从机器人端收到的消息为: {}".format(response))
-            # time.sleep(10)
-            if response == b'':
-                logs.info("关闭对机器人的连接")
+
+            if response == jk.LostConnectMsg:
+                logs.info("关闭对机器人接口")
                 self.robotServer.close()
-                self.listenRobot.close()
-                self.listenRobot = None
+                self.robotServer = None
                 break
             self.client.send(response)
             logs.debug("转发给Mech的信息: {}".format(response))
@@ -181,18 +178,12 @@ class Hub:
             logs.debug("心跳检测")
             return 2
 
-        elif response == jk.CheckCodeMsg:  # 连接验证码通过
-            logs.info("连接验证通过")
-            # logs.info("正在连接机器人...")
-            # if self.listenRobot is None:
-            #     self.thread_connect_robot()  # 开启一个线程连接机器人
-            return 2
 
         elif response == jk.CloseMsg: # 接受到关闭信号
             logs.warning("接收到关闭信号，将关闭socket连接")
-            if self.listenRobot is not None:
-                self.listenRobot.close()
-                self.listenRobot = None
+            if self.robotServer is not None:
+                self.robotServer.close()
+                self.robotServer = None
             return 2
 
         return 1
@@ -236,13 +227,13 @@ class Hub:
 
 
             # 4、将消息转发给机器人
-            if self.listenRobot is None:
+            if self.robotServer is None:
                 logs.warning("当前没有检测到与机器人连接!正在尝试重连...")# TODO: 应当找个更合适安全的地方开启这个线程，比如保证与mech的通讯无误(比如拍个照并返回结果)
                 self.thread_connect_robot()  # 开启一个线程连接机器人
                 continue
             else:
                 try:
-                    self.listenRobot.send(response)
+                    self.robotServer.send(response)
                     logs.debug("发送给机器人: {}".format(response))
                 except Exception as e:
                     print(e)
