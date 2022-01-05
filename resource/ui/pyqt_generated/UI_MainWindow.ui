@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>800</height>
+    <width>1142</width>
+    <height>726</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -420,71 +420,73 @@ color: rgb(255, 255, 255);</string>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5">
-          <item>
-           <widget class="QLabel" name="label_text_displayImage">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>21</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">border-width: 0px;
-</string>
-            </property>
-            <property name="text">
-             <string> 显示图像</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <widget class="QStackedWidget" name="stackedWidget_display">
+          <property name="currentIndex">
+           <number>1</number>
+          </property>
+          <widget class="QWidget" name="page_vision_2D" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QLabel" name="label_leftImage">
+             <widget class="QLabel" name="label_text_displayImage">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>21</height>
+               </size>
+              </property>
               <property name="styleSheet">
-               <string notr="true">border-width: 1px;
-border-style: solid;
+               <string notr="true">border-width: 0px;
 </string>
               </property>
               <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap>../Documents/WeChat Files/wxid_r0610j6pol3u21/FileStorage/File/2021-12/Image01.jpg</pixmap>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
+               <string> 显示图像</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_rightImage">
-              <property name="styleSheet">
-               <string notr="true">border-width: 1px;
+             <layout class="QHBoxLayout" name="horizontalLayout_9">
+              <item>
+               <widget class="QLabel" name="label_rightImage">
+                <property name="styleSheet">
+                 <string notr="true">border-width: 1px;
 border-style: solid;
 </string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap>../Documents/WeChat Files/wxid_r0610j6pol3u21/FileStorage/File/2021-12/Image02.jpg</pixmap>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="pixmap">
+                 <pixmap>../Documents/WeChat Files/wxid_r0610j6pol3u21/FileStorage/File/2021-12/Image02.jpg</pixmap>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
-          </item>
-         </layout>
+          </widget>
+          <widget class="QWidget" name="page_vision_3D">
+           <widget class="QWidget" name="">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>841</width>
+              <height>491</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_10" stretch=""/>
+           </widget>
+          </widget>
+         </widget>
         </item>
         <item>
          <widget class="QWidget" name="widget_displayLog" native="true">
@@ -599,7 +601,7 @@ border-style: solid;
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
+     <width>1142</width>
      <height>23</height>
     </rect>
    </property>

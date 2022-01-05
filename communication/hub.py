@@ -8,6 +8,10 @@ from util import json_keys as jk
 from util.generator import configObject
 
 
+
+
+
+
 class Hub:
     """
     doc:作为信息中转分发的类
@@ -34,9 +38,11 @@ class Hub:
     #         self.robotServer.shutdown(socket.SHUT_WR)
     #         self.robotServer.close()
 
+
+
     def run(self):
         """
-        doc:持续循环检测与Mech的连接状态，可断线重连。
+        doc: 作为启动程序,持续循环检测与Mech的连接状态，可断线重连。
         """
         while True:
             if self.client.is_connected():              # 判断与Mech服务器的连接状态
@@ -72,7 +78,7 @@ class Hub:
 
     def connect_mech(self):
         """
-        doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于连接到Mech服务器
+        doc: 尝试连接Mech标准接口并进行连接校验，成功则开启一个后台线程用于连接到Mech服务器
         return: 连接成功: True 连接失败: False
         """
         logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
@@ -98,7 +104,7 @@ class Hub:
         thread_1.start()
         logs.info("连接Mech成功!【监听】")
 
-        thread_2 = threading.Thread(target=self.send_to_mech) # 发送Mech的通信
+        thread_2 = threading.Thread(target=self.send_to_mech) # 发送Mech的通信,用于信息源是LongerGUI
         thread_2.setDaemon(True)
         thread_2.start()
         logs.debug("连接Mech成功!【发送】")
@@ -122,7 +128,7 @@ class Hub:
                 return
 
             # 2、通讯事件处理
-            response = msg_process(self.client,recv_mech_msg, funcFlag=2) # 阻塞接收来自 Mech 的消息，例如b'101,1001,'# TODO:使用多线程技术完成全双工通信机制
+            response = msg_process(self.client,recv_mech_msg, funcFlag=2) # 阻塞接收来自 Mech 的消息，例如b'101,1001,'
 
 
             # 3、Mech通讯状态检测
@@ -151,7 +157,7 @@ class Hub:
                     self.robotServer.send(response)
                     logs.debug("发送给机器人: {}".format(response))
                 except Exception as e:
-                    print(e)
+                    logs.warning("机器人尚未连接{}".format(e))
 
 
     def mech_status_process(self, response):

@@ -1,9 +1,15 @@
 import sys, os, threading, subprocess, logging
+import open3d as o3d
+import pyqtgraph.opengl as gl
+import numpy as np
+
 from util.log_tool.log import LoggingHandler, logs
 from util.generator import configObject
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
 from communication.hub import Hub # 通讯中心
 from util.format_adapter import * # 可视化
+
+
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
@@ -32,6 +38,13 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.logging_handler = LoggingHandler()
         self.logging_handler.newLogging.connect(self.output_gui_logger)
         logs.addHandler(self.logging_handler)
+
+        # 加载位姿数量信息
+        from event.parse_event import MechEvent, pose
+        # pose = MechEvent()
+        pose.newLogging.connect(self.output_pose_num)
+
+
 
 
     def init_sys(self):
@@ -90,6 +103,9 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         scrollbar = self.PlainTextEdit_logText.verticalScrollBar()
         if scrollbar:
             scrollbar.setSliderPosition(scrollbar.maximum())
+
+    def output_pose_num(self):
+        print(123)
 
     # 启动程序
     @pyqtSlot()
@@ -162,11 +178,30 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         # if bg_setting.is_viz_needed:
         self.start_app("communication_assistant", [os.path.join(os.path.dirname(__file__), "..","..", "util","test", "NetAssist.exe")])
 
+
+    # 显示点云
+    def show_cloud_image(self):
+        fileName, filetype = QFileDialog.getOpenFileName(self, "请选择图像：", '.', "All Files(*);;")
+        if fileName != '':
+            # 读取点云
+            pcd = o3d.io.read_point_cloud(fileName)
+            # 获取 Numpy 数组
+            np_points = np.asarray(pcd.points)
+            # 创建显示对象
+            plot = gl.GLScatterPlotItem()
+            # 设置显示数据
+            plot.setData(pos=np_points, color=(1, 1, 1, 1), size=0.0005, pxMode=False)
+            # 显示点云
+            self.graphicsView.addItem(plot)
+
+
     # 菜单栏/帮助/关于
     @pyqtSlot()
     def on_action_about_triggered(self):
         information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".\
                         format(configObject.software_config.software_version))
+        self.show_cloud_image()
+
 
     # 菜单栏/帮助/文档
     @pyqtSlot()

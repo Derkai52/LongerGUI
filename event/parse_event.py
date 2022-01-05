@@ -252,6 +252,35 @@ def send_msg(client, msg):
     client.send(msg)
 
 
+
+from PyQt5.QtCore import QObject, pyqtSignal
+# from PyQt5.QtWidgets import QLabel
+class MechEvent(QObject):
+    """
+    日志处理器生成
+    """
+    newLogging = pyqtSignal(str)
+
+    def __init__(self):
+        QObject.__init__(self)
+
+        try:
+            pass
+            # self.newLogging.connect(calls)
+        except IndexError:
+            pass
+
+    def emit(self, msg):
+        self.newLogging.emit(msg)
+
+
+pose = MechEvent()
+
+
+
+
+
+
 def parse_mech_msg(recv_cmds):
     """
     doc: 对Mech发送过来的信息进行事件处理
@@ -277,6 +306,10 @@ def parse_mech_msg(recv_cmds):
             print("Visual move position is", visual_move_position)
         poses_labels_speeds = unpack_params(recv_cmds[20:], fmt="6fii" * point_count)
         print(poses_labels_speeds)
+
+        pose.emit("1")
+
+
         for i in range(point_count):
             print("Pose", i+1, ":", poses_labels_speeds[i*8:i*8+6], "Label:", poses_labels_speeds[i*8+6], "Speed:", poses_labels_speeds[i*8+7])
 
@@ -314,6 +347,8 @@ def parsing_send_msg(sendmsg):
 
 
 
+
+
 def msg_process(socket_object, msg, funcFlag):
     """
     doc: 对输入的信息进行处理，转化为可用的信息(注意，此函数已被多线程调用，请勿在未加锁下使用全局变量，)
@@ -322,6 +357,8 @@ def msg_process(socket_object, msg, funcFlag):
     :param funcFlag: 1:信息处理并发送 2:信息处理并接受
     :return: funcFlag=1:None  funcFlag=2:接收的消息
     """
+
+
 
     if funcFlag == 1: # 发送信息
         # 1、消息解析 -> 指令码 + 参数

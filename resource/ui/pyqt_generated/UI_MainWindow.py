@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 800)
+        MainWindow.resize(1142, 726)
         MainWindow.setMouseTracking(False)
         MainWindow.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(58, 58, 58);")
@@ -190,9 +190,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.setObjectName("horizontalLayout_10")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout()
         self.verticalLayout_8.setObjectName("verticalLayout_8")
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.stackedWidget_display = QtWidgets.QStackedWidget(self.centralwidget)
+        self.stackedWidget_display.setObjectName("stackedWidget_display")
+        self.page_vision_2D = QtWidgets.QWidget()
+        self.page_vision_2D.setObjectName("page_vision_2D")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.page_vision_2D)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.label_text_displayImage = QtWidgets.QLabel(self.centralwidget)
+        self.label_text_displayImage = QtWidgets.QLabel(self.page_vision_2D)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -205,16 +209,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.label_text_displayImage)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
-        self.label_leftImage = QtWidgets.QLabel(self.centralwidget)
-        self.label_leftImage.setStyleSheet("border-width: 1px;\n"
-"border-style: solid;\n"
-"")
-        self.label_leftImage.setText("")
-        self.label_leftImage.setPixmap(QtGui.QPixmap("../Documents/WeChat Files/wxid_r0610j6pol3u21/FileStorage/File/2021-12/Image01.jpg"))
-        self.label_leftImage.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_leftImage.setObjectName("label_leftImage")
-        self.horizontalLayout_9.addWidget(self.label_leftImage)
-        self.label_rightImage = QtWidgets.QLabel(self.centralwidget)
+        self.label_rightImage = QtWidgets.QLabel(self.page_vision_2D)
         self.label_rightImage.setStyleSheet("border-width: 1px;\n"
 "border-style: solid;\n"
 "")
@@ -224,7 +219,21 @@ class Ui_MainWindow(object):
         self.label_rightImage.setObjectName("label_rightImage")
         self.horizontalLayout_9.addWidget(self.label_rightImage)
         self.verticalLayout_5.addLayout(self.horizontalLayout_9)
-        self.verticalLayout_8.addLayout(self.verticalLayout_5)
+        self.stackedWidget_display.addWidget(self.page_vision_2D)
+        self.page_vision_3D = QtWidgets.QWidget()
+        self.page_vision_3D.setObjectName("page_vision_3D")
+        self.widget = QtWidgets.QWidget(self.page_vision_3D)
+        self.widget.setGeometry(QtCore.QRect(0, 0, 841, 491))
+        self.widget.setObjectName("widget")
+        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.widget)
+        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_10.setObjectName("verticalLayout_10")
+
+        from util.vision.cloud_process import cloudshow
+        cloudshow(self)
+
+        self.stackedWidget_display.addWidget(self.page_vision_3D)
+        self.verticalLayout_8.addWidget(self.stackedWidget_display)
         self.widget_displayLog = QtWidgets.QWidget(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -296,7 +305,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_9.addLayout(self.horizontalLayout_10)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1142, 23))
         self.menubar.setObjectName("menubar")
         self.menu_file = QtWidgets.QMenu(self.menubar)
         self.menu_file.setObjectName("menu_file")
@@ -352,6 +361,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_help.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.stackedWidget_display.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
