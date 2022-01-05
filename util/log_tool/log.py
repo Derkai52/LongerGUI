@@ -82,4 +82,4 @@ log_record = create_file_logger() # 用于写入文本
 logs = logging.getLogger("longer_ui")
 
 logs.setLevel(logging.INFO) # 生产模式默认使用这行
-# logs.setLevel(logging.DEBUG) # 管理员调试模式可使用这一行
+logs.setLevel(logging.DEBUG) # 管理员调试模式可使用这一行

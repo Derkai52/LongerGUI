@@ -315,12 +315,12 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         # if not self.on_check_configs_clicked():
         #     return
         project_dir = configObject.software_config.config_path
-        print("生成目录为：",project_dir)
         if os.path.exists(project_dir):
             if warning_box_yes_no(self, text=project_dir + self.tr("该路径下文件已存在，是否覆盖它?")) == QMessageBox.No:
                 return
         # configObject.generate_adapter() # 代码生成器(暂未启用)
         self.save_config()
+        print("配置已更新，生成目录为：",project_dir)
 
         self.adapter_project_dir_changed.emit(project_dir)
         msg = self.tr("配置生成成功！")
@@ -355,6 +355,6 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
         #         != self.lineEdit_config_path.text(): # 如果配置文件或目录不存在就选择路径新建配置文件
         #     if not self.choose_project_dir(self.tr("选择保存目录")):
         #         return
-        print("文件保存！")
+
         self.config_generator()
 

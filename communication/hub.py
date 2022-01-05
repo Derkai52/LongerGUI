@@ -39,16 +39,14 @@ class Hub:
         doc:持续循环检测与Mech的连接状态，可断线重连。
         """
         while True:
-            time.sleep(2) # 固定检测周期(可能会导致进程间状态不同步)
-
-            if self.client.is_connected():              # 如果已经连接到Mech
+            if self.client.is_connected():              # 判断与Mech服务器的连接状态
+                # time.sleep(1)                         # 连接后的检测周期
                 pass
 
-            else:                                       # 如果未连接到Mech
+            else:                                       # 尝试掉线重连Mech服务器，周期2秒
                 self.robotServer = None                 # 强制关闭Robot接口监听套接字
                 self.robotServer = None                 # 强制关闭Robot接口通讯套接字
-                logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
-                if not self.connect_mech():             # 尝试连接Mech服务器
+                if not self.connect_mech():
                     continue
 
 
@@ -74,12 +72,11 @@ class Hub:
 
     def connect_mech(self):
         """
-        doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于
+        doc: 判断连接Mech标准接口是否成功，成功则开启一个后台线程用于连接到Mech服务器
         return: 连接成功: True 连接失败: False
         """
-        logs.debug("正在连接Mech服务器: %s %s" % (self.serverIP, self.serverPort))
-
-        self.client.reconnect_server() # 尝试重新连接到Mech
+        logs.debug("正在尝试重新连接到Mech: %s %s" % (self.serverIP, self.serverPort))
+        self.client.reconnect_server() # 尝试重新连接到Mech,此处阻塞2秒
         if self.client.is_connected():
             logs.info("请求Mech服务器成功，正在校验连接...")
             if self.check_detection(): # 连接校验
@@ -88,6 +85,7 @@ class Hub:
             else:
                 logs.error("与Mech服务器连接校验失败!")
                 self.client.close()
+
         return False
 
 
