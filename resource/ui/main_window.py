@@ -41,7 +41,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
         # 加载位姿数量信息
         from event.parse_event import MechEvent, pose
-        # pose = MechEvent()
         pose.newLogging.connect(self.output_pose_num)
 
 
@@ -104,8 +103,9 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         if scrollbar:
             scrollbar.setSliderPosition(scrollbar.maximum())
 
-    def output_pose_num(self):
-        print(123)
+    def output_pose_num(self, pose_num):
+        self.label_poseNum.setText(pose_num)
+
 
     # 启动程序
     @pyqtSlot()
@@ -114,12 +114,13 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         thread_main.setDaemon(True)  # 挂后台进程
         thread_main.start()
         logs.info("主程序启动成功")
-        self.pushButton_start.setEnabled(False) # 检测到按下后就不可使用
+        # self.pushButton_start.setEnabled(False) # 检测到按下后就不可使用
+        self.pushButton_start.setText("结束运行")
 
 
 
     def setImage(self, image): # 指定在 label 中显示
-        self.label_leftImage.setPixmap(QPixmap.fromImage(image))
+        self.label_rightImage_4.setPixmap(QPixmap.fromImage(image))
 
     def imageprocessing(self, flag):
         """
@@ -134,9 +135,9 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
         #利用qlabel显示图片
         print(str(imgName))
-        png = QtGui.QPixmap(imgName).scaled(self.label_leftImage.width(), self.label_leftImage.height())  # 适应设计label时的大小
+        png = QtGui.QPixmap(imgName).scaled(self.label_rightImage_4.width(), self.label_rightImage_4.height())  # 适应设计label时的大小
         if flag == 1:
-            self.label_leftImage.setPixmap(png)
+            self.label_rightImage_4.setPixmap(png)
         if flag == 2:
             self.label_rightImage.setPixmap(png)
 
@@ -211,3 +212,19 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         change_log_file = configObject.other_config.update_doc_name
         QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),"..","update_logs", change_log_file)))
         print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
+
+####################################################
+    # 2D图像
+    @pyqtSlot()
+    def on_pushButton_2DImage_clicked(self):
+
+        self.pushButton_2DImage.setEnabled(False) # TODO: 【差前端的东西】默认只有两种图像，当一个按下另一个必然亮起。推荐方案是用QSS前端渲染出不同状态即可。
+        self.pushButton_3DCloud.setEnabled(True)
+        self.stackedWidget_display.setCurrentIndex(0)
+
+    # 3D图像
+    @pyqtSlot()
+    def on_pushButton_3DCloud_clicked(self):
+        self.pushButton_2DImage.setEnabled(True) # TODO: 【差前端的东西】默认只有两种图像，当一个按下另一个必然亮起。推荐方案是用QSS前端渲染出不同状态即可。
+        self.pushButton_3DCloud.setEnabled(False)
+        self.stackedWidget_display.setCurrentIndex(1)

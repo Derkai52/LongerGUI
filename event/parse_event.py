@@ -270,8 +270,8 @@ class MechEvent(QObject):
         except IndexError:
             pass
 
-    def emit(self, msg):
-        self.newLogging.emit(msg)
+    def emit(self, pose_num):
+        self.newLogging.emit(pose_num)
 
 
 pose = MechEvent()
@@ -307,7 +307,7 @@ def parse_mech_msg(recv_cmds):
         poses_labels_speeds = unpack_params(recv_cmds[20:], fmt="6fii" * point_count)
         print(poses_labels_speeds)
 
-        pose.emit("1")
+        pose.emit(str(point_count)) # 发送
 
 
         for i in range(point_count):

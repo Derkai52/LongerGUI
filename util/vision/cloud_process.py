@@ -24,4 +24,4 @@ def cloudshow(self):
     self.graphicsView.addItem(y)
     self.graphicsView.addItem(z)
     self.graphicsView.addItem(g)
-    self.verticalLayout_10.addWidget(self.graphicsView)
+    self.gridLayout_4.addWidget(self.graphicsView)
