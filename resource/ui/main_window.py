@@ -40,8 +40,8 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         logs.addHandler(self.logging_handler)
 
         # 加载位姿数量信息
-        from event.parse_event import MechEvent, pose
-        pose.newLogging.connect(self.output_pose_num)
+        from event.parse_event import display_signal
+        display_signal.signal_pose.connect(self.output_pose_num)
 
 
 
@@ -103,6 +103,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         if scrollbar:
             scrollbar.setSliderPosition(scrollbar.maximum())
 
+    # 显示当前位姿数量
     def output_pose_num(self, pose_num):
         self.label_poseNum.setText(pose_num)
 
@@ -119,10 +120,11 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
 
 
-    def setImage(self, image): # 指定在 label 中显示
-        self.label_rightImage_4.setPixmap(QPixmap.fromImage(image))
 
-    def imageprocessing(self, flag):
+    def setImage(self, image): # 指定在 label 中显示
+        self.label_vision_2D.setPixmap(QPixmap.fromImage(image))
+
+    def imageprocessing(self):
         """
         doc: 获取一张2D图像并显示在指定label控件上
         :return: None
@@ -135,24 +137,20 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
         #利用qlabel显示图片
         print(str(imgName))
-        png = QtGui.QPixmap(imgName).scaled(self.label_rightImage_4.width(), self.label_rightImage_4.height())  # 适应设计label时的大小
-        if flag == 1:
-            self.label_rightImage_4.setPixmap(png)
-        if flag == 2:
-            self.label_rightImage.setPixmap(png)
+        png = QtGui.QPixmap(imgName).scaled(self.label_vision_2D.width(), self.label_vision_2D.height())  # 适应设计label时的大小
+        self.label_vision_2D.setPixmap(png)
+
 
     # 文件/打开
     @pyqtSlot()
     def on_action_openFile_triggered(self):
-        print("打开了文件")
-        self.imageprocessing(1)
+        self.imageprocessing()
         # TODO: 可能打开的是2D图或3D图。即未来该功能可能会被迁移到其他地方
 
     # 文件/保存
     @pyqtSlot()
     def on_action_saveFile_triggered(self):
-        print("保存了文件")
-        self.imageprocessing(2)
+        print("文件保存")
         # TODO: 可能保存的是配置或日志文件，目前暂不能明确
 
     # 设置/系统设置
@@ -163,7 +161,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
                                         "font: 48pt \"Constantia\";\n"
                                         "border-width: 0px;")
         self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过标志变量获取
-        # TODO: 连接至子窗口(设置页)
+
 
     # 设置/登录权限
     @pyqtSlot()

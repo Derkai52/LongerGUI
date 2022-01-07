@@ -254,12 +254,15 @@ def send_msg(client, msg):
 
 
 from PyQt5.QtCore import QObject, pyqtSignal
-# from PyQt5.QtWidgets import QLabel
-class MechEvent(QObject):
+class DisplayMainWindow(QObject):
     """
-    日志处理器生成
+    用于窗口数据可视化的类
     """
-    newLogging = pyqtSignal(str)
+    signal_pose = pyqtSignal(str)
+    signal_runningTime = pyqtSignal(str)
+    signal_runningNum = pyqtSignal(str)
+    signal_beatTime = pyqtSignal(str)
+    signal_communiteStatus = pyqtSignal(str)
 
     def __init__(self):
         QObject.__init__(self)
@@ -270,11 +273,28 @@ class MechEvent(QObject):
         except IndexError:
             pass
 
-    def emit(self, pose_num):
-        self.newLogging.emit(pose_num)
+    # 发送位姿点信息
+    def pose_emit(self, pose_num):
+        self.signal_pose.emit(pose_num)
+
+    # 发送累计运行时间信息
+    def runningtime_emit(self, runningtime):
+        self.signal_runningTime.emit(runningtime)
+
+    # 发送单词执行时间信息
+    def beattime_emit(self, beattime):
+        self.signal_beatTime.emit(beattime)
+
+    # 发送运行次数信息
+    def runningnum_emit(self, runningnum):
+        self.signal_runningNum.emit(runningnum)
+
+    # 发送通讯状态信息
+    def communitestatus_emit(self, communitestatus):
+        self.signal_communiteStatus.emit(communitestatus)
 
 
-pose = MechEvent()
+display_signal = DisplayMainWindow() # 自定义信号-槽函数类实例化
 
 
 
@@ -307,7 +327,7 @@ def parse_mech_msg(recv_cmds):
         poses_labels_speeds = unpack_params(recv_cmds[20:], fmt="6fii" * point_count)
         print(poses_labels_speeds)
 
-        pose.emit(str(point_count)) # 发送
+        display_signal.pose_emit(str(point_count)) # 发送
 
 
         for i in range(point_count):

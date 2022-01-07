@@ -218,7 +218,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_display_vision_chioce = QtWidgets.QHBoxLayout()
         self.horizontalLayout_display_vision_chioce.setObjectName("horizontalLayout_display_vision_chioce")
 
-
         from util.vision.cloud_process import cloudshow
         cloudshow(self)
 
@@ -312,14 +311,17 @@ class Ui_MainWindow(object):
         self.action_about.setObjectName("action_about")
         self.action_docs = QtWidgets.QAction(MainWindow)
         self.action_docs.setObjectName("action_docs")
+        self.action = QtWidgets.QAction(MainWindow)
+        self.action.setObjectName("action")
+        self.action_standardDirGenerator = QtWidgets.QAction(MainWindow)
+        self.action_standardDirGenerator.setObjectName("action_standardDirGenerator")
         self.menu_file.addAction(self.action_openFile)
         self.menu_file.addAction(self.action_saveFile)
         self.menu_setting.addAction(self.action_systemSetting)
         self.menu_setting.addAction(self.action_loginAuthority)
-        self.menu_function.addAction(self.action_switchScene)
-        self.menu_function.addAction(self.action_switchLayout)
         self.menu_tools.addAction(self.action_virtualKeyboard)
         self.menu_tools.addAction(self.action_communicationTest)
+        self.menu_tools.addAction(self.action_standardDirGenerator)
         self.menu_help.addAction(self.action_about)
         self.menu_help.addAction(self.action_docs)
         self.menubar.addAction(self.menu_file.menuAction())
@@ -366,3 +368,5 @@ class Ui_MainWindow(object):
         self.action_communicationTest.setText(_translate("MainWindow", "通信测试助手"))
         self.action_about.setText(_translate("MainWindow", "关于"))
         self.action_docs.setText(_translate("MainWindow", "文档"))
+        self.action.setText(_translate("MainWindow", "标准工程生成器"))
+        self.action_standardDirGenerator.setText(_translate("MainWindow", "标准工程生成器"))
