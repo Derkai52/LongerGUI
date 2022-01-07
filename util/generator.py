@@ -6,9 +6,7 @@ from util.util_file import write_file
 from util.util_file import read_json_file, write_json_file
 from util.translations import _translate
 from util.setting_file import setting_file_path, sys_settings
-# from .adapter_snippet import *
-# from interface import messages
-# from interface.robot_euler_mapping import KNOWN_ROBOT_EULERS
+
 
 
 class SoftWareConfig():

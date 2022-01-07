@@ -4,8 +4,7 @@ import time
 def cloudshow(self):
     """
     doc: 在窗口中新建一个点云显示组件
-    :param self:
-    :return:
+    :param self: 窗口类的self
     """
     #from util.vision.cloud_process import cloudshow
     #cloudshow(self)

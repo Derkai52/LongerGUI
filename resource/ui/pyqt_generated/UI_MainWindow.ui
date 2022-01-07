@@ -50,7 +50,7 @@ background-color: rgb(58, 58, 58);</string>
      <number>0</number>
     </property>
     <item>
-     <widget class="QWidget" name="Horizontal_status" native="true">
+     <widget class="QWidget" name="Horizontal_display_top" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -443,7 +443,7 @@ color: rgb(255, 255, 255);</string>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_display" stretch="5,1">
+     <layout class="QHBoxLayout" name="horizontalLayout_display_center" stretch="5,1">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_display_vision">
         <property name="sizeConstraint">
@@ -554,7 +554,7 @@ border-style: solid;
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0,0,0">
+     <layout class="QHBoxLayout" name="horizontalLayout_display_bottom" stretch="0,0,0,0,0">
       <item>
        <widget class="QLabel" name="label_text_robotIP">
         <property name="sizePolicy">
@@ -625,16 +625,6 @@ border-style: solid;
       </item>
      </layout>
     </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-     </layout>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -650,8 +640,8 @@ border-style: solid;
     <property name="title">
      <string>文件</string>
     </property>
-    <addaction name="action_openFile"/>
-    <addaction name="action_saveFile"/>
+    <addaction name="action_open2DImageFile"/>
+    <addaction name="action_open3DCloudFile"/>
    </widget>
    <widget class="QMenu" name="menu_setting">
     <property name="title">
@@ -687,17 +677,17 @@ border-style: solid;
    <addaction name="menu_help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action_openFile">
+  <action name="action_open2DImageFile">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>打开</string>
+    <string>打开2D图像</string>
    </property>
   </action>
-  <action name="action_saveFile">
+  <action name="action_open3DCloudFile">
    <property name="text">
-    <string>保存</string>
+    <string>打开3D图像</string>
    </property>
   </action>
   <action name="action_systemSetting">

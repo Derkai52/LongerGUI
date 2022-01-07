@@ -102,10 +102,6 @@ class Setting(QDialog, Ui_Setting): # 这个窗口继承了用QtDesignner绘制�
             check_flag = False
         self.checkBox_ExistThirdParty.setChecked(check_flag)
 
-
-
-
-
     def _gather_SoftWareConfig(self):
         software_config = {}
         software_config[jk.project_name] = self.lineEdit_projectName.text()

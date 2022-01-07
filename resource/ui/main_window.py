@@ -141,16 +141,31 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.label_vision_2D.setPixmap(png)
 
 
-    # 文件/打开
+    # 文件/打开2D图像文件
     @pyqtSlot()
-    def on_action_openFile_triggered(self):
+    def on_action_open2DImageFile_triggered(self):
         self.imageprocessing()
         # TODO: 可能打开的是2D图或3D图。即未来该功能可能会被迁移到其他地方
 
-    # 文件/保存
+    # 显示点云
+    def show_cloud_image(self):
+        fileName, filetype = QFileDialog.getOpenFileName(self, "请选择图像：", '.', "All Files(*);;")
+        if fileName != '':
+            # 读取点云
+            pcd = o3d.io.read_point_cloud(fileName)
+            # 获取 Numpy 数组
+            np_points = np.asarray(pcd.points)
+            # 创建显示对象
+            plot = gl.GLScatterPlotItem()
+            # 设置显示数据
+            plot.setData(pos=np_points, color=(1, 1, 1, 1), size=0.001, pxMode=False)
+            # 显示点云
+            self.graphicsView.addItem(plot)
+
+    # 文件/打开3D图像文件
     @pyqtSlot()
-    def on_action_saveFile_triggered(self):
-        print("文件保存")
+    def on_action_open3DCloudFile_triggered(self):
+        self.show_cloud_image()
         # TODO: 可能保存的是配置或日志文件，目前暂不能明确
 
     # 设置/系统设置
@@ -168,7 +183,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     def on_action_loginAuthority_triggered(self):
         Login_Dialog = LoginDialog(True) # 权限切换页面
         Login_Dialog.exec()
-        print("登录权限")
+
 
     # 工具/通信测试助手
     @pyqtSlot()
@@ -178,28 +193,12 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.start_app("communication_assistant", [os.path.join(os.path.dirname(__file__), "..","..", "util","test", "NetAssist.exe")])
 
 
-    # 显示点云
-    def show_cloud_image(self):
-        fileName, filetype = QFileDialog.getOpenFileName(self, "请选择图像：", '.', "All Files(*);;")
-        if fileName != '':
-            # 读取点云
-            pcd = o3d.io.read_point_cloud(fileName)
-            # 获取 Numpy 数组
-            np_points = np.asarray(pcd.points)
-            # 创建显示对象
-            plot = gl.GLScatterPlotItem()
-            # 设置显示数据
-            plot.setData(pos=np_points, color=(1, 1, 1, 1), size=0.0005, pxMode=False)
-            # 显示点云
-            self.graphicsView.addItem(plot)
-
-
     # 菜单栏/帮助/关于
     @pyqtSlot()
     def on_action_about_triggered(self):
-        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2021 BLonger Ltd. All rights reserved.".\
+        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2022 BeiJing-Longer Ltd. All rights reserved.".\
                         format(configObject.software_config.software_version))
-        self.show_cloud_image()
+
 
 
     # 菜单栏/帮助/文档
