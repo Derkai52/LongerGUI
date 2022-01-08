@@ -111,12 +111,12 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
     # 启动程序
     @pyqtSlot()
-    def on_pushButton_start_clicked(self): # TODO：应当变更为服务注册机制
+    def on_pushButton_start_clicked(self):
         if not self.pushButton_start.isCheckable(): # 开启通讯程序
             thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
             thread_main.setDaemon(True)  # 挂后台进程
             thread_main.start()
-            logs.info("主程序启动成功")
+            logs.info("通讯程序启动成功")
             self.pushButton_login.setEnabled(False) # 用户登录不可选
             self.pushButton_start.setText("结束运行")
             self.pushButton_start.setCheckable(True)
@@ -126,6 +126,8 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
             self.pushButton_login.setEnabled(True) # 恢复用户可登录状态
             self.pushButton_start.setText("开始运行")
             self.pushButton_start.setCheckable(False)
+            logs.warning("通讯程序已关闭")
+
 
 
 
