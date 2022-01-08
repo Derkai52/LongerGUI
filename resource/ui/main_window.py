@@ -46,6 +46,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
 
 
+
     def init_sys(self):
         """
         doc: 初始化Hub程序
@@ -55,9 +56,9 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         robot_server_agent_ip = configObject.robot_communication_config.robot_server_agent_ip
         robot_server_agent_port = configObject.robot_communication_config.robot_server_agent_port
 
-        hubProcess = Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port, \
+        self.hubProcess = Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port, \
                      connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
-        hubProcess.run()  # 主程序开始运行
+        self.hubProcess.run()  # 主程序开始运行
 
 
 
@@ -111,12 +112,21 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 启动程序
     @pyqtSlot()
     def on_pushButton_start_clicked(self): # TODO：应当变更为服务注册机制
-        thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
-        thread_main.setDaemon(True)  # 挂后台进程
-        thread_main.start()
-        logs.info("主程序启动成功")
-        # self.pushButton_start.setEnabled(False) # 检测到按下后就不可使用
-        self.pushButton_start.setText("结束运行")
+        if not self.pushButton_start.isCheckable(): # 开启通讯程序
+            thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
+            thread_main.setDaemon(True)  # 挂后台进程
+            thread_main.start()
+            logs.info("主程序启动成功")
+            self.pushButton_login.setEnabled(False) # 用户登录不可选
+            self.pushButton_start.setText("结束运行")
+            self.pushButton_start.setCheckable(True)
+
+        else: # 关闭通讯程序
+            self.hubProcess.running_flag = False
+            self.pushButton_login.setEnabled(True) # 恢复用户可登录状态
+            self.pushButton_start.setText("开始运行")
+            self.pushButton_start.setCheckable(False)
+
 
 
 
@@ -145,7 +155,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     @pyqtSlot()
     def on_action_open2DImageFile_triggered(self):
         self.imageprocessing()
-        # TODO: 可能打开的是2D图或3D图。即未来该功能可能会被迁移到其他地方
 
     # 显示点云
     def show_cloud_image(self):
@@ -205,7 +214,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 菜单栏/帮助/关于
     @pyqtSlot()
     def on_action_about_triggered(self):
-        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2022 BeiJing-Longer Ltd. All rights reserved.".\
+        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2022 BLonger Ltd. All rights reserved.".\
                         format(configObject.software_config.software_version))
 
 

@@ -17,6 +17,7 @@ class Hub:
     doc:作为信息中转分发的类
     """
     def __init__(self, serverIP="", serverPort="", connectIP="", connectPort=""):
+        self.running_flag = True   # 该线程可执行状态(当不可执行时退出线程)
         self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
         self.robotServer = None    # 用于连接机器人端(本地作为服务端)
         self.is_connect_robot = False # 判断是否连接到机器人端
@@ -45,6 +46,9 @@ class Hub:
         doc: 作为启动程序,持续循环检测与Mech的连接状态，可断线重连。
         """
         while True:
+            if not self.running_flag:                   # 判断当前程序可执行状态
+                break
+            print(123)
             if self.client.is_connected():              # 判断与Mech服务器的连接状态
                 # time.sleep(1)                         # 连接后的检测周期
                 pass
