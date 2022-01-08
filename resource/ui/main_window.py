@@ -178,11 +178,20 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过标志变量获取
 
 
-    # 设置/登录权限
+    # 用户登录
     @pyqtSlot()
     def on_pushButton_login_clicked(self):
-        Login_Dialog = LoginDialog(True) # 权限切换页面
-        print(Login_Dialog.exec())
+        Login_Dialog = LoginDialog() # 权限切换页面
+        Login_Dialog.exec() # 用户登录
+        if Login_Dialog.user_type == 0:
+            self.pushButton_login.setText("操作员") # TODO: 不同等级权限应当有不同功能
+            pass
+        elif Login_Dialog.user_type == 1:
+            self.pushButton_login.setText("管理员")
+            pass
+
+
+
 
 
     # 工具/通信测试助手

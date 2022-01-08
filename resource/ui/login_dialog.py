@@ -5,7 +5,7 @@ from resource.ui.pyqt_generated.UI_LoginDialog import Ui_LoginDialog
 from util.message_box import critical_box, information_box
 from util.setting_file import sys_settings
 from util import json_keys as jk
-import re
+
 
 
 class UserType(object):
@@ -14,16 +14,15 @@ class UserType(object):
 
 
 class LoginDialog(QDialog):
-    def __init__(self, in_modifying):
+    def __init__(self):
         super().__init__()
         self.ui = Ui_LoginDialog()
         self.ui.setupUi(self)
         self.setWindowFlags((self.windowFlags() & ~Qt.WindowContextHelpButtonHint))
         self.admin_pwd = sys_settings.value(jk.pwd, "longer") # 设置默认管理员密码
         self.user_type = int(sys_settings.value(jk.user_type, 0))
-        self.in_modifying = in_modifying
-        self.modify_flag = False # 是否修改
-        self.set_modifying(in_modifying)
+        self.modify_flag = False # 默认不处于密码修改模式
+        self.set_init() # 设置组件初始化状态
 
 
     @pyqtSlot(int)
@@ -57,8 +56,7 @@ class LoginDialog(QDialog):
             self.accept()
             return
 
-        if not self.modify_flag: # 不修改
-            print("不修改")
+        if not self.modify_flag: # 不修改密码
             if self.ui.lineEdit_password.text() and self.ui.lineEdit_password.text() == self.admin_pwd:
                 self.sign_in()
                 self.accept()
@@ -69,7 +67,7 @@ class LoginDialog(QDialog):
                     information_box(self, text=self.tr("请先输入初始密码"))
                 else:
                     critical_box(self, text=self.tr("密码错误"))
-        else: # 修改
+        else: # 修改密码
             if not self.ui.lineEdit_password.text():
                 critical_box(self, text=self.tr("请先输入旧密码"))
                 return
@@ -95,9 +93,6 @@ class LoginDialog(QDialog):
         self.ui.lineEdit_password.clear()
 
 
-
-
-
     def sign_in(self):
         self.user_type = self.ui.comboBox_userType.currentIndex()
         sys_settings.setValue(jk.user_type, self.user_type)
@@ -119,14 +114,12 @@ class LoginDialog(QDialog):
     def is_admin(self):
         return self.ui.comboBox_userType.currentIndex() == UserType.Admin
 
-    def set_modifying(self, in_modifying):
-        self.in_modifying = in_modifying
-        self.ui.lineEdit_password.setVisible(not in_modifying)
-        self.ui.label_password.setVisible(not in_modifying)
-        self.ui.lineEdit_newpassword.setVisible(not in_modifying)
-        self.ui.label_newpassword.setVisible(not in_modifying)
-        self.ui.pushButton_modifyPwd.setVisible(not in_modifying)
-        # self.ui.pushButton_signIn.setVisible(not in_modifying)
-        self.ui.comboBox_userType.setEnabled(in_modifying)
+    def set_init(self):
+        self.ui.lineEdit_password.setVisible(False)
+        self.ui.label_password.setVisible(False)
+        self.ui.lineEdit_newpassword.setVisible(False)
+        self.ui.label_newpassword.setVisible(False)
+        self.ui.pushButton_modifyPwd.setVisible(False)
+        self.ui.comboBox_userType.setEnabled(True)
         self.ui.comboBox_userType.setCurrentIndex(UserType.Operator)
         self.setWindowTitle(self.tr("用户登录"))
