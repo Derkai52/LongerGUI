@@ -9,8 +9,8 @@ import re
 
 
 class UserType(object):
-    Admin = 0
-    Operator = 1
+    Operator = 0
+    Admin = 1
 
 
 class LoginDialog(QDialog):
@@ -22,13 +22,33 @@ class LoginDialog(QDialog):
         self.admin_pwd = sys_settings.value(jk.pwd, "longer") # 设置默认管理员密码
         self.user_type = int(sys_settings.value(jk.user_type, 0))
         self.in_modifying = in_modifying
+        self.modify_flag = False # 是否修改
         self.set_modifying(in_modifying)
 
 
     @pyqtSlot(int)
-    def on_comboBox_userType_currentIndexChanged(self, index):
-        self.ui.label_password.setVisible(self.is_admin())
-        self.ui.lineEdit_password.setVisible(self.is_admin())
+    def on_comboBox_userType_currentIndexChanged(self, index): # 此处对两种页面的组件状态做了强制初始化
+        if index == 0:
+            self.ui.pushButton_modifyPwd.setVisible(False)
+            self.ui.label_password.setVisible(False)
+            self.ui.lineEdit_password.setVisible(False)
+            self.ui.label_newpassword.setVisible(False)
+            self.ui.lineEdit_newpassword.setVisible(False)
+            self.ui.pushButton_signIn.setText("登录")
+            self.ui.lineEdit_password.clear()
+            self.ui.lineEdit_newpassword.clear()
+        if index == 1:
+            self.ui.label_password.setVisible(True)
+            self.ui.lineEdit_password.setVisible(True)
+            self.ui.pushButton_modifyPwd.setVisible(True)
+            self.ui.label_newpassword.setVisible(False)
+            self.ui.lineEdit_newpassword.setVisible(False)
+            self.ui.pushButton_signIn.setText("登录")
+            self.ui.lineEdit_password.clear()
+            self.ui.lineEdit_newpassword.clear()
+            self.modify_flag = False  # 是否修改
+
+        # self.ui.pushButton_signIn
 
     @pyqtSlot()
     def on_pushButton_signIn_clicked(self):
@@ -36,35 +56,50 @@ class LoginDialog(QDialog):
             self.sign_in()
             self.accept()
             return
-        if self.ui.lineEdit_password.text() and self.ui.lineEdit_password.text() == self.admin_pwd:
-            self.sign_in()
-            if not self.in_modifying:
+
+        if not self.modify_flag: # 不修改
+            print("不修改")
+            if self.ui.lineEdit_password.text() and self.ui.lineEdit_password.text() == self.admin_pwd:
+                self.sign_in()
                 self.accept()
-        elif not self.ui.lineEdit_password.text():
-            information_box(self, text=self.tr("请输入密码"))
-        else:
-            if self.in_modifying:
-                information_box(self, text=self.tr("请先输入初始密码"))
+            elif not self.ui.lineEdit_password.text():
+                information_box(self, text=self.tr("请输入密码"))
             else:
-                critical_box(self, text=self.tr("密码错误"))
+                if self.modify_flag:
+                    information_box(self, text=self.tr("请先输入初始密码"))
+                else:
+                    critical_box(self, text=self.tr("密码错误"))
+        else: # 修改
+            if not self.ui.lineEdit_password.text():
+                critical_box(self, text=self.tr("请先输入旧密码"))
+                return
+            if self.ui.lineEdit_password.text() != self.admin_pwd:
+                critical_box(self, text=self.tr("旧密码错误"))
+                return
+            if not self.ui.lineEdit_newpassword.text():
+                information_box(self, text=self.tr("请输入新密码"))
+                return
+
+            if self.update_pwd():
+                self.accept()
+
 
     @pyqtSlot()
     def on_pushButton_modifyPwd_clicked(self):
-        if not self.ui.lineEdit_password.text():
-            critical_box(self, text=self.tr("请先输入旧密码"))
-            return
-        if self.ui.lineEdit_password.text() != self.admin_pwd:
-            critical_box(self, text=self.tr("旧密码错误"))
-            return
-        if not self.ui.lineEdit_newpassword.text():
-            information_box(self, text=self.tr("请输入新密码"))
-            return
+        self.modify_flag = True
+        self.ui.label_password.setText("旧密码:")
+        self.ui.label_newpassword.setVisible(True)
+        self.ui.lineEdit_newpassword.setVisible(True)
+        self.ui.pushButton_signIn.setText("修改密码")
+        self.ui.pushButton_modifyPwd.setVisible(False)
+        self.ui.lineEdit_password.clear()
 
-        if self.update_pwd():
-            self.accept()
+
+
+
 
     def sign_in(self):
-        self.user_type = self.ui.userType.currentIndex()
+        self.user_type = self.ui.comboBox_userType.currentIndex()
         sys_settings.setValue(jk.user_type, self.user_type)
 
     def update_pwd(self):
@@ -82,17 +117,16 @@ class LoginDialog(QDialog):
         return not self.is_admin()
 
     def is_admin(self):
-        return self.ui.userType.currentIndex() == UserType.Admin
+        return self.ui.comboBox_userType.currentIndex() == UserType.Admin
 
     def set_modifying(self, in_modifying):
         self.in_modifying = in_modifying
-        self.ui.lineEdit_newpassword.setVisible(in_modifying)
-        self.ui.label_newpassword.setVisible(in_modifying)
-        self.ui.pushButton_modifyPwd.setVisible(in_modifying)
-        self.ui.pushButton_signIn.setVisible(not in_modifying)
-        self.ui.comboBox_userType.setEnabled(not in_modifying)
-        if in_modifying:
-            self.ui.comboBox_userType.setCurrentIndex(UserType.Admin)
-        else:
-            self.ui.comboBox_userType.setCurrentIndex(UserType.Operator if self.user_type == UserType.Admin else UserType.Admin)
-        self.setWindowTitle(self.tr("修改密码") if self.in_modifying else self.tr("登录"))
+        self.ui.lineEdit_password.setVisible(not in_modifying)
+        self.ui.label_password.setVisible(not in_modifying)
+        self.ui.lineEdit_newpassword.setVisible(not in_modifying)
+        self.ui.label_newpassword.setVisible(not in_modifying)
+        self.ui.pushButton_modifyPwd.setVisible(not in_modifying)
+        # self.ui.pushButton_signIn.setVisible(not in_modifying)
+        self.ui.comboBox_userType.setEnabled(in_modifying)
+        self.ui.comboBox_userType.setCurrentIndex(UserType.Operator)
+        self.setWindowTitle(self.tr("用户登录"))

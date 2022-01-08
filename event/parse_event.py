@@ -4,7 +4,7 @@ from struct import pack, unpack
 from communication import commands as cmds
 from event.messages import *
 from util.log_tool.log import logs
-from util.generator import configObject
+from util.config_generator import configObject
 
 # 读取配置表信息
 is_ascii = configObject.mech_communication_config.is_ascii

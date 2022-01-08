@@ -4,7 +4,7 @@ import pyqtgraph.opengl as gl
 import numpy as np
 
 from util.log_tool.log import LoggingHandler, logs
-from util.generator import configObject
+from util.config_generator import configObject
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
 from communication.hub import Hub # 通讯中心
 from util.format_adapter import * # 可视化
@@ -180,9 +180,9 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
     # 设置/登录权限
     @pyqtSlot()
-    def on_action_loginAuthority_triggered(self):
+    def on_pushButton_login_clicked(self):
         Login_Dialog = LoginDialog(True) # 权限切换页面
-        Login_Dialog.exec()
+        print(Login_Dialog.exec())
 
 
     # 工具/通信测试助手

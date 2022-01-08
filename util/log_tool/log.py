@@ -4,7 +4,7 @@ import os
 import time
 
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
-from util.generator import configObject
+from util.config_generator import configObject
 
 # 默认日志存储位置
 default_log_dir = os.path.join(os.path.dirname(__file__), "..", "..", "logs")

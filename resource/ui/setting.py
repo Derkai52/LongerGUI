@@ -7,7 +7,7 @@ from util.log_tool.log import logs
 import re, sys, os, logging
 from util.util_file import write_file
 from util.setting_file import setting_file_path
-from util.generator import configObject
+from util.config_generator import configObject
 from util import json_keys as jk
 
 

@@ -5,7 +5,7 @@ from communite import TcpServer, TcpClient
 from event.parse_event import msg_process
 from util.log_tool.log import logs
 from util import json_keys as jk
-from util.generator import configObject
+from util.config_generator import configObject
 
 
 
