@@ -1,14 +1,17 @@
 import sys, os, threading, subprocess, logging
+import time
+
 import open3d as o3d
 import pyqtgraph.opengl as gl
 import numpy as np
 
+import message_box
 from util.log_tool.log import LoggingHandler, logs
 from util.config_generator import configObject
 from util.message_box import information_box, warning_box, warning_box_yes_no, critical_box
 from communication.hub import Hub # 通讯中心
 from util.format_adapter import * # 可视化
-
+from event.parse_event import display_signal # 接收后端信号
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -39,10 +42,22 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.logging_handler.newLogging.connect(self.output_gui_logger)
         logs.addHandler(self.logging_handler)
 
-        # 加载位姿数量信息
-        from event.parse_event import display_signal
+        # 加载后端发送给前端的信号消息
         display_signal.signal_pose.connect(self.output_pose_num)
+        display_signal.signal_mechCommuniteStatus.connect(self.output_mechService_status)
+        display_signal.signal_robotCommuniteStatus.connect(self.output_robotService_status)
 
+
+
+
+    def service_manage(self):
+        """
+        doc: 服务状态管理
+        """
+        while True:
+            time.sleep(0.000001) #TODO: 由于死循环与通信主线程程抢占，在这里用了一个trick，强制把CPU时间片让给其他线程
+            display_signal.mechcommunitestatus_emit(self.hubProcess.client.is_connected())  # 发送Mech接口状态信号
+            display_signal.robotcommunitestatus_emit(True if self.hubProcess.robotServer else False)  # 发送机器人接口状态信号
 
 
 
@@ -108,6 +123,28 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     def output_pose_num(self, pose_num):
         self.label_poseNum.setText(pose_num)
 
+    # 显示当前Mech接口状态
+    def output_mechService_status(self, communitestatus):
+        if communitestatus:
+            status_text = '已连接'
+            color_text = 'rgb(0, 128, 0)'
+        else:
+            status_text = '未连接'
+            color_text = 'rgb(250, 0, 0)'
+        self.label_communiteStatus_mech.setText(status_text)
+        self.label_communiteStatus_mech.setStyleSheet('border-width: 0px;background-color: '+color_text+';font: 22pt "黑体";')
+
+
+    # 显示当前机器人接口状态
+    def output_robotService_status(self, communitestatus):
+        if communitestatus:
+            status_text = '已连接'
+            color_text = 'rgb(0, 128, 0)'
+        else:
+            status_text = '未连接'
+            color_text = 'rgb(250, 0, 0)'
+        self.label_communiteStatus_robot.setText(status_text)
+        self.label_communiteStatus_robot.setStyleSheet('border-width: 0px;background-color: '+color_text+';font: 22pt "黑体";')
 
     # 启动程序
     @pyqtSlot()
@@ -116,15 +153,23 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
             thread_main = threading.Thread(target=self.init_sys)  # 开启一个线程启动主程序
             thread_main.setDaemon(True)  # 挂后台进程
             thread_main.start()
+
+            thread_service = threading.Thread(target=self.service_manage)  # 开启一个线程用于服务管理
+            thread_service.setDaemon(True)  # 挂后台进程
+            thread_service.start()
+
+
             logs.info("通讯程序启动成功")
             self.pushButton_login.setEnabled(False) # 用户登录不可选
             self.pushButton_start.setText("结束运行")
+            self.pushButton_start.setStyleSheet('color: rgb(255, 255, 255);background-color: rgb(160, 0, 0);font: 22pt "黑体";')
             self.pushButton_start.setCheckable(True)
 
         else: # 关闭通讯程序
             self.hubProcess.running_flag = False
             self.pushButton_login.setEnabled(True) # 恢复用户可登录状态
             self.pushButton_start.setText("开始运行")
+            self.pushButton_start.setStyleSheet('color: rgb(255, 255, 255);background-color: rgb(0, 128, 0);font: 22pt "黑体";')
             self.pushButton_start.setCheckable(False)
             logs.warning("通讯程序已关闭")
 
@@ -160,18 +205,24 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
     # 显示点云
     def show_cloud_image(self):
-        fileName, filetype = QFileDialog.getOpenFileName(self, "请选择图像：", '.', "All Files(*);;")
+        fileName, filetype = QFileDialog.getOpenFileName(self, "请选择图像：", '.', "*.ply;;*.pcb;;")
         if fileName != '':
             # 读取点云
+            print(1)
             pcd = o3d.io.read_point_cloud(fileName)
             # 获取 Numpy 数组
+            print(pcd)
             np_points = np.asarray(pcd.points)
+
+
             # 创建显示对象
             plot = gl.GLScatterPlotItem()
             # 设置显示数据
             plot.setData(pos=np_points, color=(1, 1, 1, 1), size=0.001, pxMode=False)
             # 显示点云
             self.graphicsView.addItem(plot)
+        else:
+            message_box.warning_box(self, "文件路径为空")
 
     # 文件/打开3D图像文件
     @pyqtSlot()
@@ -196,9 +247,11 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         Login_Dialog.exec() # 用户登录
         if Login_Dialog.user_type == 0:
             self.pushButton_login.setText("操作员") # TODO: 不同等级权限应当有不同功能
+            logs.warning("操作员已登录！")
             pass
         elif Login_Dialog.user_type == 1:
             self.pushButton_login.setText("管理员")
+            logs.warning("管理员已登录！")
             pass
 
 
@@ -216,12 +269,11 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     # 菜单栏/帮助/关于
     @pyqtSlot()
     def on_action_about_triggered(self):
-        information_box(self, "关于软件", "LongerGUI {}\n\nCopyright 1999-2022 BLonger Ltd. All rights reserved.".\
+        information_box(self, "关于软件", "LongerGUI V{}\n\nCopyright 1999-2022 BLonger Ltd. All rights reserved.".\
                         format(configObject.software_config.software_version))
 
 
-
-    # 菜单栏/帮助/文档
+    # 菜单栏/帮助/更新文档
     @pyqtSlot()
     def on_action_docs_triggered(self):
         # is_english = self.setting_dialog.current_language_name() == QLocale(QLocale.English).name() # 若不考虑做国际化语言，可忽略

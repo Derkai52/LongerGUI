@@ -93,19 +93,41 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.horizontalLayout_communiteStatus = QtWidgets.QHBoxLayout()
         self.horizontalLayout_communiteStatus.setObjectName("horizontalLayout_communiteStatus")
-        self.label_text_communiteStatus = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_text_communiteStatus.setEnabled(False)
-        self.label_text_communiteStatus.setStyleSheet("border-width: 0px;\n"
-"")
-        self.label_text_communiteStatus.setObjectName("label_text_communiteStatus")
-        self.horizontalLayout_communiteStatus.addWidget(self.label_text_communiteStatus)
-        self.label_communiteStatus = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_communiteStatus.setEnabled(False)
-        self.label_communiteStatus.setStyleSheet("border-width: 0px;\n"
-"color: rgb(0, 170, 0);")
-        self.label_communiteStatus.setObjectName("label_communiteStatus")
-        self.horizontalLayout_communiteStatus.addWidget(self.label_communiteStatus)
+        self.label_text_communiteStatus_mech = QtWidgets.QLabel(self.Horizontal_display_top)
+        self.label_text_communiteStatus_mech.setEnabled(True)
+        self.label_text_communiteStatus_mech.setStyleSheet("border-width: 0px;\n"
+"font: 15pt \"黑体\";")
+        self.label_text_communiteStatus_mech.setObjectName("label_text_communiteStatus_mech")
+        self.horizontalLayout_communiteStatus.addWidget(self.label_text_communiteStatus_mech)
+        self.label_communiteStatus_mech = QtWidgets.QLabel(self.Horizontal_display_top)
+        self.label_communiteStatus_mech.setEnabled(True)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_communiteStatus_mech.sizePolicy().hasHeightForWidth())
+        self.label_communiteStatus_mech.setSizePolicy(sizePolicy)
+        self.label_communiteStatus_mech.setStyleSheet("border-width: 0px;\n"
+"color: rgb(250, 0, 0);\n"
+"font: 15pt \"黑体\";")
+        self.label_communiteStatus_mech.setObjectName("label_communiteStatus_mech")
+        self.horizontalLayout_communiteStatus.addWidget(self.label_communiteStatus_mech)
         self.verticalLayout_3.addLayout(self.horizontalLayout_communiteStatus)
+        self.horizontalLayout_communiteStatus_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_communiteStatus_2.setObjectName("horizontalLayout_communiteStatus_2")
+        self.label_text_communiteStatus_robot = QtWidgets.QLabel(self.Horizontal_display_top)
+        self.label_text_communiteStatus_robot.setEnabled(True)
+        self.label_text_communiteStatus_robot.setStyleSheet("border-width: 0px;\n"
+"font: 15pt \"黑体\";")
+        self.label_text_communiteStatus_robot.setObjectName("label_text_communiteStatus_robot")
+        self.horizontalLayout_communiteStatus_2.addWidget(self.label_text_communiteStatus_robot)
+        self.label_communiteStatus_robot = QtWidgets.QLabel(self.Horizontal_display_top)
+        self.label_communiteStatus_robot.setEnabled(True)
+        self.label_communiteStatus_robot.setStyleSheet("border-width: 0px;\n"
+"color: rgb(250, 0, 0);\n"
+"font: 15pt \"黑体\";")
+        self.label_communiteStatus_robot.setObjectName("label_communiteStatus_robot")
+        self.horizontalLayout_communiteStatus_2.addWidget(self.label_communiteStatus_robot)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_communiteStatus_2)
         self.horizontalLayout_beatTime = QtWidgets.QHBoxLayout()
         self.horizontalLayout_beatTime.setObjectName("horizontalLayout_beatTime")
         self.label_text_communiteTime = QtWidgets.QLabel(self.Horizontal_display_top)
@@ -114,13 +136,14 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_text_communiteTime.sizePolicy().hasHeightForWidth())
         self.label_text_communiteTime.setSizePolicy(sizePolicy)
-        self.label_text_communiteTime.setStyleSheet("border-width: 0px;")
+        self.label_text_communiteTime.setStyleSheet("border-width: 0px;\n"
+"font: 15pt \"黑体\";")
         self.label_text_communiteTime.setObjectName("label_text_communiteTime")
         self.horizontalLayout_beatTime.addWidget(self.label_text_communiteTime)
         self.label_beatTime = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_beatTime.setEnabled(False)
+        self.label_beatTime.setEnabled(True)
         self.label_beatTime.setStyleSheet("border-width: 0px;\n"
-"font: 10pt \"Arial\";\n"
+"font: 12pt \"黑体\";\n"
 "color: rgb(255, 255, 255);")
         self.label_beatTime.setObjectName("label_beatTime")
         self.horizontalLayout_beatTime.addWidget(self.label_beatTime)
@@ -133,30 +156,30 @@ class Ui_MainWindow(object):
         self.horizontalLayout_runningNum = QtWidgets.QHBoxLayout()
         self.horizontalLayout_runningNum.setObjectName("horizontalLayout_runningNum")
         self.label_text_runningNum = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_text_runningNum.setEnabled(False)
+        self.label_text_runningNum.setEnabled(True)
         self.label_text_runningNum.setStyleSheet("border-width: 0px;\n"
-"")
+"font: 12pt \"黑体\";")
         self.label_text_runningNum.setObjectName("label_text_runningNum")
         self.horizontalLayout_runningNum.addWidget(self.label_text_runningNum)
         self.label_runningNum = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_runningNum.setEnabled(False)
+        self.label_runningNum.setEnabled(True)
         self.label_runningNum.setStyleSheet("border-width: 0px;\n"
-"")
+"font: 12pt \"黑体\";")
         self.label_runningNum.setObjectName("label_runningNum")
         self.horizontalLayout_runningNum.addWidget(self.label_runningNum)
         self.verticalLayout_12.addLayout(self.horizontalLayout_runningNum)
         self.horizontalLayout_poseNum = QtWidgets.QHBoxLayout()
         self.horizontalLayout_poseNum.setObjectName("horizontalLayout_poseNum")
         self.label_text_poseNum = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_text_poseNum.setEnabled(False)
+        self.label_text_poseNum.setEnabled(True)
         self.label_text_poseNum.setStyleSheet("border-width: 0px;\n"
-"")
+"font: 12pt \"黑体\";")
         self.label_text_poseNum.setObjectName("label_text_poseNum")
         self.horizontalLayout_poseNum.addWidget(self.label_text_poseNum)
         self.label_poseNum = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_poseNum.setEnabled(False)
+        self.label_poseNum.setEnabled(True)
         self.label_poseNum.setStyleSheet("border-width: 0px;\n"
-"")
+"font: 12pt \"黑体\";")
         self.label_poseNum.setObjectName("label_poseNum")
         self.horizontalLayout_poseNum.addWidget(self.label_poseNum)
         self.verticalLayout_12.addLayout(self.horizontalLayout_poseNum)
@@ -166,15 +189,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_runningTime = QtWidgets.QHBoxLayout()
         self.horizontalLayout_runningTime.setObjectName("horizontalLayout_runningTime")
         self.label_text_runningTime = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_text_runningTime.setEnabled(False)
+        self.label_text_runningTime.setEnabled(True)
         self.label_text_runningTime.setStyleSheet("border-width: 0px;\n"
+"font: 12pt \"黑体\";\n"
 "")
         self.label_text_runningTime.setObjectName("label_text_runningTime")
         self.horizontalLayout_runningTime.addWidget(self.label_text_runningTime)
         self.label_runningTime = QtWidgets.QLabel(self.Horizontal_display_top)
-        self.label_runningTime.setEnabled(False)
+        self.label_runningTime.setEnabled(True)
         self.label_runningTime.setStyleSheet("border-width: 0px;\n"
-"")
+"font: 15pt \"黑体\";")
         self.label_runningTime.setObjectName("label_runningTime")
         self.horizontalLayout_runningTime.addWidget(self.label_runningTime)
         self.pushButton_login = QtWidgets.QPushButton(self.Horizontal_display_top)
@@ -184,6 +208,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.pushButton_login.sizePolicy().hasHeightForWidth())
         self.pushButton_login.setSizePolicy(sizePolicy)
         self.pushButton_login.setMinimumSize(QtCore.QSize(80, 0))
+        self.pushButton_login.setStyleSheet("font: 22pt \"黑体\";")
         self.pushButton_login.setObjectName("pushButton_login")
         self.horizontalLayout_runningTime.addWidget(self.pushButton_login)
         self.horizontalLayout_18.addLayout(self.horizontalLayout_runningTime)
@@ -195,6 +220,11 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.pushButton_start.sizePolicy().hasHeightForWidth())
         self.pushButton_start.setSizePolicy(sizePolicy)
         self.pushButton_start.setMinimumSize(QtCore.QSize(100, 0))
+        self.pushButton_start.setAutoFillBackground(False)
+        self.pushButton_start.setStyleSheet("color: rgb(255, 255, 255);\n"
+"background-color: rgb(0, 128, 0);\n"
+"font: 22pt \"黑体\";")
+        self.pushButton_start.setAutoDefault(False)
         self.pushButton_start.setObjectName("pushButton_start")
         self.horizontalLayout_17.addWidget(self.pushButton_start)
         self.horizontalLayout_16.addLayout(self.horizontalLayout_17)
@@ -214,6 +244,7 @@ class Ui_MainWindow(object):
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.label_vision_2D = QtWidgets.QLabel(self.page_vision_2D)
+        self.label_vision_2D.setStyleSheet("font: 12pt \"黑体\";")
         self.label_vision_2D.setObjectName("label_vision_2D")
         self.gridLayout_3.addWidget(self.label_vision_2D, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_3, 0, 0, 1, 1)
@@ -230,17 +261,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout_display_vision_chioce = QtWidgets.QHBoxLayout()
         self.horizontalLayout_display_vision_chioce.setObjectName("horizontalLayout_display_vision_chioce")
         self.pushButton_2DImage = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2DImage.setStyleSheet("font: 10pt \"黑体\";")
         self.pushButton_2DImage.setObjectName("pushButton_2DImage")
         self.horizontalLayout_display_vision_chioce.addWidget(self.pushButton_2DImage)
         self.pushButton_3DCloud = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_3DCloud.setStyleSheet("font: 10pt \"黑体\";")
         self.pushButton_3DCloud.setObjectName("pushButton_3DCloud")
         self.horizontalLayout_display_vision_chioce.addWidget(self.pushButton_3DCloud)
         self.verticalLayout_display_vision.addLayout(self.horizontalLayout_display_vision_chioce)
-
-
-        from util.vision.cloud_process import cloudshow
-        cloudshow(self)
-
         self.horizontalLayout_display_center.addLayout(self.verticalLayout_display_vision)
         self.verticalLayout_log_data_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_log_data_3.setObjectName("verticalLayout_log_data_3")
@@ -254,7 +282,7 @@ class Ui_MainWindow(object):
         self.label_text_displayData.setStyleSheet("border-width: 1px;\n"
 "border-style: solid;\n"
 "border-color: rgb(255, 255, 255);\n"
-"\n"
+"font: 12pt \"黑体\";\n"
 "\n"
 "")
         self.label_text_displayData.setObjectName("label_text_displayData")
@@ -368,8 +396,6 @@ class Ui_MainWindow(object):
         self.menu_file.addAction(self.action_open2DImageFile)
         self.menu_file.addAction(self.action_open3DCloudFile)
         self.menu_setting.addAction(self.action_systemSetting)
-        self.menu_setting.addAction(self.action_loginAuthority)
-        self.menu_tools.addAction(self.action_virtualKeyboard)
         self.menu_tools.addAction(self.action_communicationTest)
         self.menu_tools.addAction(self.action_standardDirGenerator)
         self.menu_help.addAction(self.action_about)
@@ -380,15 +406,21 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_tools.menuAction())
         self.menubar.addAction(self.menu_help.menuAction())
 
+        from util.vision.cloud_process import cloudshow # 导入点云库
+        cloudshow(self)
+
         self.retranslateUi(MainWindow)
+        self.stackedWidget_display.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "LongerGUI"))
         self.label_status.setText(_translate("MainWindow", "<html><head/><body><p>OK</p></body></html>"))
-        self.label_text_communiteStatus.setText(_translate("MainWindow", "通信状态："))
-        self.label_communiteStatus.setText(_translate("MainWindow", "通信连接成功"))
+        self.label_text_communiteStatus_mech.setText(_translate("MainWindow", "Mech 接口状态："))
+        self.label_communiteStatus_mech.setText(_translate("MainWindow", "未连接"))
+        self.label_text_communiteStatus_robot.setText(_translate("MainWindow", "机器人接口状态："))
+        self.label_communiteStatus_robot.setText(_translate("MainWindow", "未连接"))
         self.label_text_communiteTime.setText(_translate("MainWindow", "单次执行时间："))
         self.label_beatTime.setText(_translate("MainWindow", "4132 ms"))
         self.label_text_runningNum.setText(_translate("MainWindow", "运行次数："))
@@ -422,6 +454,6 @@ class Ui_MainWindow(object):
         self.action_virtualKeyboard.setText(_translate("MainWindow", "虚拟键盘"))
         self.action_communicationTest.setText(_translate("MainWindow", "通信测试助手"))
         self.action_about.setText(_translate("MainWindow", "关于"))
-        self.action_docs.setText(_translate("MainWindow", "文档"))
+        self.action_docs.setText(_translate("MainWindow", "更新文档"))
         self.action.setText(_translate("MainWindow", "标准工程生成器"))
         self.action_standardDirGenerator.setText(_translate("MainWindow", "标准工程生成器"))

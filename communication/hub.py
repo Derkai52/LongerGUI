@@ -6,6 +6,7 @@ from event.parse_event import msg_process
 from util.log_tool.log import logs
 from util import json_keys as jk
 from util.config_generator import configObject
+from event.parse_event import display_signal
 
 
 
@@ -17,18 +18,17 @@ class Hub:
     doc:作为信息中转分发的类
     """
     def __init__(self, serverIP="", serverPort="", connectIP="", connectPort=""):
-        self.running_flag = True   # 该线程可执行状态(当不可执行时退出线程)
-        self.client = None         # 用于连接 Mech 服务器(本地作为客户端)
-        self.robotServer = None    # 用于连接机器人端(本地作为服务端)
-        self.is_connect_robot = False # 判断是否连接到机器人端
-
         self.serverIP = serverIP
         self.serverPort = serverPort
         self.connectIP = connectIP
         self.connectPort = connectPort
         self.mechAddr = self.serverIP + ":" + self.serverPort  # 生成Mech地址+端口
         self.robotAddr = self.connectIP + ":" + self.connectPort # 生成Robot地址+端口
-        self.client = TcpClient(self.mechAddr) # 初始化Mech标准通讯接口
+
+        self.running_flag = True   # 该线程可执行状态(当不可执行时退出线程)
+        self.client = TcpClient(self.mechAddr) # 初始化Mech标准通讯接口(本地作为客户端)
+        self.robotServer = None    # 用于连接机器人端(本地作为服务端)
+        self.is_connect_robot = False # 判断是否连接到机器人端
 
 
 # TODO: shutdown是一种更加优秀的socket生命周期管理方法
@@ -41,21 +41,25 @@ class Hub:
 
 
 
-    def run(self):
+    def run(self): # TODO: 这是一个很新手的设计BUG，不应该用while循环去检测，因为这会诱发线程阻塞。应当用注册服务机制实现实时检测服务状态。
         """
         doc: 作为启动程序,持续循环检测与Mech的连接状态，可断线重连。
         """
         while True:
+
             if not self.running_flag:                   # 判断当前程序可执行状态
+                self.client.close()
+                self.robotServer = None
+                display_signal.mechcommunitestatus_emit(self.client.is_connected())  # 发送Mech接口状态信号
+                display_signal.robotcommunitestatus_emit(True if self.robotServer else False)  # 发送机器人接口状态信号
                 break
-            print(123)
+
             if self.client.is_connected():              # 判断与Mech服务器的连接状态
-                # time.sleep(1)                         # 连接后的检测周期
+                time.sleep(0.0000001)                   # 连接后的检测周期#  #TODO: 由于死循环与通信主线程程抢占，在这里用了一个trick，强制把CPU时间片让给其他线程
                 pass
 
-            else:                                       # 尝试掉线重连Mech服务器，周期2秒
+            else:                                       # 尝试掉线重连Mech服务器，周期2秒(TCP特性)
                 self.robotServer = None                 # 强制关闭Robot接口监听套接字
-                self.robotServer = None                 # 强制关闭Robot接口通讯套接字
                 if not self.connect_mech():
                     continue
 
@@ -237,7 +241,7 @@ class Hub:
             logs.debug("从机器人端收到的消息为: {}".format(response))
 
             if response == jk.LostConnectMsg:
-                logs.info("关闭对机器人接口")
+                logs.warning("关闭对机器人接口")
                 self.robotServer.close()
                 self.robotServer = None
                 break

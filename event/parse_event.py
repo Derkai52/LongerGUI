@@ -262,7 +262,9 @@ class DisplayMainWindow(QObject):
     signal_runningTime = pyqtSignal(str)
     signal_runningNum = pyqtSignal(str)
     signal_beatTime = pyqtSignal(str)
-    signal_communiteStatus = pyqtSignal(str)
+    signal_mechCommuniteStatus = pyqtSignal(bool)
+    signal_robotCommuniteStatus = pyqtSignal(bool)
+
 
     def __init__(self):
         QObject.__init__(self)
@@ -289,9 +291,13 @@ class DisplayMainWindow(QObject):
     def runningnum_emit(self, runningnum):
         self.signal_runningNum.emit(runningnum)
 
-    # 发送通讯状态信息
-    def communitestatus_emit(self, communitestatus):
-        self.signal_communiteStatus.emit(communitestatus)
+    # 发送Mech服务器通讯状态信息
+    def mechcommunitestatus_emit(self, communitestatus):
+        self.signal_mechCommuniteStatus.emit(communitestatus)
+
+    # 发送机器人服务器通讯状态信息
+    def robotcommunitestatus_emit(self, communitestatus):
+        self.signal_mechCommuniteStatus.emit(communitestatus)
 
 
 display_signal = DisplayMainWindow() # 自定义信号-槽函数类实例化
@@ -327,11 +333,13 @@ def parse_mech_msg(recv_cmds):
         poses_labels_speeds = unpack_params(recv_cmds[20:], fmt="6fii" * point_count)
         print(poses_labels_speeds)
 
-        display_signal.pose_emit(str(point_count)) # 发送
+
 
 
         for i in range(point_count):
             print("Pose", i+1, ":", poses_labels_speeds[i*8:i*8+6], "Label:", poses_labels_speeds[i*8+6], "Speed:", poses_labels_speeds[i*8+7])
+        display_signal.pose_emit(str(point_count)) # 发送位姿点数量到前端
+
 
     # 获取相机标定点
     elif recv_cmd == cmds.GET_CALIBRATION_DATA and status_code == VISION_SEND_CALIBRATION_POINT_OK:

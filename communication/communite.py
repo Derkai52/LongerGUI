@@ -82,6 +82,7 @@ class TcpServer(Communication):
         self._is_connected = False
         try:
             self._client_connect, self._remote_addr = self._socket.accept()
+            print("连接状态：",self._client_connect)
         except Exception as e:
             logging.exception(e)
             return None
