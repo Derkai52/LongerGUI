@@ -50,14 +50,20 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
 
 
-    def service_manage(self):
+    def service_manage(self): # TODO:这里为了实现功能打了太多的补丁.....简直白痴
         """
         doc: 服务状态管理
         """
         while True:
-            time.sleep(0.000001) #TODO: 由于死循环与通信主线程程抢占，在这里用了一个trick，强制把CPU时间片让给其他线程
+            time.sleep(0.000001) #TODO: 由于死循环与通信主线程程抢占，需要强制把CPU时间片让给其他线程
+
             display_signal.mechcommunitestatus_emit(self.hubProcess.client.is_connected())  # 发送Mech接口状态信号
-            display_signal.robotcommunitestatus_emit(True if self.hubProcess.robotServer else False)  # 发送机器人接口状态信号
+
+            if self.hubProcess.robotServer == None:
+                display_signal.robotcommunitestatus_emit(False)  # 发送机器人接口状态信号
+            else:
+                display_signal.robotcommunitestatus_emit(self.hubProcess.robotServer._is_connected)  # 发送机器人接口状态信号
+
 
 
 
@@ -125,10 +131,11 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
     # 显示当前Mech接口状态
     def output_mechService_status(self, communitestatus):
-        if communitestatus:
+        if communitestatus: # 暂时不清楚这里的机制，传入的是相反的Bool...所以用了not
             status_text = '已连接'
             color_text = 'rgb(0, 128, 0)'
         else:
+
             status_text = '未连接'
             color_text = 'rgb(250, 0, 0)'
         self.label_communiteStatus_mech.setText(status_text)
@@ -137,7 +144,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
 
     # 显示当前机器人接口状态
     def output_robotService_status(self, communitestatus):
-        if communitestatus:
+        if communitestatus: # 暂时不清楚这里的机制，传入的是相反的Bool...所以用了not
             status_text = '已连接'
             color_text = 'rgb(0, 128, 0)'
         else:

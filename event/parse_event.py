@@ -297,7 +297,7 @@ class DisplayMainWindow(QObject):
 
     # 发送机器人服务器通讯状态信息
     def robotcommunitestatus_emit(self, communitestatus):
-        self.signal_mechCommuniteStatus.emit(communitestatus)
+        self.signal_robotCommuniteStatus.emit(communitestatus)
 
 
 display_signal = DisplayMainWindow() # 自定义信号-槽函数类实例化
