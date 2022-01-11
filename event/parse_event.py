@@ -265,16 +265,6 @@ class DisplayMainWindow(QObject):
     signal_mechCommuniteStatus = pyqtSignal(bool)
     signal_robotCommuniteStatus = pyqtSignal(bool)
 
-
-    def __init__(self):
-        QObject.__init__(self)
-
-        try:
-            pass
-            # self.newLogging.connect(calls)
-        except IndexError:
-            pass
-
     # 发送位姿点信息
     def pose_emit(self, pose_num):
         self.signal_pose.emit(pose_num)
