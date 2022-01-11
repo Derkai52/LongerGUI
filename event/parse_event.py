@@ -254,7 +254,7 @@ def send_msg(client, msg):
 
 
 from PyQt5.QtCore import QObject, pyqtSignal
-class DisplayMainWindow(QObject):
+class DisplayMainWindow(QObject): # TODO: 可不可以再简化一下？这样下去会是永无止境的添加...
     """
     用于窗口数据可视化的类
     """

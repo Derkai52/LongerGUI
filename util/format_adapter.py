@@ -1,3 +1,5 @@
+# 用于软件界面可视化
+
 import logging
 from PyQt5.QtGui import QColor, QTextCharFormat, QFont
 from util.log_tool.log import logs
