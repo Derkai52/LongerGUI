@@ -1,0 +1,749 @@
+{
+    "ctrl_flows": [
+    ],
+    "data_flows": [
+        {
+            "dest_port": 1,
+            "dest_step": "{88912e0f-bca4-4ff1-b84f-262b04745017}",
+            "src_port": 1,
+            "src_step": "{c8e8bef5-8376-4c5b-92b3-e271281fe974}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{88912e0f-bca4-4ff1-b84f-262b04745017}",
+            "src_port": 0,
+            "src_step": "{c8e8bef5-8376-4c5b-92b3-e271281fe974}"
+        },
+        {
+            "dest_port": 1,
+            "dest_step": "{2b111d2d-dd90-41f7-9dda-3516b19e579c}",
+            "src_port": 1,
+            "src_step": "{c8e8bef5-8376-4c5b-92b3-e271281fe974}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{2b111d2d-dd90-41f7-9dda-3516b19e579c}",
+            "src_port": 0,
+            "src_step": "{c8e8bef5-8376-4c5b-92b3-e271281fe974}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{7be42630-268b-41b9-b090-c8ff81f4acd9}",
+            "src_port": 0,
+            "src_step": "{fe52471c-448f-406d-8288-f4c12690625e}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{f8ff2d70-e123-4e73-8040-22f80dbfca43}",
+            "src_port": 0,
+            "src_step": "{df909438-7fb0-4e38-9123-653b4a659369}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{dcc32f16-29c3-4da7-81c0-9109dda58b98}",
+            "src_port": 0,
+            "src_step": "{470bc354-e9ea-4f6e-93d1-d738ac12b71b}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{470bc354-e9ea-4f6e-93d1-d738ac12b71b}",
+            "src_port": 0,
+            "src_step": "{0ce0db01-1537-4280-a396-ee7a0f233955}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{9805d728-617b-4fed-b58f-accf59509838}",
+            "src_port": 1,
+            "src_step": "{88912e0f-bca4-4ff1-b84f-262b04745017}"
+        },
+        {
+            "dest_port": 0,
+            "dest_step": "{5a9eb10b-37f9-4c6a-badb-5d47c44a912e}",
+            "src_port": 0,
+            "src_step": "{dcc32f16-29c3-4da7-81c0-9109dda58b98}"
+        },
+        {
+            "dest_port": 1,
+            "dest_step": "{5a9eb10b-37f9-4c6a-badb-5d47c44a912e}",
+            "src_port": 1,
+            "src_step": "{dcc32f16-29c3-4da7-81c0-9109dda58b98}"
+        },
+        {
+            "dest_port": 2,
+            "dest_step": "{5a9eb10b-37f9-4c6a-badb-5d47c44a912e}",
+            "src_port": 2,
+            "src_step": "{dcc32f16-29c3-4da7-81c0-9109dda58b98}"
+        },
+        {
+            "dest_port": 3,
+            "dest_step": "{5a9eb10b-37f9-4c6a-badb-5d47c44a912e}",
+            "src_port": 3,
+            "src_step": "{dcc32f16-29c3-4da7-81c0-9109dda58b98}"
+        }
+    ],
+    "execFlags": 0,
+    "guid": "{e6658d03-132c-41cd-8fbe-e41f6383e72f}",
+    "objectName": "大型曲面工件",
+    "parameterTuningLevel": 1,    
+    "revision": "34df36696 2021-07-05 15:23:14 +0800",
+    "scene_pos": [
+        0,
+        0
+    ],
+    "steps": [
+        {
+            "areInputsInCamCoord": true,
+            "execFlags": 8,
+            "guid": "{9805d728-617b-4fed-b58f-accf59509838}",
+            "inputType": 0,
+            "objectName": "发送点云到Mech-Viz_1",
+            "parameterTuningLevel": 1,
+            "scene_pos": [
+                1770,
+                726
+            ],
+            "sendObjInfo": false,
+            "type": "Send Point Cloud to Mech-Viz"
+        },
+        {
+            "advOperations": "{\"adjustment\":\"Align\",\"sorting\":\"None\",\"transform\":\"Camera_To_Robot\"}",
+            "configPath": "pose_configs.json",
+            "entryPortsDesc": "PoseList;",
+            "execFlags": 8,
+            "exitPortsDesc": "PoseList;",
+            "guid": "{470bc354-e9ea-4f6e-93d1-d738ac12b71b}",
+            "objectName": "位姿调整集合_1",
+            "operations": "快捷坐标系变换\n使用位姿的XYZ值排序",
+            "parameterTuningLevel": 0,
+            "scene_pos": [
+                2037,
+                1062
+            ],
+            "stepsCompactDescs": "[{\"execFlags\":8,\"guid\":\"{4354988e-ef42-4b63-8268-368ed5b14d98}\",\"objectName\":\"子步骤/快捷坐标系变换_0\",\"parameterTuningLevel\":0,\"scene_pos\":[0,0],\"showCloudInSceneType\":1,\"showPosesType\":1,\"transformType\":0,\"type\":\"Easy Coordinate Transform\"},{\"axisType\":2,\"execFlags\":8,\"guid\":\"{626057dd-7659-4d4b-9b82-332dcbb180bc}\",\"objectName\":\"子步骤 / 使用位姿的XYZ值排序_1\",\"parameterTuningLevel\":0,\"scene_pos\":[0,0],\"sortOrder\":1,\"type\":\"Sort Poses by XYZ Values\"}]",
+            "stepsIODescs": "{\"external_names\":{\"in\":[\"Input_1\"],\"out\":[]},\"internal_names\":[{\"in\":[\"Input_1\"],\"out\":[\"Result_1\"]},{\"in\":[\"Result_1\"],\"out\":[\"Result_2\",\"Result_3\"]}]}",
+            "type": "Pose Adjustment Collection"
+        },
+        {
+            "ctrl_flows": [
+            ],
+            "data_flows": [
+                {
+                    "dest_port": 0,
+                    "dest_step": "{79a920c2-022b-45a8-aeff-2b81134257a7}",
+                    "src_port": 0,
+                    "src_step": "{f8ff2d70-e123-4e73-8040-22f80dbfca43}"
+                },
+                {
+                    "dest_port": 0,
+                    "dest_step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}",
+                    "src_port": 0,
+                    "src_step": "{f8ff2d70-e123-4e73-8040-22f80dbfca43}"
+                },
+                {
+                    "dest_port": 1,
+                    "dest_step": "{795e3974-d527-46be-afd0-bc71e5992281}",
+                    "src_port": 1,
+                    "src_step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}"
+                },
+                {
+                    "dest_port": 0,
+                    "dest_step": "{795e3974-d527-46be-afd0-bc71e5992281}",
+                    "src_port": 0,
+                    "src_step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}"
+                },
+                {
+                    "dest_port": 2,
+                    "dest_step": "{795e3974-d527-46be-afd0-bc71e5992281}",
+                    "src_port": 5,
+                    "src_step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}"
+                },
+                {
+                    "dest_port": 0,
+                    "dest_step": "{0ce0db01-1537-4280-a396-ee7a0f233955}",
+                    "src_port": 0,
+                    "src_step": "{795e3974-d527-46be-afd0-bc71e5992281}"
+                },
+                {
+                    "dest_port": 1,
+                    "dest_step": "{0ce0db01-1537-4280-a396-ee7a0f233955}",
+                    "src_port": 1,
+                    "src_step": "{795e3974-d527-46be-afd0-bc71e5992281}"
+                },
+                {
+                    "dest_port": 1,
+                    "dest_step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}",
+                    "src_port": 0,
+                    "src_step": "{79a920c2-022b-45a8-aeff-2b81134257a7}"
+                }
+            ],
+            "execFlags": 8,
+            "guid": "{1d71511f-c961-4299-8df6-59e0616a151d}",
+            "objectName": "3D匹配",
+            "parameterTuningLevel": 0,
+            "procedure_ends": [
+                {
+                    "port": 0,
+                    "step": "{0ce0db01-1537-4280-a396-ee7a0f233955}"
+                },
+                {
+                    "port": 6,
+                    "step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}"
+                }
+            ],
+            "procedure_entries": [
+                {
+                    "port": 0,
+                    "step": "{f8ff2d70-e123-4e73-8040-22f80dbfca43}"
+                }
+            ],
+            "property_groups": [
+                {
+                    "properties": [
+                        {
+                            "property_name": "modelFile"
+                        },
+                        {
+                            "property_name": "secondarySpeedController",
+                            "sub_object": true
+                        },
+                        {
+                            "property_name": "processorType"
+                        },
+                        {
+                            "property_name": "mainSpeedController",
+                            "sub_object": true
+                        },
+                        {
+                            "property_name": "outputSize",
+                            "sub_object": true
+                        },
+                        {
+                            "property_name": "geometryCenterFile"
+                        }
+                    ],
+                    "step": "{79a920c2-022b-45a8-aeff-2b81134257a7}"
+                },
+                {
+                    "properties": [
+                        {
+                            "property_name": "modelFile"
+                        },
+                        {
+                            "property_name": "geometryCenterFile"
+                        },
+                        {
+                            "property_name": "validationSearchRadius"
+                        },
+                        {
+                            "property_name": "confidenceThreshold"
+                        },
+                        {
+                            "property_name": "matchingMode",
+                            "sub_object": true
+                        },
+                        {
+                            "property_name": "correspondenceType"
+                        },
+                        {
+                            "property_name": "leafSize"
+                        }
+                    ],
+                    "step": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}"
+                }
+            ],
+            "scene_pos": [
+                2031,
+                894
+            ],
+            "steps": [
+                {
+                    "algorithmType": 0,
+                    "depthImgDilateKernelSize": 4,
+                    "execFlags": 8,
+                    "expandSizeRatioInX": 1,
+                    "expandSizeRatioInY": 1,
+                    "expandSizeRatioInZ": 1,
+                    "guid": "{795e3974-d527-46be-afd0-bc71e5992281}",
+                    "leafSize": 0.01,
+                    "maskClosingKernelSize": 3,
+                    "objectHeightSetting": 0,
+                    "objectName": "去除被压叠的物体_1",
+                    "overlapRatioThreshold": 0.6,
+                    "parameterTuningLevel": 1,
+                    "scene_pos": [
+                        -159,
+                        110
+                    ],
+                    "specifiedHeight": 0.1,
+                    "type": "Remove Overlapped Objects"
+                },
+                {
+                    "SurfaceMatchingEasyMode": {
+                        "denseSideBySideEdges": false,
+                        "mainSpeedController": 2,
+                        "outputSize": 3,
+                        "secondarySpeedController": 12,
+                        "showOutputModelAndSceneCloud": true,
+                        "showSampledModelCloud": false,
+                        "showSampledSceneCloud": false
+                    },
+                    "execFlags": 9,
+                    "geometryCenterFile": "crank_model/geocenter.json",
+                    "guid": "{79a920c2-022b-45a8-aeff-2b81134257a7}",
+                    "modelFile": "crank_model/all_6B.ply",
+                    "modelLabelFile": "",
+                    "objectName": "3D粗匹配_1",
+                    "parameterTuningLevel": 1,
+                    "pointOrientationCalcMode": 0,
+                    "processorType": "SurfaceMatchingEasyMode",
+                    "scene_pos": [
+                        -24,
+                        -226
+                    ],
+                    "searchPtsSizeForCalcOrientation": 10,
+                    "type": "3D Coarse Matching"
+                },
+                {
+                    "GMM": {
+                        "applyWeightInIteration": false,
+                        "iterationNumber": 30,
+                        "matchingMode": 1,
+                        "minimumStandardDeviation": 0.001,
+                        "standardDeviation": 0.005,
+                        "standardDeviationUpdateStepNumber": 3
+                    },
+                    "accelerationWithGPU": false,
+                    "angleStep": 360,
+                    "angleThreshold": 90,
+                    "applyAngleDeviationInValidation": false,
+                    "candidateTopNum": 3,
+                    "confidenceThreshold": 0.5,
+                    "correspondenceType": "GMM",
+                    "edgeSearchRadius": 0.005,
+                    "execFlags": 9,
+                    "fileOfModelFragmentsWithHighWeight": "crank_model/highWeight_6B.ply",
+                    "fullConnect": true,
+                    "geometryCenterFile": "crank_model/geocenter.json",
+                    "guid": "{237bc15b-73a4-42a5-b368-92e0a1cf682f}",
+                    "leafSize": 0.005,
+                    "maxAngle": 180,
+                    "minAngle": -179,
+                    "modelFile": "crank_model/all_6B.ply",
+                    "modelLabelFile": "",
+                    "multiplyCorrespondingPointsRatioInScene": false,
+                    "objectName": "3D精匹配_1",
+                    "parameterTuningLevel": 0,
+                    "pointOrientationCalcMode": 0,
+                    "rotationStrategy": 2,
+                    "sampler": 0,
+                    "scene_pos": [
+                        -159,
+                        -58
+                    ],
+                    "searchNum": 20,
+                    "searchPtsSizeForCalcOrientation": 10,
+                    "searchRadiusWhenSetWeight": 0.003,
+                    "searchWithRadius": false,
+                    "showOutputModelAndSceneCloud": true,
+                    "showSampledModelCloud": false,
+                    "showSampledSceneCloud": false,
+                    "showValidationPointCorrespondences": false,
+                    "tranRangeX": 0,
+                    "tranRangeY": 0,
+                    "tranStep": 0,
+                    "type": "3D Fine Matching",
+                    "validationSearchRadius": 0.004999999999999999,
+                    "weightOfEachPoint": 2,
+                    "wholeScene": false
+                },
+                {
+                    "execFlags": 8,
+                    "guid": "{f8ff2d70-e123-4e73-8040-22f80dbfca43}",
+                    "objectName": "输入分配器_1",
+                    "parameterTuningLevel": 0,
+                    "scene_pos": [
+                        -159,
+                        -394
+                    ],
+                    "type": "Allocator"
+                },
+                {
+                    "algorithmType": 0,
+                    "depthImgDilateKernelSize": 4,
+                    "execFlags": 8,
+                    "expandSizeRatioInX": 1,
+                    "expandSizeRatioInY": 1,
+                    "expandSizeRatioInZ": 3,
+                    "guid": "{0ce0db01-1537-4280-a396-ee7a0f233955}",
+                    "leafSize": 0.01,
+                    "maskClosingKernelSize": 3,
+                    "objectHeightSetting": 0,
+                    "objectName": "去除被压叠的物体_2",
+                    "overlapRatioThreshold": 0.6,
+                    "parameterTuningLevel": 1,
+                    "scene_pos": [
+                        -159,
+                        278
+                    ],
+                    "specifiedHeight": 0.1,
+                    "type": "Remove Overlapped Objects"
+                }
+            ],
+            "type": "Procedure"
+        },
+        {
+            "autoDeleteExpiredFolders": false,
+            "autoOverwriteExpiredImgs": false,
+            "createSubDirByDate": true,
+            "customSavingIndex": -1,
+            "execFlags": 8,
+            "fileNamePrefix": "",
+            "guid": "{2b111d2d-dd90-41f7-9dda-3516b19e579c}",
+            "maxImgNum": 1000,
+            "notSaveIfUsingVirtualCam": true,
+            "objectName": "保存图像_1",
+            "parameterTuningLevel": 1,
+            "saveCameraParas": true,
+            "saveColorImgAsPNG": false,
+            "saveDir": "",
+            "saveExpiredDays": 100,
+            "saveFlangePose": true,
+            "savingIndex": 3,
+            "scene_pos": [
+                1555,
+                558
+            ],
+            "subFoldersJoined": "depth;color",
+            "targetName": "",
+            "type": "Save Images"
+        },
+        {
+            "execFlags": 8,
+            "geoCenterPointPath": "crank_model/geocenter.json",
+            "guid": "{dcc32f16-29c3-4da7-81c0-9109dda58b98}",
+            "labelFilePath": "crank_model/labels.json",
+            "objPlacePointPath": "crank_model/placepoint.json",
+            "objectName": "映射到多抓取点_1",
+            "parameterTuningLevel": 1,
+            "pickpointsPath": "crank_model/pickpoint.json",
+            "scene_pos": [
+                2031,
+                1230
+            ],
+            "type": "Map to Multi Pick Points"
+        },
+        {
+            "MechEye": {
+                "NetCamIp": "127.0.0.1",
+                "NetCamPort": 5577,
+                "TimeOut": 10,
+                "cameraId": "17215667",
+                "cameraParametersGroupName": "17215667",
+                "configGroup": "",
+                "maxSavingNum": 1000,
+                "reconnectTimes": 3,
+                "saveDbgImgs": false,
+                "savePath": ""
+            },
+            "backgroundColorThres": 20,
+            "backgroundDepthThres": 10,
+            "calcImageAverageGrayValue": false,
+            "cameraType": "MechEye",
+            "checkIsLowAmbientBrightness": false,
+            "colorBackgroundFileName": "color_background.png",
+            "depthBackgroundFileName": "depth_background.png",
+            "execFlags": 8,
+            "fileNamePrefix": "flange_pose",
+            "flangePosePath": "",
+            "guid": "{c8e8bef5-8376-4c5b-92b3-e271281fe974}",
+            "maxGrayValue": 255,
+            "maxIterationNums": 10,
+            "minGrayValue": 0,
+            "objectName": "从相机获取图像_1",
+            "parameterTuningLevel": 1,
+            "reCaptureTimes": 0,
+            "removeBackgroundByColor": false,
+            "removeBackgroundByDepth": false,
+            "robotName": "",
+            "scene_pos": [
+                1555,
+                390
+            ],
+            "stereoMode": 0,
+            "type": "Capture Images from Camera"
+        },
+        {
+            "execFlags": 8,
+            "guid": "{5a9eb10b-37f9-4c6a-badb-5d47c44a912e}",
+            "objectName": "输出_1",
+            "outputKeysJoined": "poses;labels;offsets;objectIndexes",
+            "outputType": 0,
+            "parameterTuningLevel": 1,
+            "scene_pos": [
+                2038,
+                1414
+            ],
+            "type": "Procedure Out"
+        },
+        {
+            "ctrl_flows": [
+            ],
+            "data_flows": [
+                {
+                    "dest_port": 0,
+                    "dest_step": "{df909438-7fb0-4e38-9123-653b4a659369}",
+                    "src_port": 0,
+                    "src_step": "{7906d70c-43a0-444a-a72e-690229eed3e1}"
+                },
+                {
+                    "dest_port": 0,
+                    "dest_step": "{7906d70c-43a0-444a-a72e-690229eed3e1}",
+                    "src_port": 0,
+                    "src_step": "{7be42630-268b-41b9-b090-c8ff81f4acd9}"
+                },
+                {
+                    "dest_port": 1,
+                    "dest_step": "{df909438-7fb0-4e38-9123-653b4a659369}",
+                    "src_port": 0,
+                    "src_step": "{7be42630-268b-41b9-b090-c8ff81f4acd9}"
+                }
+            ],
+            "execFlags": 8,
+            "guid": "{f0e0f0e8-17ce-4d83-9ceb-04393d24dc84}",
+            "objectName": "滤除点数超限的点云",
+            "parameterTuningLevel": 0,
+            "procedure_ends": [
+                {
+                    "port": 0,
+                    "step": "{df909438-7fb0-4e38-9123-653b4a659369}"
+                }
+            ],
+            "procedure_entries": [
+                {
+                    "port": 0,
+                    "step": "{7be42630-268b-41b9-b090-c8ff81f4acd9}"
+                }
+            ],
+            "property_groups": [
+                {
+                    "properties": [
+                        {
+                            "property_name": "minPointsNum",
+                            "sub_object": true
+                        },
+                        {
+                            "property_name": "_filterType"
+                        },
+                        {
+                            "property_name": "maxPointsNum",
+                            "sub_object": true
+                        }
+                    ],
+                    "step": "{7906d70c-43a0-444a-a72e-690229eed3e1}"
+                }
+            ],
+            "scene_pos": [
+                2031,
+                726
+            ],
+            "steps": [
+                {
+                    "execFlags": 8,
+                    "guid": "{7be42630-268b-41b9-b090-c8ff81f4acd9}",
+                    "objectName": "原始点云",
+                    "parameterTuningLevel": 0,
+                    "scene_pos": [
+                        -704,
+                        -1
+                    ],
+                    "type": "Allocator"
+                },
+                {
+                    "CloudCapacityFilter": {
+                        "maxPointsNum": 999999999,
+                        "minPointsNum": 10
+                    },
+                    "_filterType": "CloudCapacityFilter",
+                    "dilateSize": 3,
+                    "erodeSize": 3,
+                    "execFlags": 8,
+                    "guid": "{7906d70c-43a0-444a-a72e-690229eed3e1}",
+                    "objectName": "Validate Point Clouds_1",
+                    "parameterTuningLevel": 0,
+                    "scene_pos": [
+                        -771,
+                        217
+                    ],
+                    "type": "Validate Point Clouds",
+                    "useOrthographicProj": false
+                },
+                {
+                    "dynamicIoSize": 1,
+                    "execFlags": 8,
+                    "guid": "{df909438-7fb0-4e38-9123-653b4a659369}",
+                    "objectName": "Filter_1",
+                    "parameterTuningLevel": 0,
+                    "reverseBoolList": false,
+                    "scene_pos": [
+                        -771,
+                        405
+                    ],
+                    "type": "Filter",
+                    "vectorLevel": 1
+                }
+            ],
+            "type": "Procedure"
+        },
+        {
+            "ctrl_flows": [
+            ],
+            "data_flows": [
+                {
+                    "dest_port": 0,
+                    "dest_step": "{59315821-4bb1-4702-af71-9a8c25731c3d}",
+                    "src_port": 0,
+                    "src_step": "{88912e0f-bca4-4ff1-b84f-262b04745017}"
+                },
+                {
+                    "dest_port": 0,
+                    "dest_step": "{fe52471c-448f-406d-8288-f4c12690625e}",
+                    "src_port": 0,
+                    "src_step": "{59315821-4bb1-4702-af71-9a8c25731c3d}"
+                }
+            ],
+            "execFlags": 8,
+            "guid": "{3f37023f-c5ca-4d12-a5c7-39068018949d}",
+            "objectName": "点云预处理",
+            "parameterTuningLevel": 1,
+            "procedure_ends": [
+                {
+                    "port": 0,
+                    "step": "{fe52471c-448f-406d-8288-f4c12690625e}"
+                },
+                {
+                    "port": 1,
+                    "step": "{88912e0f-bca4-4ff1-b84f-262b04745017}"
+                },
+                {
+                    "port": 2,
+                    "step": "{fe52471c-448f-406d-8288-f4c12690625e}"
+                }
+            ],
+            "procedure_entries": [
+                {
+                    "port": 0,
+                    "step": "{88912e0f-bca4-4ff1-b84f-262b04745017}"
+                },
+                {
+                    "port": 1,
+                    "step": "{88912e0f-bca4-4ff1-b84f-262b04745017}"
+                }
+            ],
+            "property_groups": [
+                {
+                    "properties": [
+                        {
+                            "property_name": "isOnlyRoi"
+                        },
+                        {
+                            "property_name": "minPointNum"
+                        },
+                        {
+                            "property_name": "isSendNoCloudInfo"
+                        }
+                    ],
+                    "step": "{fe52471c-448f-406d-8288-f4c12690625e}"
+                },
+                {
+                    "properties": [
+                        {
+                            "property_name": "calNormRadius",
+                            "sub_object": true
+                        },
+                        {
+                            "property_name": "cloudPreprocessingType"
+                        }
+                    ],
+                    "step": "{59315821-4bb1-4702-af71-9a8c25731c3d}"
+                },
+                {
+                    "properties": [
+                        {
+                            "property_name": "removeBackgroundByDepth"
+                        }
+                    ],
+                    "step": "{88912e0f-bca4-4ff1-b84f-262b04745017}"
+                }
+            ],
+            "scene_pos": [
+                1778,
+                558
+            ],
+            "steps": [
+                {
+                    "coordinateSystemType": 1,
+                    "execFlags": 9,
+                    "guid": "{fe52471c-448f-406d-8288-f4c12690625e}",
+                    "isOnlyRoi": true,
+                    "isSendNoCloudInfo": true,
+                    "minPointNum": 0,
+                    "objectName": "提取ROI内点云_1",
+                    "parameterTuningLevel": 1,
+                    "roiBoundaryPath": "3d_roi.json",
+                    "scene_pos": [
+                        -48,
+                        61
+                    ],
+                    "type": "Extract 3D Points in 3D ROI",
+                    "useRoiInFlange": true
+                },
+                {
+                    "CloudPreprocessingGPU": {
+                        "calNormRadius": 0.015,
+                        "concaveRadius": 0.02,
+                        "concaveThreshold": 1,
+                        "convexThreshold": 1,
+                        "isBatched": false,
+                        "removeConvexAndConcave": false,
+                        "removeSparse": false,
+                        "sparseCircleTime": 1,
+                        "sparseRadius": 0.01,
+                        "sparseThreshold": 0
+                    },
+                    "cloudPreprocessingType": "CloudPreprocessingGPU",
+                    "execFlags": 8,
+                    "guid": "{59315821-4bb1-4702-af71-9a8c25731c3d}",
+                    "objectName": "计算点云的法向量并滤波_1",
+                    "parameterTuningLevel": 1,
+                    "scene_pos": [
+                        -50,
+                        -119
+                    ],
+                    "type": "Calc Normal of Point Cloud and Filter It"
+                },
+                {
+                    "backgroundColorThres": 20,
+                    "backgroundDepthThres": 10,
+                    "colorBackgroundFileName": "color_background.jpg",
+                    "depthBackgroundFileName": "depth_background.png",
+                    "depthRoiFileName": "depth_image_roi",
+                    "execFlags": 8,
+                    "guid": "{88912e0f-bca4-4ff1-b84f-262b04745017}",
+                    "objectName": "将深度图转换为点云_1",
+                    "parameterTuningLevel": 1,
+                    "removeBackgroundByColor": false,
+                    "removeBackgroundByDepth": false,
+                    "scene_pos": [
+                        -50,
+                        -312
+                    ],
+                    "type": "From Depth Image to Point Cloud"
+                }
+            ],
+            "type": "Procedure"
+        }
+    ],
+    "timestamp": "2021-07-06 16:35:52",
+    "type": "Procedure",
+    "view_mode": 1
+}
