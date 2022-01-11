@@ -52,18 +52,15 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.timer.timeout.connect(self.showSysTime) # 将定时器超时信号与槽函数showTime()连接
         self.timer.start(1000)
 
+
+    # 显示系统时间
     def showSysTime(self):
-        """
-        doc: 显示系统时间
-        """
         time = QDateTime.currentDateTime() # 获取系统现在的时间
         timeDisplay = time.toString("yyyy-MM-dd hh:mm:ss")  # 设置系统时间显示格式
         self.label_runningTime.setText(timeDisplay)
 
+    # 服务状态管理
     def service_manage(self): # TODO:这里为了实现功能打了太多的补丁.....简直白痴
-        """
-        doc: 服务状态管理
-        """
         while True:
             time.sleep(0.000001) #TODO: 由于死循环与通信主线程程抢占，需要强制把CPU时间片让给其他线程
 
@@ -74,10 +71,8 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
             else:
                 display_signal.robotcommunitestatus_emit(self.hubProcess.robotServer._is_connected)  # 发送机器人接口状态信号
 
+    # 初始化Hub程序
     def init_sys(self):
-        """
-        doc: 初始化Hub程序
-        """
         mech_interface_ip = configObject.mech_communication_config.mech_interface_ip
         mech_interface_port = configObject.mech_communication_config.mech_interface_port
         robot_server_agent_ip = configObject.robot_communication_config.robot_server_agent_ip
@@ -87,9 +82,10 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
                      connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
         self.hubProcess.run()  # 主程序开始运行
 
+    # 多进程应用程序启动器
     def start_app(self, app_name, args):
         """
-        doc: 多线程应用程序启动器
+        doc: 多进程应用程序启动器
         :param app_name: 应用程序名
         :param args: 应用程序参数
         """
@@ -107,6 +103,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         # threading.Thread(target=self.read_app_output,
         #                  args=[self.sub_process_list[app_name], app_name, args[0]]).start()
 
+    # 日志信息可视化
     def output_gui_logger(self, log_level, msg):
         """
         doc: 输出日志信息并显示到文本框
@@ -191,7 +188,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     def imageprocessing(self):
         """
         doc: 获取一张2D图像并显示在指定label控件上
-        :return: None
         """
         print("Show Image...") # TODO: 目前并不能保证图像能以合适的比例进行缩放。因为目前取决与Label尺寸比例
         imgName,imgType= QFileDialog.getOpenFileName(self,
@@ -253,23 +249,18 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         Login_Dialog = LoginDialog() # 权限切换页面
         Login_Dialog.exec() # 用户登录
         if Login_Dialog.user_type == 0:
-            self.pushButton_login.setText("操作员") # TODO: 不同等级权限应当有不同功能
+            self.pushButton_login.setText("操作员")
             logs.warning("操作员已登录！")
-            pass
+            pass         # TODO: 不同等级权限应当有不同功能
         elif Login_Dialog.user_type == 1:
             self.pushButton_login.setText("管理员")
             logs.warning("管理员已登录！")
             pass
 
 
-
-
-
     # 工具/通信测试助手
     @pyqtSlot()
     def on_action_communicationTest_triggered(self):
-        # bg_setting = self.setting_dialog.background_setting
-        # if bg_setting.is_viz_needed:
         self.start_app("communication_assistant", [os.path.join(os.path.dirname(__file__), "..","..", "util","test", "NetAssist.exe")])
 
 
@@ -289,8 +280,8 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__),"..","update_logs", change_log_file)))
         print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
 
-####################################################
-    # 2D图像
+
+    # 文件/打开2D图像
     @pyqtSlot()
     def on_pushButton_2DImage_clicked(self):
 
@@ -298,7 +289,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.pushButton_3DCloud.setEnabled(True)
         self.stackedWidget_display.setCurrentIndex(0)
 
-    # 3D图像
+    # 文件/打开3D图像
     @pyqtSlot()
     def on_pushButton_3DCloud_clicked(self):
         self.pushButton_2DImage.setEnabled(True) # TODO: 【差前端的东西】默认只有两种图像，当一个按下另一个必然亮起。推荐方案是用QSS前端渲染出不同状态即可。

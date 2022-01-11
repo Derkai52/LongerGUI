@@ -1,11 +1,10 @@
-import time
-
 
 def cloudshow(self):
     """
     doc: 在窗口中新建一个点云显示组件
     :param self: 窗口类的self
     """
+    ## 将此注释代码复制到UI控件部分代码中
     #from util.vision.cloud_process import cloudshow # 导入点云库
     #cloudshow(self)
 
