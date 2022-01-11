@@ -8,9 +8,9 @@
 
 **项目仓库地址：** https://gitee.com/Derkai52/longer-gui.git
 
-**开发平台：**x86 64位 Windows平台
+**开发平台：** x86 64位 Windows平台
 
-**开发环境：**Python3.6，详细环境包请参阅《requirements.txt》
+**开发环境：** Python3.6，详细环境包请参阅《requirements.txt》
 
 **软件运行示例图：**
 
