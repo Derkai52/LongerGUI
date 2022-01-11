@@ -9,19 +9,14 @@
                        |___/
 
 ############ < Designed by Longer-developer in 2022 > ################
-
 """
 
 import sys, cv2, time, os
-
 from resource.ui.pyqt_generated.UI_MainWindow import Ui_MainWindow
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 from PyQt5.QtWidgets import QFileDialog,QTabWidget, QMessageBox
-
 from PyQt5.QtCore import pyqtSlot, QTimer, QThread, pyqtSignal, Qt, QUrl
-
 from PyQt5.QtGui import QPixmap, QImage, QDesktopServices
 
 from resource.ui.main_window import MainWindow
@@ -30,7 +25,6 @@ from resource.ui.main_window import MainWindow
 
 # 手动启动程序
 if __name__ == "__main__":
-
     # 数据初始化完成，载入界面
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
