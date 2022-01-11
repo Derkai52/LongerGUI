@@ -47,21 +47,18 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         display_signal.signal_mechCommuniteStatus.connect(self.output_mechService_status) # Mech接口状态
         display_signal.signal_robotCommuniteStatus.connect(self.output_robotService_status) # 机器人接口状态
 
-        # 计时器
+        # 显示系统时间
         self.timer = QTimer(self)
-        # 将定时器超时信号与槽函数showTime()连接
-        self.timer.timeout.connect(self.showTime)
+        self.timer.timeout.connect(self.showSysTime) # 将定时器超时信号与槽函数showTime()连接
         self.timer.start(1000)
 
-    def showTime(self):
-
-        # 获取系统现在的时间
-        time = QDateTime.currentDateTime()
-        # 设置系统时间显示格式
-        timeDisplay = time.toString("yyyy-MM-dd hh:mm:ss dddd")
-        # 在标签上显示时间
+    def showSysTime(self):
+        """
+        doc: 显示系统时间
+        """
+        time = QDateTime.currentDateTime() # 获取系统现在的时间
+        timeDisplay = time.toString("yyyy-MM-dd hh:mm:ss")  # 设置系统时间显示格式
         self.label_runningTime.setText(timeDisplay)
-
 
     def service_manage(self): # TODO:这里为了实现功能打了太多的补丁.....简直白痴
         """
@@ -77,7 +74,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
             else:
                 display_signal.robotcommunitestatus_emit(self.hubProcess.robotServer._is_connected)  # 发送机器人接口状态信号
 
-
     def init_sys(self):
         """
         doc: 初始化Hub程序
@@ -90,8 +86,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.hubProcess = Hub(serverIP=mech_interface_ip, serverPort=mech_interface_port, \
                      connectIP=robot_server_agent_ip, connectPort=robot_server_agent_port)
         self.hubProcess.run()  # 主程序开始运行
-
-
 
     def start_app(self, app_name, args):
         """
@@ -189,10 +183,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
             self.pushButton_start.setStyleSheet('color: rgb(255, 255, 255);background-color: rgb(0, 128, 0);font: 22pt "黑体";')
             self.pushButton_start.setCheckable(False)
             logs.warning("通讯程序已关闭")
-
-
-
-
 
 
     def setImage(self, image): # 指定在 label 中显示

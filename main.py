@@ -28,7 +28,7 @@ from resource.ui.main_window import MainWindow
 
 
 
-
+# 手动启动程序
 if __name__ == "__main__":
 
     # 数据初始化完成，载入界面
@@ -39,11 +39,7 @@ if __name__ == "__main__":
 
 
 
-
-
-
-
-# 预留接口，直接使用参数启动程序(暂未启用，预留程序外部调用接口)
+# 预留接口，使用外部调用参数启动程序(暂未启用，预留程序外部调用接口)
 # 请根据实际情况修改下面程序，因为这是配合好几个版本前的代码了
 # if len(sys.argv) == 2: # 从文件读取
 #     config_path = sys.argv[1]
