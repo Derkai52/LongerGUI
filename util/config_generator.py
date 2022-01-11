@@ -126,9 +126,9 @@ class OtherConfig():
         return {jk.update_doc_name: self.update_doc_name}
 
 
+# 单例模式装饰器
 def singleton(cls, *args, **kwargs):
     instances = {}
-
     def _singleton():
         if cls not in instances:
             instances[cls] = cls(*args, **kwargs)
@@ -164,122 +164,19 @@ class Generator(object):
         logging.info("保存配置信息:{}".format(configs))
         write_json_file(setting_file_path, configs)
 
-
-    # 配置生成器(暂未启用)
-    def generate_adapter(self):
-        # 1、序列化配置，打包配置内容为json文件
-        self.serialize_config()
-        try:
-            if not path.exists(self.network_config.project_dir):
-                mkdir(self.network_config.project_dir)
-            self.adapter_class_name = self.network_config.adapter_name[0].upper() + self.network_config.adapter_name[1:]
-            self._create_adapter_file()  # 创建adapter文件
-            self._create_widget_file()
-            self._create_init_file()
-        except Exception as e:
-            logging.exception(e)
-
+    # 代码生成器(暂未启用)
+    # def generate_adapter(self):
+    #     self.serialize_config() # 序列化配置，打包配置内容为json文件
+    #     try:
+    #         if not path.exists(self.network_config.project_dir):
+    #             mkdir(self.network_config.project_dir)
+    #         self.adapter_class_name = self.network_config.adapter_name[0].upper() + self.network_config.adapter_name[1:]
+    #         self._create_adapter_file()  # 按照模板创建代码文件
+    #         self._create_widget_file()
+    #         self._create_init_file()
+    #     except Exception as e:
+    #         logging.exception(e)
 
 # 使用单例模式实例化配置生成器
 configObject = Generator()
 
-
-
-
-# class DataFormatConfig():
-#     def __init__(self, js):
-#         self.from_json(js)
-#
-#     def from_json(self, js):
-#         s_data = js.get(jk.data_sent, {})
-#         r_data = js.get(jk.data_received, {})
-#         codes = [str(messages.VISION_HAS_POSES), str(messages.CENTER_INVALID_COMMAND),
-#                  str(messages.VISION_NOT_REGISTERED), str(messages.VISION_NO_POSES), str(messages.VISION_NO_CLOUD),
-#                  str(messages.VIZ_COLLISION_CHECKED)]
-#         self.status_codes = s_data.get(jk.status_codes, codes)
-#         self.labels = s_data.get(jk.labels, [])
-#         self.label_codes = s_data.get(jk.label_codes, [])
-#         self.is_need_send_object_label = s_data.get(jk.is_need_send_object_label, False)
-#         self.is_need_check_cloud = s_data.get(jk.is_need_check_cloud, False)
-#         self.is_need_send_pose_num = s_data.get(jk.is_need_send_pose_num, True)
-#         self.is_need_fixed_body = s_data.get(jk.is_need_fixed_body, False)
-#         self.fixed_body = s_data.get(jk.fixed_body, "")
-#         self.is_need_fixed_cmd_tail = s_data.get(jk.is_need_fixed_cmd_tail, False)
-#         self.fixed_cmd_tail = s_data.get(jk.fixed_cmd_tail, "")
-#         self.field_separator_sent = s_data.get(jk.field_separator, ",")
-#         self.is_need_subfield_separator_sent = s_data.get(jk.is_need_subfield_separator_sent, False)
-#         self.subfield_separator_sent = s_data.get(jk.subfield_separator, ",")
-#         self.status_code_data_type = s_data.get(jk.status_code_data_type, "SHORT")
-#         self.pose_num_data_type = s_data.get(jk.pose_num_data_type, "CHAR")
-#         self.pose_data_type = s_data.get(jk.pose_data_type, "FLOAT")
-#
-#         self.field_num = r_data.get(jk.field_num, 1)
-#         self.photo_command = r_data.get(jk.photo_command, "r")
-#         self.field_separator_received = r_data.get(jk.field_separator, ",")
-#         self.subfield_separator_received = r_data.get(jk.subfield_separator, ",")
-#         self.is_need_subfield_separator_received = r_data.get(jk.is_need_subfield_separator_received, False)
-#         self.is_multi_vision_project = r_data.get(jk.is_multi_vision_project, False)
-#         self.vision_name_list = r_data.get(jk.vision_name_list, [])
-#         self.vision_name_code_list = r_data.get(jk.vision_name_code_list, [])
-#         self.vision_name_pos = r_data.get(jk.vision_name_pos, 1)
-#         self.is_need_switch_model = r_data.get(jk.is_need_switch_model, False)
-#         self.model_type_pos = r_data.get(jk.model_type_pos, 0)
-#         self.subfield_received_start_pos = r_data.get(jk.subfield_received_start_pos, 0)
-#         self.subfield_received_end_pos = r_data.get(jk.subfield_received_end_pos, 0)
-#         self.hex_fields = r_data.get(jk.hex_fields, [])
-#
-#     def to_json(self):
-#         s_data = {jk.status_codes: self.status_codes,
-#                   jk.labels: self.labels,
-#                   jk.label_codes: self.label_codes,
-#                   jk.is_need_send_object_label: self.is_need_send_object_label,
-#                   jk.is_need_check_cloud: self.is_need_check_cloud,
-#                   jk.is_need_send_pose_num: self.is_need_send_pose_num,
-#                   jk.is_need_fixed_body: self.is_need_fixed_body,
-#                   jk.fixed_body: self.fixed_body,
-#                   jk.is_need_fixed_cmd_tail: self.is_need_fixed_cmd_tail,
-#                   jk.fixed_cmd_tail: self.fixed_cmd_tail,
-#                   jk.field_separator: self.field_separator_sent,
-#                   jk.is_need_subfield_separator_sent: self.is_need_subfield_separator_sent,
-#                   jk.subfield_separator: self.subfield_separator_sent,
-#                   jk.status_code_data_type: self.status_code_data_type,
-#                   jk.pose_num_data_type: self.pose_num_data_type,
-#                   jk.pose_data_type: self.pose_data_type}
-#         r_data = {jk.field_num: self.field_num,
-#                   jk.photo_command: self.photo_command,
-#                   jk.field_separator: self.field_separator_received,
-#                   jk.subfield_separator: self.subfield_separator_received,
-#                   jk.is_need_subfield_separator_received: self.is_need_subfield_separator_received,
-#                   jk.is_multi_vision_project: self.is_multi_vision_project,
-#                   jk.vision_name_list: self.vision_name_list,
-#                   jk.vision_name_code_list: self.vision_name_code_list,
-#                   jk.vision_name_pos: self.vision_name_pos,
-#                   jk.is_need_switch_model: self.is_need_switch_model,
-#                   jk.model_type_pos: self.model_type_pos,
-#                   jk.subfield_received_start_pos: self.subfield_received_start_pos,
-#                   jk.subfield_received_end_pos: self.subfield_received_end_pos,
-#                   jk.hex_fields: self.hex_fields}
-#         return {jk.data_sent: s_data,
-#                 jk.data_received: r_data}
-#
-#
-# class ModelConfig():
-#     def __init__(self, js):
-#         self.from_json(js)
-#
-#     def from_json(self, js):
-#         self.model_dir = js.get(jk.model_dir, "")
-#         self.is_need_type_code = js.get(jk.is_need_type_code, False)
-#         self.is_switch_model_in_ui = js.get(jk.is_switch_model_in_ui, True)
-#         self.model_type_list = js.get(jk.model_type_list, [])
-#         self.step_name_dict = js.get(jk.step_name_dict, {})
-#
-#     def to_json(self):
-#         return {jk.model_dir: self.model_dir,
-#                 jk.is_need_type_code: self.is_need_type_code,
-#                 jk.is_switch_model_in_ui: self.is_switch_model_in_ui,
-#                 jk.model_type_list: self.model_type_list,
-#                 jk.step_name_dict: self.step_name_dict}
-
-
-# adapter代码生成器类

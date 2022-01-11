@@ -1,3 +1,5 @@
+# 本文件仅作为一个映射表,在代码中使用这些变量，获取键值对的键
+
 # 软件配置
 software = "software"
 software_name = "software_name"
@@ -49,7 +51,7 @@ CloseMsg = b'#CLOSE'
 FormatErrorMsg = None
 LostConnectMsg = b''
 
-######################################### 尚未启用 #################
+######################################### 尚未启用的部分 ####################################
 # background_program = "background_program"
 # adapter = "adapter"
 # auto_start = "auto_start"
