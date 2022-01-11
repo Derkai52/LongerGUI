@@ -20,7 +20,7 @@ try:
 except FileNotFoundError:
     pass
 setting_file_path = os.path.join(longer_gui_path, "setting.json")
-print(setting_file_path)
+print("加载配置文件路径:" ,setting_file_path)
 sys_settings = QSettings(QSettings.IniFormat, QSettings.UserScope, "Longer/LongerGUI")
 # print(sys_settings)
 generator_config_file = os.path.join(longer_gui_path, "generate_adapter_config.json")
