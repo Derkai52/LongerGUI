@@ -4,9 +4,9 @@
 
 ## 一、项目概况
 
-**项目简介：**LongerGUI是一款 Mech-Mind 的小工具，可进行数据处理与分析，帮助客户更直观的获取所需的生产信息
+**项目简介：** LongerGUI是一款 Mech-Mind 的小工具，可进行数据处理与分析，帮助客户更直观的获取所需的生产信息
 
-**项目仓库地址：**https://gitee.com/Derkai52/longer-gui.git
+**项目仓库地址：** https://gitee.com/Derkai52/longer-gui.git
 
 **软件运行示例图：**
 
