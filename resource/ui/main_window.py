@@ -1,10 +1,9 @@
-import sys, os, threading, subprocess, logging
-import time
-
+import sys, os, threading, subprocess, logging, time
 import open3d as o3d
 import pyqtgraph.opengl as gl
 import numpy as np
 
+# 自定义包
 import message_box
 from util.log_tool.log import LoggingHandler, logs
 from util.config_generator import configObject
@@ -13,7 +12,7 @@ from communication.hub import Hub # 通讯中心
 from util.format_adapter import * # 可视化
 from event.parse_event import display_signal # 接收后端信号
 
-
+# QT相关包
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl, QTimer, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QAbstractItemView, QDialog, QAction, QMenu, QFileDialog, QTabWidget, QMessageBox
@@ -142,7 +141,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.label_communiteStatus_mech.setText(status_text)
         self.label_communiteStatus_mech.setStyleSheet('border-width: 0px;background-color: '+color_text+';font: 22pt "黑体";')
 
-
     # 显示当前机器人接口状态
     def output_robotService_status(self, communitestatus):
         if communitestatus: # 暂时不清楚这里的机制，传入的是相反的Bool...所以用了not
@@ -153,6 +151,20 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
             color_text = 'rgb(250, 0, 0)'
         self.label_communiteStatus_robot.setText(status_text)
         self.label_communiteStatus_robot.setStyleSheet('border-width: 0px;background-color: '+color_text+';font: 22pt "黑体";')
+
+    # 权限登录
+    @pyqtSlot()
+    def on_pushButton_login_clicked(self):
+        Login_Dialog = LoginDialog() # 权限切换页面
+        Login_Dialog.exec() # 用户登录
+        if Login_Dialog.user_type == 0:
+            self.pushButton_login.setText("操作员")
+            logs.warning("操作员已登录！")
+            pass         # TODO: 不同等级权限应当有不同功能
+        elif Login_Dialog.user_type == 1:
+            self.pushButton_login.setText("管理员")
+            logs.warning("管理员已登录！")
+            pass
 
     # 启动程序
     @pyqtSlot()
@@ -231,7 +243,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
     @pyqtSlot()
     def on_action_open3DCloudFile_triggered(self):
         self.show_cloud_image()
-        # TODO: 可能保存的是配置或日志文件，目前暂不能明确
+
 
     # 设置/系统设置
     @pyqtSlot()
@@ -240,23 +252,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.label_status.setStyleSheet("color: rgb(255, 0, 0);\n"
                                         "font: 48pt \"Constantia\";\n"
                                         "border-width: 0px;")
-        self.label_status.setText(_translate("MainWindow", "NG")) # TODO:提示符通过标志变量获取
-
-
-    # 用户登录
-    @pyqtSlot()
-    def on_pushButton_login_clicked(self):
-        Login_Dialog = LoginDialog() # 权限切换页面
-        Login_Dialog.exec() # 用户登录
-        if Login_Dialog.user_type == 0:
-            self.pushButton_login.setText("操作员")
-            logs.warning("操作员已登录！")
-            pass         # TODO: 不同等级权限应当有不同功能
-        elif Login_Dialog.user_type == 1:
-            self.pushButton_login.setText("管理员")
-            logs.warning("管理员已登录！")
-            pass
-
+        self.label_status.setText(_translate("MainWindow", "NG")) # TODO:程序运行状态提示符（OK、NG）建议通过变量获取
 
     # 工具/通信测试助手
     @pyqtSlot()
@@ -281,7 +277,7 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         print(os.path.join(os.path.dirname(__file__),"..", "update_logs", change_log_file))
 
 
-    # 文件/打开2D图像
+    # 2D图像
     @pyqtSlot()
     def on_pushButton_2DImage_clicked(self):
 
@@ -289,7 +285,8 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.pushButton_3DCloud.setEnabled(True)
         self.stackedWidget_display.setCurrentIndex(0)
 
-    # 文件/打开3D图像
+
+    # 3D点云
     @pyqtSlot()
     def on_pushButton_3DCloud_clicked(self):
         self.pushButton_2DImage.setEnabled(True) # TODO: 【差前端的东西】默认只有两种图像，当一个按下另一个必然亮起。推荐方案是用QSS前端渲染出不同状态即可。
