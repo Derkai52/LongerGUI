@@ -15,7 +15,7 @@ from event.parse_event import display_signal # 接收后端信号
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl
+from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QTranslator, QCoreApplication, QUrl, QTimer, QDateTime
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QAbstractItemView, QDialog, QAction, QMenu, QFileDialog, QTabWidget, QMessageBox
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QCursor, QColor, QImage, QDesktopServices, QTextCursor, QBrush
 
@@ -42,12 +42,25 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
         self.logging_handler.newLogging.connect(self.output_gui_logger)
         logs.addHandler(self.logging_handler)
 
-        # 加载后端发送给前端的信号消息
-        display_signal.signal_pose.connect(self.output_pose_num)
-        display_signal.signal_mechCommuniteStatus.connect(self.output_mechService_status)
-        display_signal.signal_robotCommuniteStatus.connect(self.output_robotService_status)
+        # 后端发送给前端的信号消息
+        display_signal.signal_pose.connect(self.output_pose_num) # 位姿数
+        display_signal.signal_mechCommuniteStatus.connect(self.output_mechService_status) # Mech接口状态
+        display_signal.signal_robotCommuniteStatus.connect(self.output_robotService_status) # 机器人接口状态
 
+        # 计时器
+        self.timer = QTimer(self)
+        # 将定时器超时信号与槽函数showTime()连接
+        self.timer.timeout.connect(self.showTime)
+        self.timer.start(1000)
 
+    def showTime(self):
+
+        # 获取系统现在的时间
+        time = QDateTime.currentDateTime()
+        # 设置系统时间显示格式
+        timeDisplay = time.toString("yyyy-MM-dd hh:mm:ss dddd")
+        # 在标签上显示时间
+        self.label_runningTime.setText(timeDisplay)
 
 
     def service_manage(self): # TODO:这里为了实现功能打了太多的补丁.....简直白痴
@@ -63,9 +76,6 @@ class MainWindow(QMainWindow, Ui_MainWindow): #这个窗口继承了用QtDesignn
                 display_signal.robotcommunitestatus_emit(False)  # 发送机器人接口状态信号
             else:
                 display_signal.robotcommunitestatus_emit(self.hubProcess.robotServer._is_connected)  # 发送机器人接口状态信号
-
-
-
 
 
     def init_sys(self):
