@@ -10,9 +10,6 @@ from event.parse_event import display_signal
 
 
 
-
-
-
 class Hub:
     """
     doc:作为信息中转分发的类
@@ -204,7 +201,7 @@ class Hub:
             # sendMsg = bytes(input("\n请输入向Mech发送的消息:"), encoding="UTF8") # 仅供调试用
             # self.client.send(sendMsg)
             if self.client.is_connected():
-                sendMsg = input("\n请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
+                sendMsg = input("\n【仅供调试用】请输入向Mech发送的消息: 例如101,1,1,1,-490.000,0,539.000,-90.000,90.000,180.000") # TODO: 预留给前端界面的输入接口
                 msg_process(self.client, sendMsg, funcFlag = 1) # 信息处理并发送
 
 
