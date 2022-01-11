@@ -171,7 +171,6 @@ class Hub:
         doc: 与Mech的通讯状态检测
         retrun: 直接放行:1 continue:2 break:3
         """
-
         if response == jk.LostConnectMsg:  # 丢失连接或通讯异常
             logs.warning("丢失与Mech服务器的连接")
             self.client.close()
