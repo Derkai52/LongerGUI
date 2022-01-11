@@ -6,7 +6,7 @@
 
 类之间是嵌套的，只有MainWindow类被外部实例化。其他类都被前一个类调用，实例化均在类里面进行，这样能维持一定的低耦合度。
 
-![image-20211228160623026](C:/Users/tk/Desktop/LongerGUI项目相关资料/doc_img/image-20211228160623026.png)
+![image-20211228160623026](.\doc_img/image-20211228160623026.png)
 
 
 
@@ -126,7 +126,7 @@ configObject.other_config.update_doc_name # 获取【更新文件】
 
 上图三个功能块的命名如下图所示：
 
-![image-20220107212551036](C:/Users/tk/Desktop/LongerGUI项目相关资料/doc_img/image-20220107212551036.png)
+![image-20220107212551036](.\doc_img/image-20220107212551036.png)
 
 上图展示了，一组命名方法
 
@@ -168,7 +168,7 @@ label_poseNum # 位姿数量值
 
 为了保证程序的易读性和低耦合性，提供了一个工具库，内含如下常用工具。只需要调用对应工具内已实现的功能即可。
 
-![image-20211228163057123](C:/Users/tk/Desktop/LongerGUI项目相关资料/doc_img/image-20211228163057123.png)
+![image-20211228163057123](.\doc_img/image-20211228163057123.png)
 
 
 
