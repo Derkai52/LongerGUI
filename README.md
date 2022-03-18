@@ -1,4 +1,4 @@
-# LongerGUI 开发者快速手册 ( V0.1.1-Alpha )
+# LongerGUI 开发者快速手册 (V0.1.1-Alpha)
 
 
 
